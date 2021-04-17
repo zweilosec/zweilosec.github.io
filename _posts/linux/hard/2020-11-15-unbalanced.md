@@ -217,7 +217,7 @@ base64: invalid input
 
 The files looked like base64 names at first, but then I realized that they were likely AES encrypted, and the `.encfs6.xml` showed this to be true.
 
-```markup
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="7">

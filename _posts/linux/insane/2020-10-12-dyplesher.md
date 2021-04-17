@@ -279,7 +279,7 @@ This potentially reveals the version of this Minecraft server as 1.2.5.
 
 ![](/assets/img/5-git-dirbuster.png)
 
-While scanning with dirbuster, I found a `.git` folder.  Browsing to this folder resulted in getting denied, so next I tried using `git-dumper.py` like I did in the Hack the Box machine [`Travel`](../hard/2020-09-19-travel.md).
+While scanning with dirbuster, I found a `.git` folder.  Browsing to this folder resulted in getting denied, so next I tried using `git-dumper.py` like I did in the Hack the Box machine [`Travel`] Fix this link! (../hard/2020-09-19-travel.md).
 
 ```text
 ┌──(zweilos㉿kali)-[~/htb/dyplesher]
