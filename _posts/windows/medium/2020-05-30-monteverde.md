@@ -15,27 +15,28 @@ tags: [htb, hacking, hack the box, redteam, windows, ldap, rpc, smb, powershell,
 ![](/assets/img/Screenshot-at-2020-06-13-00-54-41.png)
 
 
-Short description to include any strange things to be dealt with
+Short description to include any strange things to be dealt with...when there is a proper description here the website build will stop breaking. Hopefully this is enough text to fix it...
 
-## 
-Useful Skills and Tools
+## Useful Skills and Tools
 
 ### Using ldapsearch to enumerate a Windows domain
 
-`ldapsearch -H ldap://<ip>:<port> -x -LLL -s sub -b "DC=<domain>,DC=local"`
+`ldapsearch -H ldap://$ip:$port -x -LLL -s sub -b "DC=$domain,DC=local"`
 
 ### Enumerating users on a Windows domain with rpcclient \(without credentials\)
 
-> rpcclient -U "" -N &lt;ip&gt;
+> ```
+> rpcclient -U "" -N $ip
 >
-> * rpcclient $&gt; enumdomusers
-> * rpcclient $&gt; queryuser &lt;user\_RID&gt;
-> * rpcclient $&gt; enumalsgroups builtin
-> * rpcclient $&gt; queryaliasmem builtin &lt;RID&gt;
+> rpcclient: enumdomusers
+> rpcclient: queryuser $user_RID;
+> rpcclient: enumalsgroups builtin
+> rpcclient: queryaliasmem builtin $RID;
 >
 >           sid:\[S-1-5-21-391775091-850290835-3566037492-1601\]
 >
-> * rpcclient $&gt; queryuser 1601
+> rpcclient: queryuser 1601
+> ```
 
 ### Bruteforcing SMB login with only usernames
 
