@@ -74,7 +74,7 @@ Next I tried a web search for `FREE INTERNETZZZ`, which led me to Twitter of all
 
 ![](/assets/img/free-internetzzzz.png)
 
-"Pretty interesting collection of webshells:"  says the [author](https://twitter.com/RiftWhiteHat/status/1237311680276647936) of this machine...and posted around the same time as the release \(14 Mar 2020 - See [info card](traceback-write-up.md#overview)\).  This felt a lot like an OSINT-type challenge to me.   Clicking on the post led to a collection of "Some of the best web shells that you might need" at [https://github.com/TheBinitGhimire/Web-Shells](https://github.com/TheBinitGhimire/Web-Shells).
+"Pretty interesting collection of webshells:"  says the [author](https://twitter.com/RiftWhiteHat/status/1237311680276647936) of this machine...and posted around the same time as the release \(14 Mar 2020 - See [info card](#overview)\).  This felt a lot like an OSINT-type challenge to me.   Clicking on the post led to a collection of "Some of the best web shells that you might need" at [https://github.com/TheBinitGhimire/Web-Shells](https://github.com/TheBinitGhimire/Web-Shells).
 
 I didn't know which web shell was used, and the hint left by `Xh4H` only led to a GitHub repository with a collection of shells. I downloaded them all and started poking through the code to see if anything looked familiar, but most of it was obfuscated and I couldn't find the phrase `FREE INTERNETZZZ` in any of the files. So, I created a list of the filenames and used `wfuzz` to check to see if any of them had been uploaded to the site. _\(And I hoped that the filename hadn't been changed!\)_
 

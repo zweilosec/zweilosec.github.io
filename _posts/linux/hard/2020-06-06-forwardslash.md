@@ -75,7 +75,7 @@ It appeared that one of the server owners had left the other a note.  The file `
 
 ### Virtual Host Enumeration
 
-Ippsec's video on [`HTB - Player`](%20https://www.youtube.com/watch?v=JpzREo7XLOY) describes "vhost enumeration" and explains how to search for other virtual hosts which map to the same IP address. From watching this video before I knew that you could enumerate these sites using the tool `gobuster`: 
+Ippsec's video on [`HTB - Player`](https://www.youtube.com/watch?v=JpzREo7XLOY) describes "vhost enumeration" and explains how to search for other virtual hosts which map to the same IP address. From watching this video before I knew that you could enumerate these sites using the tool `gobuster`: 
 
 ```text
 zweilos@kalimaa:~/htb/forwardslash$ gobuster vhost -u http://forwardslash.htb -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt 
