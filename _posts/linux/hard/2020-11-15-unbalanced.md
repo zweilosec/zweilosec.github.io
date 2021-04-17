@@ -20,11 +20,11 @@ TODO: finish writing and do cleanup
 
 ## Useful Skills and Tools
 
-#### Useful thing 1
+### Useful thing 1
 
 * description with generic example
 
-#### Useful thing 2
+### Useful thing 2
 
 * description with generic example
 

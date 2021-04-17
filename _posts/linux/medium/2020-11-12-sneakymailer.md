@@ -18,11 +18,11 @@ Short description to include any strange things to be dealt with
 
 ## Useful Skills and Tools
 
-#### Save a transcript of any session \(even remote nc sessions!\)
+### Save a transcript of any session \(even remote nc sessions!\)
 
 * With the command `script $log_filename` you can save the output of any session, including stderr and output from programs such as nano and vim! This is extremely invaluable when you exit a session and have forgotten to copy or backup something you did. To stop the transcript type `exit` after exiting any shells you may have spawned during that session.
 
-#### Useful thing 2
+### Useful thing 2
 
 * description with generic example
 
@@ -233,9 +233,9 @@ Zorita Serrano     Software Engineer     San Francisco     zoritaserrano@sneakym
 
 There was a huge list of employees at the company. I added the usernames and emails to lists for later use
 
-{% hint style="info" %}
-I found out afterwards that there is a nice tool that can extract emails from a page: [https://email-checker.net/extract](https://email-checker.net/extract)
-{% endhint %}
+
+> I found out afterwards that there is a nice tool that can extract emails from a page: [https://email-checker.net/extract](https://email-checker.net/extract)
+
 
 ![](/assets/img/1-sneakycorp-register.png)
 

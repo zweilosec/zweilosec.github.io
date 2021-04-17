@@ -209,9 +209,9 @@ After doing some troubleshooting and looking into the code it seemed as if the w
 
 I noticed that the web shell told me that the username we had control of was `webadmin`, so I decided to try to add my public SSH key to the `.ssh/authorized_keys` file of that user to see if it would let me log in that way. I entered the command `echo "ssh-rsa AAAA<my_public_key> zweilos@kali" >> /home/webadmin/.ssh/authorized_keys` into the `Console` field of the web shell.  _\(Notice the append operator `>>`?  Please be nice to your fellow players and don't overwrite the whole file with `>`!\)_
 
-{% hint style="info" %}
-According to [https://www.ssh.com/ssh/keygen/](https://www.ssh.com/ssh/keygen/) you can also do this remotely from a terminal using**`ssh-copy-id -i ~/.ssh/tatu-key-ecdsa user@host`** but you need to be able to authenticate to the machine already to do this.  
-{% endhint %}
+
+> According to [https://www.ssh.com/ssh/keygen/](https://www.ssh.com/ssh/keygen/) you can also do this remotely from a terminal using**`ssh-copy-id -i ~/.ssh/tatu-key-ecdsa user@host`** but you need to be able to authenticate to the machine already to do this.  
+
 
 ### Enumeration as `webadmin`
 

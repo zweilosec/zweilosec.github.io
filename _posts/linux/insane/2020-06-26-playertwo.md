@@ -18,7 +18,7 @@ An Insane difficulty Linux machine that tested my web skills quite a bit and als
 
 ## Useful Skills and Tools
 
-#### Adding a hostname to the hosts file on Linux
+### Adding a hostname to the hosts file on Linux
 
 In order to get the intended page for a server, sometimes you may need to direct your traffic to the site's FQDN rather than it's IP address.  In order to do this you will need to tell your computer where to find that domain by adding the following line to `/etc/hosts` .   Subdomains need to be added on separate lines.
 
@@ -27,7 +27,7 @@ In order to get the intended page for a server, sometimes you may need to direct
 10.10.10.170    <subdomain.domain.name>
 ```
 
-#### Using `cewl` to get a site-customized wordlist
+### Using `cewl` to get a site-customized wordlist
 
 ```text
 cewl -d 3 -o -a -e -w <output_file> <website_url>

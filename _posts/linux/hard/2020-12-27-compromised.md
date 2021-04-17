@@ -20,11 +20,11 @@ TODO: finish writeup, and clean up
 
 ## Useful Skills and Tools
 
-#### Useful thing 1
+### Useful thing 1
 
 * description with generic example
 
-#### Useful thing 2
+### Useful thing 2
 
 * description with generic example
 
@@ -233,9 +233,9 @@ The `robots.txt` and `sitemap.xml` did not exist on the live site, perhaps they 
 
 ![](/assets/img/7-no-sitemap.png)
 
-{% hint style="info" %}
-Post-completion edit: yes these files exist, I had been looking for them in the root, not in the **`/shop`** directory.
-{% endhint %}
+
+> Post-completion edit: yes these files exist, I had been looking for them in the root, not in the **`/shop`** directory.
+
 
 ```text
 ┌──(zweilos㉿kali)-[~/htb/compromised/shop/admin]
@@ -534,9 +534,9 @@ Listed tables in the `ecom` database.
 
 got code execution with `GET /shop/vqmod/xml/cantfindmyshell.php?var=mysql+-u+root+-pchangethis+-v+-e+"system+id"+ecom HTTP/1.1`
 
-{% hint style="info" %}
-had to specify -e to execute SQL commands, system to run system commands, and had to end the line with the database name 'ecom'
-{% endhint %}
+
+> had to specify `-e` to execute SQL commands, system to run system commands, and had to end the line with the database name 'ecom'
+
 
 Unfortunately, I was still executing commands as `www-data` however, need to figure out how to escalate privileges; Found an interesting thing in the mysql references that talks about user defined variables
 
