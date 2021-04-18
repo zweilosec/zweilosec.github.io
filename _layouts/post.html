@@ -39,6 +39,21 @@ layout: default
 
         </div>
 
+        <div>
+          <meta name="twitter:card" content="summary"> <!-- card type. Summary is used by default. -->
+
+          <meta name="twitter:description" content="<p>
+            {% include no-linenos.html content=post.content %}
+            {{ content | markdownify | strip_html | truncate: 200 }}
+          </p>"> <!-- content description up to 200 symbols long. -->
+
+          <meta name="twitter:title" content="{{post.title}}"> <!-- the post headline up to 70 symbols long. -->
+
+          <meta name="twitter:image" content="{{post.image}}"> <!-- a link to the image with an absolute path. -->
+
+          <meta name="twitter:site" content="@zweilosec"> <!-- @username for the website. -->
+        </div>
+
       </div> <!-- .post-meta -->
 
       <div class="post-content">
