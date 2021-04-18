@@ -42,10 +42,7 @@ layout: default
         <div>
           <meta name="twitter:card" content="summary"> <!-- card type. Summary is used by default. -->
 
-          <meta name="twitter:description" content="<p>
-            {% include no-linenos.html content=post.content %}
-            {{ content | markdownify | strip_html | truncate: 200 }}
-          </p>"> <!-- content description up to 200 symbols long. -->
+          <meta name="twitter:description" content="{{post.description}}"> <!-- content description up to 200 symbols long. -->
 
           <meta name="twitter:title" content="{{post.title}}"> <!-- the post headline up to 70 symbols long. -->
 
