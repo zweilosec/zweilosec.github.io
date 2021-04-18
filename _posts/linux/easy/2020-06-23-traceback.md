@@ -6,6 +6,8 @@ title: Hack the Box - Traceback Writeup
 date: 2020-06-23 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, linux, web, backdoor, osint, lua, luvit, motd, cron, easy, writeup, xh4h]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/traceback-infocard.png
 ---
 
 # HTB - Traceback

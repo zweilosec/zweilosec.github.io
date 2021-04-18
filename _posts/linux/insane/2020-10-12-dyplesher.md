@@ -6,6 +6,8 @@ title: Hack the Box - Dyplesher Writeup
 date: 2020-10-12 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, linux, web, burp, git, gitlab, gogs, amqplain, rabbitmq, memcached, minecraft, erlang, sql, slqlite, python, java, insane, writeup, felamos, yuntao]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/0-dyplesher-infocard.png
 ---
 
 # HTB - Dyplesher

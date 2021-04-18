@@ -6,6 +6,8 @@ title: Hack the Box - SneakyMailer Writeup
 date: 2020-11-12 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, linux, ssh, sudo, web, burp, virtual hosts, python, pypi, smtp, phishing, wireshark, ftp, medium, writeup, sulcud, unfinished]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/0-sneakymailer-infocard.png
 ---
 
 # HTB - SneakyMailer

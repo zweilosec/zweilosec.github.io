@@ -2,10 +2,12 @@
 description: >-
   Zweilosec's writeup on the insane-difficulty machine Multimaster from
   https://hackthebox.eu
-title: Hack the Box - APT Writeup
+title: Hack the Box - Multimaster Writeup
 date: 2020-07-25 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, windows, powershell, web, unicode, waf, python, vscode, sebackupprivilege, serestoreprivilege, insane, writeup, minatotw, egre55, unfinished]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/1-multimaster-infocard.png
 ---
 
 # HTB - Multimaster

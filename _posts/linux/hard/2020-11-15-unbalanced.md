@@ -6,6 +6,8 @@ title: Hack the Box - Unbalanced Writeup
 date: 2020-11-15 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, linux, hard, rsync, sql injection, python, pi-hole, encfs, web, squid, docker, containers, writeup, polarbearer, gibparadox, unfinished]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/0-unballanced-infocard.png
 ---
 
 # HTB - Unbalanced

@@ -6,6 +6,8 @@ title: Hack the Box - Forwardslash Writeup
 date: 2020-06-06 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, linux, ssh, luks, python, sudo, web, virtual hosts, backups, cewl, directory traversal, waf, ftp, autologon, hard, writeup, infosecjack, chivato, unfinished]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/0-forwardslash-infocard.png
 ---
 
 # HTB - ForwardSlash

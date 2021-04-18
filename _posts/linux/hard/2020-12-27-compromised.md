@@ -6,6 +6,8 @@ title: Hack the Box - Compromised Writeup
 date: 2020-12-27 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, linux, web, burp, php, phpinfo, sql, mysql, backdoor, litecart, binary analysis, c, ghidra, hard, writeup, d4nch3n, unfinished]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/0-compromised-infocard.png
 ---
 
 # HTB - Compromised

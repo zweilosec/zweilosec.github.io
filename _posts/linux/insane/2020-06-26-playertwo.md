@@ -3,9 +3,11 @@ description: >-
   Zweilosec's writeup on the insane-difficulty Linux machine PlayerTwo from
   https://hackthebox.eu
 title: Hack the Box - PlayerTwo Writeup
-date: 2020-06-03 08:00:00 -0600
+date: 2020-06-26 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, linux, web, cewl, twirp, rpc, 2fa, totp, burp, binary analysis, c, sql, mosquitto, mqtt, insane, writeup, mrr3boot, b14ckh34rt]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/playertwo-infocard.png
 ---
 
 # HTB - PlayerTwo

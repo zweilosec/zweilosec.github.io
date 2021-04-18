@@ -6,6 +6,8 @@ title: Hack the Box - Blackfield Writeup
 date: 2020-10-04 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, windows, impacket, powershell, smb, rpc, bloodhound, kerberos, mimikatz, sebackupprivilege, serestoreprivilege, hard, writeup, aas, unfinished]     # TAG names should always be lowercase
+show_image_post: true
+image: /assets/img/0-blackfield-infocard.png
 ---
 
 
