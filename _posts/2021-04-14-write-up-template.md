@@ -9,7 +9,7 @@ tags: [htb, hacking, hack the box, template, redteam]     # TAG names should alw
 
 ## Overview
 
-![](<machine>.infocard.png)
+![Descriptive information card about machine](<machine>.infocard.png)
 
 Short description to include any strange things to be dealt with
 

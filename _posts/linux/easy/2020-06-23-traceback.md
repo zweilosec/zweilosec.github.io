@@ -2,7 +2,7 @@
 description: >-
   Zweilosec's write-up on the easy difficulty Linux machine Traceback from
   https://hackthebox.eu
-title: Hack the Box - Sauna Writeup
+title: Hack the Box - Traceback Writeup
 date: 2020-06-23 08:00:00 -0600
 categories: [Hack the Box, Writeup]
 tags: [htb, hacking, hack the box, redteam, linux, web, backdoor, osint, lua, luvit, motd, cron, easy, writeup, xh4h]     # TAG names should always be lowercase
@@ -12,7 +12,7 @@ tags: [htb, hacking, hack the box, redteam, linux, web, backdoor, osint, lua, lu
 
 ## Overview
 
-![](/assets/img/traceback-infocard.png)
+![Descriptive information card about Traceback](/assets/img/traceback-infocard.png)
 
 Traceback is an easy difficulty Linux machine that gives a good introduction to web shells and tracing the steps of how an attacker compromised a server \(then defaced it!\).  
 
@@ -271,8 +271,7 @@ sh: 1: catnote.txt: not found
 nil     'exit'  127
 ```
 
-_A quick troubleshooting note... you will need to make sure to put a space between the command and the argument manually, as this seems to just concatenate the two strings then executes. The space can either be at the end of the command or the beginning of the arguments._
-
+![Put a space between the command and the argument](/assets/markups/traceback-info-troubleshooting.svg)
 ### User.txt
 
 ```lua
