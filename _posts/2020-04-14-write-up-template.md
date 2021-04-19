@@ -1,9 +1,13 @@
 ---
+description: >-
+  Zweilosec's writeup on the xxx-difficulty machine xxx from
+  https://hackthebox.eu
 title: HTB - Write-up Template
-date: 2021-04-14 08:00:00 -0600
+date: 2020-04-14 08:00:00 -0600
 categories: [Hack the Box, Templates]
 tags: [htb, hacking, hack the box, template, redteam]     # TAG names should always be lowercase
 show_image_post: false
+#image:
 ---
 
 # HTB - Machine_Name
@@ -28,9 +32,15 @@ description with generic example
 
 ### Nmap scan
 
-Like always, I started my enumeration with an nmap scan of `<ip>`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all TCP ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oN <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.xxx`.  The options I regularly use are: 
 
-At first my scan wouldn't go through until I added the `-Pn` flag to stop nmap from sending ICMP probes. After that it proceeded normally. 
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ## Initial Foothold
 
@@ -40,16 +50,14 @@ At first my scan wouldn't go through until I added the `-Pn` flag to stop nmap f
 
 ### Finding user creds
 
-
 ### User.txt
+
 
 ## Path to Power \(Gaining Administrator Access\)
 
 ### Enumeration as user `username`
 
-
 ### Getting a shell
-
 
 ### Root.txt
 
