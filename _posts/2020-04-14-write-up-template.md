@@ -1,20 +1,20 @@
 ---
 description: >-
-  Zweilosec's writeup on the xxx-difficulty machine xxx from
+  Zweilosec's writeup on the xxx-difficulty xxx machine xxx from 
   https://hackthebox.eu
-title: HTB - Write-up Template
-date: 2020-04-14 08:00:00 -0600
-categories: [Hack the Box, Templates]
-tags: [htb, hacking, hack the box, template, redteam]     # TAG names should always be lowercase
-show_image_post: false
-#image:
+title: HTB - Write-up Template                            # Add title of the machine here
+date: 2020-04-14 08:00:00 -0600                           # Change the date to match completion date
+categories: [Hack the Box, Templates]                     # Change Templates to Writeup
+tags: [htb, hacking, hack the box, template, redteam]     # TAG names should always be lowercase; replace template with writeup, and add relevant tags
+show_image_post: false                                    # Change this to true
+#image: /assets/img/machine-0-infocard.png                # Add infocard image here for post preview image
 ---
 
 # HTB - Machine_Name
 
 ## Overview
 
-![Descriptive information card about machine](<machine>.infocard.png)
+![Descriptive information card about this machine](<machine>-0-infocard.png)
 
 Short description to include any strange things to be dealt with
 
