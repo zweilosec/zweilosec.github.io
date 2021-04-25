@@ -2,7 +2,7 @@
 description: >-
   Zweilosec's writeup on the xxx-difficulty xxx machine xxx from 
   https://hackthebox.eu
-title: HTB - Write-up Template                            # Add title of the machine here
+title: Hack The Box - Writeup Template                    # Add title of the machine here
 date: 2020-04-14 08:00:00 -0600                           # Change the date to match completion date
 categories: [Hack the Box, Templates]                     # Change Templates to Writeup
 tags: [htb, hacking, hack the box, template, redteam]     # TAG names should always be lowercase; replace template with writeup, and add relevant tags
@@ -63,4 +63,4 @@ I started my enumeration with an nmap scan of `10.10.10.xxx`.  The options I reg
 
 Thanks to [`<box_creator>`](https://www.hackthebox.eu/home/users/profile/<profile_num>) for something interesting or useful about this machine.
 
-If you like this content and would like to see more, please consider [buying me a coffee](https://www.buymeacoffee.com/zweilosec)!
+If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=zweilosec&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff"></a>
