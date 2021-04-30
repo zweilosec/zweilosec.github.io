@@ -13,7 +13,7 @@ show_image_post: true                                    # Change this to true
 
 ## Upgrading remote shells (Unix machines only)
 
-Usually, after catching a shell through netcat you are placed in a shell that has very limited functionality. If the remote machine has python or python3 installed you can easily upgrade to a fully functional TTY shell.
+Usually, after catching a shell through netcat you are placed in a shell that has very limited functionality. If the remote machine has Python installed you can easily upgrade to a fully functional TTY shell.
 
  **Note:** To check if the shell is a TTY shell use the `tty` command.
  
@@ -31,7 +31,9 @@ rlwrap nc -lvnp $port
 which python python2 python3
 ```
 
-If any of these are installed, this command will return the full path of the installed binary.  Note: The `which` command will only report programs that are installed in a folder that exists in `$PATH`.  Python will almost always be in a `$PATH` directory so this should not be an issue.
+If any of these are installed this command will return the full path of the installed binary.  
+
+Note: The `which` command will only report programs that are installed in a folder that exists in `$PATH`.  Python will almost always be in a `$PATH` directory so this should not be an issue.
 
 2. Next, on the victim machine type the below command (using the version of python that is available on the machine!)
 
@@ -50,11 +52,11 @@ stty raw -echo
 stty size 
 ```
 
-The second command above will report the size of your terminal window in rows and columns.  This is useful for command output that either fills the whole terminal (such as when using commands such as `nano` or `vim`) or that would output lines that are too long to fit in the window.  Fixing the window size will allow for word-wrapping instead of cutting off output that is too long.
+The second command above will report the size of your terminal window in rows and columns.  This is useful for command output that either fills the whole terminal (such as when using programs such as `nano` or `vim`) or that would output lines that are too long to fit in the window.  Fixing the window size will allow for word-wrapping instead of cutting off output that is too long.
 
 5. After that, type the command `fg` to return the reverse shell to the foreground.
 
-6. Next, on victim machine type the below commands to set some important environment variables.
+6. Next, on the victim machine type the below commands to set some important environment variables.
 
 ```bash
 export SHELL=bash
@@ -62,7 +64,7 @@ stty rows $x columns $y #Set remote shell to x number of rows & y columns
 export TERM=xterm-256color #allows you to clear console, and have color output
 ```
 
-Viola!  You should now be the proud owner of a shiny new fully upgraded TTY shell with command history.  It will also allow you to use commands such as `ctrl-c` to kill remotely ruing processes rather than your own shell! Enjoy!
+Viola!  You should now be the proud owner of a shiny new fully upgraded TTY shell with command history using the 'up' and 'down' arrows.  This shell will also allow you to use the command `clear` to clear your screen and 'control' commands, such as `ctrl-c` to kill remotely running processes rather than your own shell! Enjoy!
 
 
 ## Using Other Scripting Languages:
