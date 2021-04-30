@@ -10,7 +10,13 @@ show_image_post: false                                    # Change this to true
 #image: /assets/img/machine-0-infocard.png                # Add infocard image here for post preview image
 ---
 
-# HTB - Machine_Name
+## Download me on GitHub
+
+Feel free to download and use this writeup template for Hack the Box machines for your own writeups.  Please let me where you post them so I can check them out and see how you completed the machines!  If you have any contributions to my site, feel free to leave an issue and pull request!
+
+Fork this on [Zweilosec's GitHub](https://github.com/zweilosec)!
+
+## HTB - Machine_Name
 
 ## Overview
 

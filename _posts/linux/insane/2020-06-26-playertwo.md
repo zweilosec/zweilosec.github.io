@@ -10,11 +10,11 @@ show_image_post: true
 image: /assets/img/playertwo-infocard.png
 ---
 
-# HTB - PlayerTwo
+## HTB - PlayerTwo
 
 ## Overview
 
-![](/assets/img/playertwo-infocard.png)
+![Descriptive information card on the machine playertwo](/assets/img/playertwo-infocard.png)
 
 An Insane difficulty Linux machine that tested my web skills quite a bit and also had me doing as much research on new protocols and services as three or four easy or medium boxes would.  Finding each pathway forward wasn't too difficult with proper enumeration, but getting past each step required patience and reading lots of documentation.  
 
@@ -59,7 +59,15 @@ After getting a rough shell on the machine, my first order of business is usuall
 
 ### Nmap scan
 
-I started my enumeration off with an nmap scan of `10.10.10.170`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all TCP ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and`-oN <name>` saves the output with a filename of `<name>`.  
+I started my enumeration with an nmap scan of `10.10.10.170`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
 zweilos@kalimaa:~/htb/playertwo$ nmap -p- -sC -sV -O -oA playertwo.full 10.10.10.170
@@ -108,47 +116,8 @@ PORT     STATE SERVICE VERSION
 |     Content-Type: application/json
 |_    {"code":"bad_route","msg":"no handler for path "/"","meta":{"twirp_invalid_route":"GET /"}}
 |_http-title: Site doesn't have a title (application/json).
-1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port8545-TCP:V=7.80%I=7%D=5/31%Time=5ED3E880%P=x86_64-pc-linux-gnu%r(Ge
-SF:tRequest,FC,"HTTP/1\.1\x20404\x20Not\x20Found\r\nDate:\x20Sun,\x2031\x2
-SF:0May\x202020\x2017:29:21\x20GMT\r\nConnection:\x20close\r\nX-Powered-By
-SF::\x20PHP/7\.2\.24-0ubuntu0\.18\.04\.1\r\nContent-Type:\x20application/j
-SF:son\r\n\r\n{\"code\":\"bad_route\",\"msg\":\"no\x20handler\x20for\x20pa
-SF:th\x20\\\"\\/\\\"\",\"meta\":{\"twirp_invalid_route\":\"GET\x20\\/\"}}"
-SF:)%r(HTTPOptions,100,"HTTP/1\.1\x20404\x20Not\x20Found\r\nDate:\x20Sun,\
-SF:x2031\x20May\x202020\x2017:29:22\x20GMT\r\nConnection:\x20close\r\nX-Po
-SF:wered-By:\x20PHP/7\.2\.24-0ubuntu0\.18\.04\.1\r\nContent-Type:\x20appli
-SF:cation/json\r\n\r\n{\"code\":\"bad_route\",\"msg\":\"no\x20handler\x20f
-SF:or\x20path\x20\\\"\\/\\\"\",\"meta\":{\"twirp_invalid_route\":\"OPTIONS
-SF:\x20\\/\"}}")%r(FourOhFourRequest,144,"HTTP/1\.1\x20404\x20Not\x20Found
-SF:\r\nDate:\x20Sun,\x2031\x20May\x202020\x2017:29:36\x20GMT\r\nConnection
-SF::\x20close\r\nX-Powered-By:\x20PHP/7\.2\.24-0ubuntu0\.18\.04\.1\r\nCont
-SF:ent-Type:\x20application/json\r\n\r\n{\"code\":\"bad_route\",\"msg\":\"
-SF:no\x20handler\x20for\x20path\x20\\\"\\/nice%20ports%2C\\/Tri%6Eity\.txt
-SF:%2ebak\\\"\",\"meta\":{\"twirp_invalid_route\":\"GET\x20\\/nice%20ports
-SF:%2C\\/Tri%6Eity\.txt%2ebak\"}}")%r(OfficeScan,FC,"HTTP/1\.1\x20404\x20N
-SF:ot\x20Found\r\nDate:\x20Sun,\x2031\x20May\x202020\x2017:29:38\x20GMT\r\
-SF:nConnection:\x20close\r\nX-Powered-By:\x20PHP/7\.2\.24-0ubuntu0\.18\.04
-SF:\.1\r\nContent-Type:\x20application/json\r\n\r\n{\"code\":\"bad_route\"
-SF:,\"msg\":\"no\x20handler\x20for\x20path\x20\\\"\\/\\\"\",\"meta\":{\"tw
-SF:irp_invalid_route\":\"GET\x20\\/\"}}");
-No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
-TCP/IP fingerprint:
-OS:SCAN(V=7.80%E=4%D=5/31%OT=22%CT=1%CU=37408%PV=Y%DS=2%DC=I%G=Y%TM=5ED3E8B
-OS:C%P=x86_64-pc-linux-gnu)SEQ(SP=FB%GCD=1%ISR=103%TI=Z%CI=Z%II=I%TS=A)OPS(
-OS:O1=M54DST11NW7%O2=M54DST11NW7%O3=M54DNNT11NW7%O4=M54DST11NW7%O5=M54DST11
-OS:NW7%O6=M54DST11)WIN(W1=FE88%W2=FE88%W3=FE88%W4=FE88%W5=FE88%W6=FE88)ECN(
-OS:R=Y%DF=Y%T=40%W=FAF0%O=M54DNNSNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=AS
-OS:%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R=
-OS:Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=
-OS:R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T
-OS:=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=
-OS:S)
-
-Network Distance: 2 hops
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 1482.37 seconds
 ```
 

@@ -10,11 +10,11 @@ show_image_post: true
 image: /assets/img/Screenshot-at-2020-06-13-00-54-41.png
 ---
 
-# HTB - Monteverde
+## HTB - Monteverde
 
 ## Overview
 
-![](/assets/img/Screenshot-at-2020-06-13-00-54-41.png)
+![Descriptive information card from the machine monteverde](/assets/img/Screenshot-at-2020-06-13-00-54-41.png)
 
 
 Short description to include any strange things to be dealt with...when there is a proper description here the website build will stop breaking. Hopefully this is enough text to fix it...
@@ -69,10 +69,18 @@ wget http://$ip:$port/$file_to_get -UseBasicParsing -Outfile $file_to_save
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.172`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all TCP ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oN <name>` saves the nmap output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.172`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
-zweilos@kalimaa:~/htb/monteverde$ nmap -p- -sC -sV -oN monteverde.nmap 10.10.10.172
+zweilos@kalimaa:~/htb/monteverde$ nmap -p- -sC -sV -oA monteverde.nmap 10.10.10.172
 
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-24 10:42 EDT
 Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
@@ -81,14 +89,11 @@ Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
 At first my scan wouldn't go through until I added the `-Pn` flag to stop nmap from sending ICMP probes. After that it proceeded normally.  This behavior seems to be more common on Windows machines, as I also encountered this on `Nest` and `Oouch`. 
 
 ```text
-zweilos@kalimaa:~/htb/monteverde$ nmap -p- -sC -sV -Pn -oN monteverde.nmap 10.10.10.172
+zweilos@kalimaa:~/htb/monteverde$ nmap -p- -sC -sV -Pn -oA monteverde.nmap 10.10.10.172
 
 # Nmap 7.80 scan initiated Thu May 28 13:42:58 2020 as: nmap -p- -sC -sV -Pn -oN monteverde-full 10.10.10.172
 Nmap scan report for 10.10.10.172
-Host is up, received user-set (0.14s latency).
-Scanned at 2020-05-28 13:43:03 EDT for 733s
-Not shown: 65516 filtered ports
-Reason: 65516 no-responses
+
 PORT      STATE SERVICE       REASON  VERSION
 53/tcp    open  domain?       syn-ack
 | fingerprint-strings: 
@@ -115,10 +120,6 @@ PORT      STATE SERVICE       REASON  VERSION
 49675/tcp open  msrpc         syn-ack Microsoft Windows RPC
 49706/tcp open  msrpc         syn-ack Microsoft Windows RPC
 49778/tcp open  msrpc         syn-ack Microsoft Windows RPC
-1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port53-TCP:V=7.80%I=7%D=5/28%Time=5ECFF9DC%P=x86_64-pc-linux-gnu%r(DNSV
-SF:ersionBindReqTCP,20,"\0\x1e\0\x06\x81\x04\0\x01\0\0\0\0\0\0\x07version\
-SF:x04bind\0\0\x10\0\x03");
 Service Info: Host: MONTEVERDE; OS: Windows; CPE: cpe:/o:microsoft:windows
 
 Host script results:
@@ -137,8 +138,6 @@ Host script results:
 |   date: 2020-05-28T17:06:01
 |_  start_date: N/A
 
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 # Nmap done at Thu May 28 13:55:16 2020 -- 1 IP address (1 host up) scanned in 738.00 seconds
 ```
 
@@ -146,7 +145,9 @@ From these results I could see a lot of open ports! Since ports `88 - kerberos`,
 
 ### ldapsearch
 
-Since I had so many options, I decided to start by enumerating Active Directory through LDAP using `ldapsearch`. This command is built into many linux distros and returned a wealth of information. I snipped out huge chunks of the output in order to reduce information overload as most of it was not particularly interesting in this case. _Warning! The output from `ldapsearch` can be quite extensive, so be prepared to wade through a lot of data till you find anything useful.  I have snipped out the irrelevant sections below._
+Since I had so many options, I decided to start by enumerating Active Directory through LDAP using `ldapsearch`. This command is built into many linux distros and returned a wealth of information. I snipped out huge chunks of the output in order to reduce information overload as most of it was not particularly interesting in this case. 
+
+![Warning about extensive output with irrelevant information removed](/assets/markups/monteverde-warning.svg)
 
 ```text
 zweilos@kalimaa:~/htb/monteverde$ ldapsearch -H ldap://10.10.10.172:3268 -x -LLL -s base -b "DC=megabank,DC=local"

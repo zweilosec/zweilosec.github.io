@@ -10,7 +10,7 @@ show_image_post: true
 image: /assets/img/0-unballanced-infocard.png
 ---
 
-# HTB - Unbalanced
+## HTB - Unbalanced
 
 ## Overview
 
@@ -34,42 +34,22 @@ TODO: finish writing and do cleanup
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.200`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oA <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.200`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
 ┌──(zweilos㉿kali)-[~/htb/unbalanced]
 └─$ nmap -p- -sCV -n -v -oA unbalanced 10.10.10.200
 Starting Nmap 7.91 ( https://nmap.org ) at 2020-11-13 20:15 EST
-NSE: Loaded 153 scripts for scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 20:15
-Completed NSE at 20:15, 0.00s elapsed
-Initiating NSE at 20:15
-Completed NSE at 20:15, 0.00s elapsed
-Initiating NSE at 20:15
-Completed NSE at 20:15, 0.00s elapsed
-Initiating Ping Scan at 20:15
-Scanning 10.10.10.200 [2 ports]
-Completed Ping Scan at 20:15, 0.04s elapsed (1 total hosts)
-Initiating Connect Scan at 20:15
-Scanning 10.10.10.200 [65535 ports]
-Discovered open port 22/tcp on 10.10.10.200
-Discovered open port 873/tcp on 10.10.10.200
-Discovered open port 3128/tcp on 10.10.10.200
-Completed Connect Scan at 20:15, 41.82s elapsed (65535 total ports)
-Initiating Service scan at 20:15
-Scanning 3 services on 10.10.10.200
-Completed Service scan at 20:16, 11.18s elapsed (3 services on 1 host)
-NSE: Script scanning 10.10.10.200.
-Initiating NSE at 20:16
-Completed NSE at 20:16, 1.70s elapsed
-Initiating NSE at 20:16
-Completed NSE at 20:16, 0.19s elapsed
-Initiating NSE at 20:16
-Completed NSE at 20:16, 0.00s elapsed
 Nmap scan report for 10.10.10.200
-Host is up (0.052s latency).
-Not shown: 65532 closed ports
+
 PORT     STATE SERVICE    VERSION
 22/tcp   open  ssh        OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
 | ssh-hostkey: 
@@ -82,15 +62,6 @@ PORT     STATE SERVICE    VERSION
 |_http-title: ERROR: The requested URL could not be retrieved
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-NSE: Script Post-scanning.
-Initiating NSE at 20:16
-Completed NSE at 20:16, 0.00s elapsed
-Initiating NSE at 20:16
-Completed NSE at 20:16, 0.00s elapsed
-Initiating NSE at 20:16
-Completed NSE at 20:16, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 55.27 seconds
 ```
 

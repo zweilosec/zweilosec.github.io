@@ -10,7 +10,7 @@ show_image_post: true
 image: /assets/img/0-compromised-infocard.png
 ---
 
-# HTB - Compromised
+## HTB - Compromised
 
 ## Overview
 
@@ -34,57 +34,27 @@ TODO: finish writeup, and clean up
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.207`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oA <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.207.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
 ┌──(zweilos㉿kali)-[~/htb/compromised]
 └─$ nmap -sCV -n -p- -Pn -v 10.10.10.207
-Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times will be slower.
 Starting Nmap 7.91 ( https://nmap.org ) at 2020-12-26 15:53 EST
-NSE: Loaded 153 scripts for scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 15:53
-Completed NSE at 15:53, 0.00s elapsed
-Initiating NSE at 15:53
-Completed NSE at 15:53, 0.00s elapsed
-Initiating NSE at 15:53
-Completed NSE at 15:53, 0.00s elapsed
-Initiating Connect Scan at 15:53
-Scanning 10.10.10.207 [65535 ports]
-Discovered open port 22/tcp on 10.10.10.207
-Discovered open port 80/tcp on 10.10.10.207
-Connect Scan Timing: About 17.81% done; ETC: 15:56 (0:02:23 remaining)
-Connect Scan Timing: About 37.26% done; ETC: 15:56 (0:01:43 remaining)
-Connect Scan Timing: About 64.86% done; ETC: 15:56 (0:00:49 remaining)
-Connect Scan Timing: About 80.09% done; ETC: 15:56 (0:00:32 remaining)
-Completed Connect Scan at 15:56, 142.43s elapsed (65535 total ports)
-Initiating Service scan at 15:56
-Scanning 2 services on 10.10.10.207
-Completed Service scan at 15:56, 5.01s elapsed (2 services on 1 host)
-NSE: Script scanning 10.10.10.207.
-Initiating NSE at 15:56
-Completed NSE at 15:57, 60.01s elapsed
-Initiating NSE at 15:57
-Completed NSE at 15:57, 2.01s elapsed
-Initiating NSE at 15:57
-Completed NSE at 15:57, 0.00s elapsed
 Nmap scan report for 10.10.10.207
-Host is up (0.0000020s latency).
-Not shown: 65533 filtered ports
+
 PORT   STATE SERVICE    VERSION
 22/tcp open  tcpwrapped
 |_ssh-hostkey: ERROR: Script execution failed (use -d to debug)
 80/tcp open  tcpwrapped
 
-NSE: Script Post-scanning.
-Initiating NSE at 15:57
-Completed NSE at 15:57, 0.00s elapsed
-Initiating NSE at 15:57
-Completed NSE at 15:57, 0.00s elapsed
-Initiating NSE at 15:57
-Completed NSE at 15:57, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 210.64 seconds
 ```
 

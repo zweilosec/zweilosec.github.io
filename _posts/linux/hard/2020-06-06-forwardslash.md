@@ -10,7 +10,7 @@ show_image_post: true
 image: /assets/img/0-forwardslash-infocard.png
 ---
 
-# HTB - ForwardSlash
+## HTB - ForwardSlash
 
 ## Overview
 
@@ -22,10 +22,18 @@ image: /assets/img/0-forwardslash-infocard.png
 
 ### Nmap scan
 
-I started my enumeration of this system with an nmap scan of `10.10.10.183`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all TCP ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oN <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.183`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
-zweilos@kalimaa:~/htb/forwardslash$ nmap -p- -sC -sV -oN forwardslash.nmap 10.10.10.183
+zweilos@kalimaa:~/htb/forwardslash$ nmap -p- -sC -sV -oA forwardslash.nmap 10.10.10.183
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-06 15:59 EDT
 Nmap scan report for forwardslash.htb (10.10.10.183)
 Host is up (0.046s latency).

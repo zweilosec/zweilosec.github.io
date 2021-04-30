@@ -5,19 +5,19 @@ description: >-
 title: Hack the Box - Blackfield Writeup
 date: 2020-10-04 08:00:00 -0600
 categories: [Hack the Box, Writeup]
-tags: [htb, hacking, hack the box, redteam, windows, impacket, powershell, smb, rpc, bloodhound, kerberos, mimikatz, sebackupprivilege, serestoreprivilege, hard, writeup, aas, unfinished]     # TAG names should always be lowercase
+tags: [htb, hacking, hack the box, redteam, windows, impacket, powershell, smb, rpc, bloodhound, kerberos, mimikatz, sebackupprivilege, serestoreprivilege, oscp, tj_null, hard, writeup, aas, unfinished]     # TAG names should always be lowercase
 show_image_post: true
 image: /assets/img/0-blackfield-infocard.png
 ---
 
 
-# HTB - Blackfield
+## HTB - Blackfield
 
 ## Overview
 
-![](/assets/img/0-blackfield-infocard.png)
+![Descriptive information card on the machine blackfield](/assets/img/0-blackfield-infocard.png)
 
-Short description to include any strange things to be dealt with
+This machine is on TJ_Null's list of OSCP-like machines.  Have fun! Short description to include any strange things to be dealt with
 
 ## Useful Skills and Tools
 
@@ -33,7 +33,15 @@ Short description to include any strange things to be dealt with
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.192`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oA <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.192`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 At first my scan wouldn't go through until I added the `-Pn` flag to stop nmap from sending ICMP probes. After that it proceeded normally.
 
@@ -41,40 +49,8 @@ At first my scan wouldn't go through until I added the `-Pn` flag to stop nmap f
 ┌──(zweilos㉿kali)-[~/htb/blackfield]
 └─$ nmap -n -v -p- -sCV -oA blackfield 10.10.10.192 -Pn
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-03 11:28 EDT
-NSE: Loaded 151 scripts for scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 11:28
-Completed NSE at 11:28, 0.00s elapsed
-Initiating NSE at 11:28
-Completed NSE at 11:28, 0.00s elapsed
-Initiating NSE at 11:28
-Completed NSE at 11:28, 0.00s elapsed
-Initiating Connect Scan at 11:28
-Scanning 10.10.10.192 [65535 ports]
-Discovered open port 135/tcp on 10.10.10.192
-Discovered open port 53/tcp on 10.10.10.192
-Discovered open port 445/tcp on 10.10.10.192
-Connect Scan Timing: About 19.76% done; ETC: 11:31 (0:02:06 remaining)
-Discovered open port 88/tcp on 10.10.10.192
-Discovered open port 593/tcp on 10.10.10.192
-Connect Scan Timing: About 47.61% done; ETC: 11:30 (0:01:07 remaining)
-Discovered open port 3268/tcp on 10.10.10.192
-Discovered open port 5985/tcp on 10.10.10.192
-Discovered open port 389/tcp on 10.10.10.192
-Completed Connect Scan at 11:30, 106.20s elapsed (65535 total ports)
-Initiating Service scan at 11:30
-Scanning 8 services on 10.10.10.192
-Completed Service scan at 11:32, 142.44s elapsed (8 services on 1 host)
-NSE: Script scanning 10.10.10.192.
-Initiating NSE at 11:32
-Completed NSE at 11:33, 40.24s elapsed
-Initiating NSE at 11:33
-Completed NSE at 11:33, 1.04s elapsed
-Initiating NSE at 11:33
-Completed NSE at 11:33, 0.01s elapsed
 Nmap scan report for 10.10.10.192
-Host is up (0.035s latency).
-Not shown: 65527 filtered ports
+
 PORT     STATE SERVICE       VERSION
 53/tcp   open  domain?
 | fingerprint-strings: 
@@ -90,10 +66,6 @@ PORT     STATE SERVICE       VERSION
 5985/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
 |_http-server-header: Microsoft-HTTPAPI/2.0
 |_http-title: Not Found
-1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port53-TCP:V=7.80%I=7%D=10/3%Time=5F789917%P=x86_64-pc-linux-gnu%r(DNSV
-SF:ersionBindReqTCP,20,"\0\x1e\0\x06\x81\x04\0\x01\0\0\0\0\0\0\x07version\
-SF:x04bind\0\0\x10\0\x03");
 Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows
 
 Host script results:
@@ -105,17 +77,10 @@ Host script results:
 |   date: 2020-10-03T22:39:10
 |_  start_date: N/A
 
-NSE: Script Post-scanning.
-Initiating NSE at 11:33
-Completed NSE at 11:33, 0.00s elapsed
-Initiating NSE at 11:33
-Completed NSE at 11:33, 0.00s elapsed
-Initiating NSE at 11:33
-Completed NSE at 11:33, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 290.20 seconds
 ```
+
+### Port 445 - SMB
 
 Since port 445 \(SMB\) is open I tried to enumerate open shares by using anonymous login
 

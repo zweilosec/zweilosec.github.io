@@ -10,7 +10,7 @@ show_image_post: true
 image: /assets/img/traceback-infocard.png
 ---
 
-# HTB - Traceback
+## HTB - Traceback
 
 ## Overview
 
@@ -22,10 +22,18 @@ Traceback is an easy difficulty Linux machine that gives a good introduction to 
 
 ### Nmap scan
 
-I started off my enumeration with an nmap scan of `10.10.10.181`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all TCP ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, `-oN <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.181`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
-zweilos@kali:~/htb/traceback$ nmap -p- -sC -sV -oN traceback.nmap 10.10.10.181
+zweilos@kali:~/htb/traceback$ nmap -p- -sC -sV -oA traceback.nmap 10.10.10.181
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-21 16:39 EDT
 Nmap scan report for 10.10.10.181
 Host is up (0.048s latency).

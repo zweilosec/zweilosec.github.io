@@ -10,11 +10,11 @@ show_image_post: true
 image: /assets/img/1-multimaster-infocard.png
 ---
 
-# HTB - Multimaster
+## HTB - Multimaster
 
 ## Overview
 
-![](/assets/img/1-multimaster-infocard.png)
+![Descriptive information card on the machine multimaster](/assets/img/1-multimaster-infocard.png)
 
 Hold on to your seats, because this Insane Windows machine is a wild ride. TODO:Finish this writeup, there are more notes and stuff in the notes app if anything is missing...
 
@@ -27,7 +27,15 @@ Hold on to your seats, because this Insane Windows machine is a wild ride. TODO:
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.179`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oN <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.179`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 At first my scan wouldn't go through until I added the `-Pn` flag to stop nmap from sending ICMP probes. After that it proceeded normally.
 
@@ -35,8 +43,7 @@ At first my scan wouldn't go through until I added the `-Pn` flag to stop nmap f
 zweilos@kalimaa:~/htb/multimaster$ nmap -p- -sC -sV -oN multimaster.nmap 10.10.10.179 -Pn
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-19 12:17 EDT
 Nmap scan report for 10.10.10.179
-Host is up (0.050s latency).
-Not shown: 65513 filtered ports
+
 PORT      STATE SERVICE       VERSION
 53/tcp    open  domain?
 | fingerprint-strings: 
@@ -83,10 +90,6 @@ PORT      STATE SERVICE       VERSION
 49681/tcp open  msrpc         Microsoft Windows RPC
 49701/tcp open  msrpc         Microsoft Windows RPC
 49744/tcp open  msrpc         Microsoft Windows RPC
-1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port53-TCP:V=7.80%I=7%D=7/19%Time=5F1472C4%P=x86_64-pc-linux-gnu%r(DNSV
-SF:ersionBindReqTCP,20,"\0\x1e\0\x06\x81\x04\0\x01\0\0\0\0\0\0\x07version\
-SF:x04bind\0\0\x10\0\x03");
 Service Info: Host: MULTIMASTER; OS: Windows; CPE: cpe:/o:microsoft:windows
 
 Host script results:
@@ -111,7 +114,6 @@ Host script results:
 |   date: 2020-07-19T16:34:17
 |_  start_date: 2020-07-18T22:51:09
 
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 486.11 seconds
 ```
 

@@ -10,7 +10,7 @@ show_image_post: true
 image: /assets/img/0-dyplesher-infocard.png
 ---
 
-# HTB - Dyplesher
+## HTB - Dyplesher
 
 ## Overview
 
@@ -65,16 +65,22 @@ Initial credit to [https://gist.github.com/maxivak/513191447d15c4d30953006d99928
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.190`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oA <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.190`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
 ┌──(zweilos㉿kali)-[~/htb/dyplesher]
 └─$ nmap -n -v -sCV -p- 10.10.10.190 -oA dyplesher
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-05 20:41 EDT
-snipped...
 Nmap scan report for 10.10.10.190
-Host is up (0.035s latency).
-Not shown: 65525 filtered ports
+
 PORT      STATE  SERVICE    VERSION
 22/tcp    open   ssh        OpenSSH 8.0p1 Ubuntu 6build1 (Ubuntu Linux; protocol 2.0)
 | ssh-hostkey: 
@@ -168,18 +174,9 @@ PORT      STATE  SERVICE    VERSION
 |_    1.8.x, 1.9.x, 1.10.x, 1.11.x, 1.12.x"}
 25572/tcp closed unknown
 25672/tcp open   unknown
-snipped...
+
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-NSE: Script Post-scanning.
-Initiating NSE at 20:45
-Completed NSE at 20:45, 0.00s elapsed
-Initiating NSE at 20:45
-Completed NSE at 20:45, 0.00s elapsed
-Initiating NSE at 20:45
-Completed NSE at 20:45, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 283.61 seconds
 ```
 

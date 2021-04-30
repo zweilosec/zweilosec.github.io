@@ -10,7 +10,7 @@ show_image_post: true
 image: /assets/img/laboratory-0-infocard.png
 ---
 
-# HTB - Laboratory
+## HTB - Laboratory
 
 ## Overview
 
@@ -22,7 +22,7 @@ This easy-difficulty Linux machine had an interesting take on a common use of a 
 
 ### Nmap scan
 
-I started my enumeration with an nmap scan of `10.10.10.208`.  The options I regularly use are: 
+I started my enumeration with an nmap scan of `10.10.10.216`.  The options I regularly use are: 
 
 | `Flag` | Purpose |
 | :--- | :--- |
@@ -35,7 +35,6 @@ I started my enumeration with an nmap scan of `10.10.10.208`.  The options I reg
 ```
 ┌──(zweilos㉿kalimaa)-[~/htb/laboratory]
 └─$ nmap -sCV -n -p- -Pn -v -oA laboratory 10.10.10.216                                             1 ⚙
-Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times will be slower.
 Starting Nmap 7.91 ( https://nmap.org ) at 2021-03-16 19:40 EDT
 
 PORT    STATE SERVICE  VERSION
