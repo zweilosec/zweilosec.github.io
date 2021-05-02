@@ -13,15 +13,19 @@ show_image_post: true                                    # Change this to true
 
 ## Upgrading remote shells (Unix machines only)
 
-Usually, after catching a shell through netcat you are placed in a shell that has very limited functionality. If the remote machine has Python installed you can easily upgrade to a fully functional TTY shell.
+Usually, after catching a shell through netcat you are placed in a shell that has very limited functionality. The features I miss the most are command history (and using the 'up' and 'down' arrows to cycle through them) and tab autocompletion.  It can feel quite disorienting working in a shell that is missing these vital features.  
 
  **Note:** To check if the shell is a TTY shell use the `tty` command.
+
+ ## rlwrap
  
 You can also mitigate some of the restrictions of poor netcat shells by wrapping the netcat listener with the `rlwrap` command.  This is not installed by default so you will need to install it using `sudo apt rlwrap`.
 
 ```bash
 rlwrap nc -lvnp $port
 ```
+
+If the remote machine has Python installed you can easily upgrade to a fully functional TTY shell.
 
 ## Upgrade to fully interactive shell using Python:
 
