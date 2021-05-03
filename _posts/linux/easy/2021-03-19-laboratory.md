@@ -994,6 +994,6 @@ After that, I just had to collect my proof.
 
 Thanks to [`0xc45`](https://app.hackthebox.eu/users/73268) for an interesting take on a machine that trapped the attacker into a docker container, which they originally thought to be the machine they wanted to compromise.  The user of the machine had obviously tried to think about security, but was overconfident and made a simple mistake when compiling the program that was supposed to secure the machine, instead leading to it's complete take over.  This goes to show that simple little clues and mistakes can lead a determined attacker to find cracks in a system that allow them in!
 
-If you like this content and would like to see more, please consider [buying me a coffee](https://www.buymeacoffee.com/zweilosec)!
+If you have comments, issues, or other feedback, or have any other fun or useful tips or tricks to share, feel free to contact me on Github at [https://github.com/zweilosec](https://github.com/zweilosec) or in the comments below!
 
-
+If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=zweilosec&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff"></a>

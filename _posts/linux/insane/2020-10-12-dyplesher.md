@@ -1764,5 +1764,6 @@ After writing my public key to `root` it was simple to login using SSH and colle
 
 Thanks to [`felamos`](https://www.hackthebox.eu/home/users/profile/27390) & [yuntao](https://www.hackthebox.eu/home/users/profile/12438) for creating this very challenging, yet very fun and interesting machine! I learned a lot more about Minecraft plugins than I ever thought I would want to!
 
-If you like this content and would like to see more, please consider [buying me a coffee](https://www.buymeacoffee.com/zweilosec)!
+If you have comments, issues, or other feedback, or have any other fun or useful tips or tricks to share, feel free to contact me on Github at [https://github.com/zweilosec](https://github.com/zweilosec) or in the comments below!
 
+If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=zweilosec&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff"></a>

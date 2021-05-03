@@ -1052,5 +1052,6 @@ a44ed9a4442a2d216f3f75e5c802b5b3
 
 Thanks to [`egre55`](https://www.hackthebox.eu/home/users/profile/1190) for creating such a unique and interesting challenge! I certainly learned a few useful new tricks, and learned that even if you don't have a password to work with, but have gotten a list of usernames, well, sometimes people are lazy and just use their username as the password!
 
-If you like this content and would like to see more, please consider [buying me a coffee](https://www.buymeacoffee.com/zweilosec)!
+If you have comments, issues, or other feedback, or have any other fun or useful tips or tricks to share, feel free to contact me on Github at [https://github.com/zweilosec](https://github.com/zweilosec) or in the comments below!
 
+If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=zweilosec&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff"></a>
