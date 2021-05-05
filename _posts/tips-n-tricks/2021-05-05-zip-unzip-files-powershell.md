@@ -15,7 +15,7 @@ Recently, while working on the Hack the Box machine [Sharp](https://zweilosec.gi
 
 ### The `Compress-Archive` cmdlet
 
-```
+```powershell
 PS C:\Users\User> Get-Help Compress-Archive
 
 NAME
@@ -120,7 +120,7 @@ Note: This method is a hack that only works for files that have a file extension
 
 In a scenario where you have a folder with a number of different filetypes but only want to zip the files of one type you can use the wildcard to substitute for the filename and then specify the `$extension` of the filetype you wish to archive.
 
-```
+```powershell
 Compress-Archive -Path $in_path\*.$extension -DestinationPath $out_path\$out_file
 ```
 
@@ -131,7 +131,7 @@ Note: This method is non-recursive and will not include files inside subdirector
 
 You can update an existing zipped file by adding the `-Update` parameter to the `Compress-Archive` cmdlet. This will allow you to replace files with newer ones of the same name, or add completely new files.  This parameter can be combined with any of the previous file/folder selection methods.
 
-```
+```powershell
 Compress-Archive -Path $in_path -DestinationPath $out_path\$out_file -Update 
 ```
 
