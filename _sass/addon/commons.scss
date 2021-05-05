@@ -365,37 +365,21 @@ footer {
 
   img[data-src] {
     margin: 0.5rem 0;
-  }
 
-  @mixin img-caption {
-    + em {
-      display: block;
-      text-align: center;
-      font-style: normal;
-      font-size: 80%;
-      padding: 0;
-      color: #6d6c6c;
+    &.left {
+      float: left;
+      margin: 0.75rem 1rem 1rem 0;
     }
-  }
 
-  @mixin img($caption: false) {
-
-    > img[data-src] {
-      @if $caption {
-        @include img-caption;
-      }
-
-      &.left {
-        float: left;
-        margin: 0.75rem 1rem 1rem 0;
-      }
-
-      &.right {
-        float: right;
-        margin: 0.75rem 0 1rem 1rem;
-      }
-
+    &.right {
+      float: right;
+      margin: 0.75rem 0 1rem 1rem;
     }
+
+    &.shadow {
+      filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.08));
+    }
+
   }
 
   a {
@@ -403,7 +387,7 @@ footer {
       color: var(--link-color);
     }
 
-    &:not(.img-hyperlink) {
+    &:not(.img-link) {
       @extend %link-color;
       @extend %link-underline;
       &:hover {
@@ -411,21 +395,26 @@ footer {
       }
     }
 
-    &.img-hyperlink {
-      @include img;
-      @include img-caption;
-    }
-  }
+    &.popup { // created by `_includes/img-extra.html`
+      cursor: zoom-in;
 
-  > p {
-    > img[data-src]:not(.normal):not(.left):not(.right) {
-      @include align-center;
+      > img[data-src]:not(.normal):not(.left):not(.right) {
+        @include align-center;
+      }
     }
-  }
 
-  p {
-    @include img(true);
-  }
+    &.img-link {
+      + em {
+        display: block;
+        text-align: center;
+        font-style: normal;
+        font-size: 80%;
+        padding: 0;
+        color: #6d6c6c;
+      }
+    }
+
+  } // a
 
   ul {
     // attribute 'hide-bullet' was added by liquid
@@ -582,6 +571,20 @@ footer {
   border-color: var(--input-focus-border-color) !important;
   background: center !important;
   transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+/* --- Overriding --- */
+
+// magnific-popup
+figure .mfp-title {
+  text-align: center;
+  padding-right: 0;
+  margin-top: 0.5rem;
+}
+
+// mermaid
+.mermaid {
+  text-align: center;
 }
 
 /* --- sidebar layout --- */
