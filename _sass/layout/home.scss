@@ -108,7 +108,7 @@
         display: none;
       }
     }
-
+    /* enable post preview images */
     .post-img-cnt{
       width:20%;
       float:left;
@@ -118,7 +118,7 @@
     .post-img{
       max-width: 100%;
     }
-    
+    /* end post preview images */
   } // .post-preview
 
 } // #post-list

@@ -48,13 +48,14 @@ layout: page
     <h1>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
     </h1>
-
+    <!-- enable post previews -->
     <div class="post-content">
       <div class="post-img-cnt">
         <a href="{{ post.url | relative_url }}">
           <img src="{{post.image}}" alt="{{post.title}} image" class="post-img">
         </a>
       </div>
+      <!-- end post image preview -->
       <p>
         {% include no-linenos.html content=post.content %}
         {{ content | markdownify | strip_html | truncate: 200 }}
