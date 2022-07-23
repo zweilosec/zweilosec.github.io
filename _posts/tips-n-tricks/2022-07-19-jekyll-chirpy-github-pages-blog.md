@@ -170,8 +170,9 @@ Git will track all of the changes you make to documents in your project folder, 
 3. Next, type a short (less than 50 characters) description of the changes you are making.  
 4. To push these changes to GitHub you will need to hover over each item and click the small `+` icon next them.  You can also click the `+` icon next to a folder to accept all changes for files in that folder.  To accept all changes at once, click the `+` next to the `Changes` folder.  
 5. Click the Commit button to submit all accepted changes to GitHub.
-6. On your GitHub repository, check the `Actions` tab to see the build process.  This will start automatically after pushing changes.  
-7. After the build finishes successfully, navigate to the url of your site to view your shiny new blog!
+6. Click the same button again (Sync Changes)
+7. On your GitHub repository, check the `Actions` tab to see the build process.  This will start automatically after pushing changes.  
+8. After the build finishes successfully, navigate to the url of your site to view your shiny new blog!
 
 ## Testing your site on a Local Server
 
