@@ -70,6 +70,15 @@ export TERM=xterm-256color #allows you to clear console, and have color output
 
 Viola!  You should now be the proud owner of a shiny new fully upgraded TTY shell with command history using the 'up' and 'down' arrows.  This shell will also allow you to use the command `clear` to clear your screen and 'control' commands, such as `ctrl-c` to kill remotely running processes rather than your own shell! Enjoy!
 
+### Upgrading a shell when using zsh (for example in Kali linux) 
+
+When using some shells such as `zsh` or `fish` on the attacking machine your shell will break after you try to upgrade it using the above methods.  Some of the things I have found that help mitigate this are:
+
+1. Use `rlwrap nc -lvnp` when setting up your listener,
+2. make sure not to put a space in your python pty command after the import,
+3. type `stty size;stty raw -echo;fg` all on one line.
+
+Finally, as a last resort, you could just switch to `bash` instead when setting up your `nc` listener.
 
 ## Using Other Scripting Languages:
 
